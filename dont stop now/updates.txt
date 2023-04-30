@@ -1,0 +1,5 @@
+v0.0.1
+- if you see this make any update comments here above by creating a new version number by following the trend (yes it's stupid rn, cuz I have no idea how they do version update and trends - its on my to-do list)
+
+v0.0
+- file and gaming code was just created
