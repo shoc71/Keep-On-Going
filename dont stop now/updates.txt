@@ -1,5 +1,29 @@
+v0.0.2
+----- Changes to Main 
+- added a Scene class describing the basic functions required in each scene. These are input (key inputs that are pressed and/or held), update (used to dynamically rewrite any values during a certain condition) and render (for loading the graphics)
+- altered the Program class to incorporate the Scene class and it's functions (input, update and render)
+- completed the while game loop in the Program class, but could be altered in the future for more variables if needed.
+- rearranged static program class variable into the if __name == "__main__" condition
+- added a Menu (MenuScene subclass of Scene) that's still a work in progress
+- added a Level (LevelScene subclass of Scene) that's still a work in progress
+- both Menu and Level currently renders two different colors, purple and white, by pressing "w".
+- the window size is set at 640 by 480 (width and height respectively)
+
+----- Additional Information
+- This is a temporary version used to ensure that the program is able to:
+  - run the game loop without any problems
+  - is able to be closed (currently with the top right X)
+  - responds to key presses ("w" to change the background)
+  - incorporate both the Program class and Scene classes together
+- The Scene classes were made with the help of: https://nerdparadise.com/programming/pygame/part7 
+- The base "Scene class" contains the functions that all scenes should have, such as input, render and update. The subclasses in addition to the base functions, add their own unique functions depending on what that scene is used for. For instance, the MenuScene class would have a functions allowing the player to select certain conditions (play, credits, options).
+
+=======
+
 v0.0.1
 - if you see this make any update comments here above by creating a new version number by following the trend (yes it's stupid rn, cuz I have no idea how they do version update and trends - its on my to-do list)
+
+=======
 
 v0.0
 - file and gaming code was just created
