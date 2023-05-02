@@ -1,3 +1,34 @@
+v.0.0.3
+----- LevelScene
+- in the __init__ function:
+  - Defined the scene, then the necessary level elements such as platforms/walls, death_zones and win_zones
+  - Also defined the player
+- Input function updated to include changing between the menu and level scene with "c" and the purple squares jump ability with "w" or "space"
+- Update function has purple square movement and collision functions
+- Render function for the walls/platforms and the player
+
+----- SquareMe Class
+- in the __init__ function:
+  - the first block of code describes the basic parameters of the square (passed through the SquareMe class when created), and it's rendering (render object, alive status and freeze)
+  - the freeze feature is planned to be used for when players want to pause their game
+  - the second block of code describes the purple square characteristics such as jumping, gravity, movement direction, and collision
+  
+- jump function describing the vertical jump movement (only up)
+- collision function describing:
+  - collide_id and the touching rectangles parameters if applicable are defined, which are used to make the code shorter and neater.
+  - the first set of if's describe collision with the sides of the platform.   - both left and right are detected by seeing the x position of the block relative to the platform/wall
+  -the second set of if's describe if the purple block is on the platform or not, which will decide if gravity and jumping ability is enabled
+
+----- Additional Information
+- what to expect in the next update:
+  - death zones and end zones to be implemented as red and cyan areas respectively
+  - player death and respawn positioning
+  - fixing a bug where the player spawns inside of a platform (player respawn positioning)
+  - going in between multiple levels
+  - pause feature (freeze)
+
+=======
+
 v0.0.2
 ----- Changes to Main 
 - added a Scene class describing the basic functions required in each scene. These are input (key inputs that are pressed and/or held), update (used to dynamically rewrite any values during a certain condition) and render (for loading the graphics)
