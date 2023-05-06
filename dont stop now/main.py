@@ -1,6 +1,33 @@
 import pygame
 
 
+class Text:
+    def __init__(self, text, text_pos, font_size, font_type,
+                 font_color, text_other):
+
+        self.text = text
+        self.position = text_pos
+        self.font_size = font_size
+        self.font_type = font_type
+        self.color = font_color
+
+        self.other = text_other
+        self.font = None
+        self.text_rect = None
+        self.text_img = None
+
+        self.setup()
+        self.render()
+
+    def setup(self):
+        self.font = pygame.font.SysFont(self.font_type, self.font_size)
+
+    def render(self):
+        self.text_img = self.font.render(self.text, True, self.color)
+        self.text_rect = self.text_img.get_rect()
+        self.text_rect.center = self.position
+
+
 class Scene:
     def __init__(self):
         """
@@ -59,7 +86,7 @@ class MenuScene(Scene):
 
 class LevelScene(Scene):
 
-    def __init__(self):
+    def __init__(self, x_spawn, y_spawn):
         """
         Set the current scene to this scene by passing this classes self to
         initialize it.
@@ -68,46 +95,113 @@ class LevelScene(Scene):
         self.platforms = []
         self.walls = []
         self.death_zones = []
-        self.win_zones = None
+        self.win_zones = []
 
-        self.player = SquareMe(0, 250, 20, 20, (181, 60, 177))
+        self.x_spawn = x_spawn
+        self.y_spawn = y_spawn
+        self.player = SquareMe(self.x_spawn, self.y_spawn,
+                               10, 10, (181, 60, 177))
+        self.respawns = -1
+        self.play_time = 0
+        self.level_condition = False
+        self.victory_time = 0
+        self.victory_counter = 0
+        self.victory_text = [
+            Text("DON'T", (310, 100), 100, "impact", (235, 195, 65), None),
+            Text("STOP", (570, 100), 100, "impact", (235, 195, 65), None),
+            Text("NOW", (820, 100), 100, "impact", (235, 195, 65), None)
+        ]
 
     def input(self, pressed, held):
         for every_key in pressed:
             if every_key == pygame.K_c:
                 self.change_scene(MenuScene())
-            if every_key in [pygame.K_w, pygame.KEYUP, pygame.K_SPACE] and not self.player.enable_gravity:
-                print("jump")
+            if every_key in [pygame.K_w, pygame.KEYUP, pygame.K_SPACE] and not \
+                    self.player.enable_gravity and self.player.alive:
                 self.player.jump_ability = True
                 self.player.jump_boost = self.player.max_jump
+            if every_key == pygame.K_SPACE and not self.player.alive:
+                self.respawns += 1
+                self.player.alive = True
+            if every_key == pygame.K_ESCAPE:
+                self.player.freeze = not self.player.freeze
 
     def update(self):
-        if self.player.alive:
+        if self.player.alive and not self.player.freeze and 0 <= self.respawns\
+                and not self.level_condition:
+            self.player.death(self.death_zones)
             self.player.collision(self.platforms + self.walls)
             self.player.move()
+        if not self.player.alive and not self.player.freeze and \
+                not self.level_condition:
+            self.player.xpos = self.x_spawn
+            self.player.ypos = self.y_spawn
+            self.player.direction = "right"
+
+        if self.player.alive and \
+                self.player.square_render.collidelist(self.win_zones) != -1:
+            self.level_condition = True
+            self.player.alive = False
+
+    def victory(self, screen):
+        if 500 <= pygame.time.get_ticks() - self.victory_time and \
+                self.victory_counter < 3:
+            self.victory_time = pygame.time.get_ticks()
+            self.victory_counter += 1
+        for x in range(self.victory_counter):
+            screen.blit(self.victory_text[x].text_img,
+                        self.victory_text[x].text_rect)
 
     def render(self, screen):
         screen.fill((255, 255, 255))
-        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 300, 200, 15])
-        platform2 = pygame.draw.rect(screen, (0, 0, 0), [200, 350, 200, 15])
-        platform3 = pygame.draw.rect(screen, (0, 0, 0), [500, 350, 150, 15])
-        platform4 = pygame.draw.rect(screen, (0, 0, 0), [700, 325, 350, 15])
+        self.player.render(screen)
+
+        if self.level_condition:
+            self.victory(screen)
+        else:
+            self.play_time = pygame.time.get_ticks()
+            self.victory_time = pygame.time.get_ticks()
+
+
+class TutorialLevel(LevelScene):
+    def __init__(self, x_spawn, y_spawn):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+
+        death1 = pygame.draw.rect(screen, (194, 57, 33), [0, 550, 1080, 30])
+        self.death_zones = [death1]
+
+        win1 = pygame.draw.rect(screen, (47, 237, 237), [1060, 275, 20, 40])
+        self.win_zones = [win1]
+
+        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 310, 200, 10])
+        platform2 = pygame.draw.rect(screen, (0, 0, 0), [200, 360, 200, 10])
+        platform3 = pygame.draw.rect(screen, (0, 0, 0), [500, 360, 150, 10])
+        platform4 = pygame.draw.rect(screen, (0, 0, 0), [700, 335, 330, 10])
         self.platforms = [platform1, platform2, platform3, platform4]
 
-        wall1 = pygame.draw.rect(screen, (0, 0, 0), [1065, 0, 15, 258])
-        wall2 = pygame.draw.rect(screen, (0, 0, 0), [1065, 298, 15, 288])
+        wall1 = pygame.draw.rect(screen, (0, 0, 0), [1070, 0, 10, 278])
+        wall2 = pygame.draw.rect(screen, (0, 0, 0), [1070, 308, 10, 288])
         self.walls = [wall1, wall2]
-
-        self.death_zones = []
-
-        self.player.render(screen)
-        self.player.alive = True
 
 
 class SquareMe:
 
     def __init__(self, x_spawn, y_spawn, width, height, rgb):
         """
+        self.square parameters: [
+        [x_spawn, y_spawn],
+        [width, height]
+        [RGB value],
+        ]
         """
         self.xpos = x_spawn
         self.ypos = y_spawn
@@ -120,27 +214,23 @@ class SquareMe:
 
         self.jump_ability = False
         self.enable_gravity = True
-        self.max_jump = 200
+        self.max_jump = 130
         self.jump_boost = -self.max_jump - 1
         self.direction = "right"
-        self.collide = False
-        self.fall_time = 0
+        self.gravity_counter = 50
 
     def move(self):
-        if self.freeze:
-            pass
-
         if self.direction == "right":
-            self.xpos += 0.25
+            self.xpos += 0.5
         elif self.direction == "left":
-            self.xpos -= 0.25
+            self.xpos -= 0.5
 
         self.gravity()
         self.jump()
 
     def jump(self):
         if self.jump_ability and 0 <= self.jump_boost:
-            self.ypos -= (self.jump_boost * abs(self.jump_boost)) * 0.00005
+            self.ypos -= (self.jump_boost ** 2) * 0.00005
             self.jump_boost -= 1
         else:
             self.jump_ability = False
@@ -156,20 +246,18 @@ class SquareMe:
         collide_x = object_list[collide_id].x
         collide_y = object_list[collide_id].y
         collide_width = object_list[collide_id].width
-        collide_height = object_list[collide_id].height
+        # collide_height = object_list[collide_id].height
 
-        self.collide = True
-        if self.collide and collide_id != -1 and \
-                (collide_y < self.ypos + self.height - 1) and \
-                self.direction == "right" and self.xpos < collide_x:
+        if collide_id != -1 and \
+                (collide_y + 1 < self.ypos + self.height) and \
+                self.direction == "right" and \
+                self.xpos + self.width <= collide_x + 1:
             self.direction = "left"
-            self.collide = False
-            print("swtich")
-        if self.collide and collide_id != -1 and \
-                (collide_y < self.ypos + self.height - 1) and \
-                self.direction == "left" and collide_x + collide_width - 1 < self.xpos:
+        if collide_id != -1 and \
+                (collide_y + 1 < self.ypos + self.height - 1) and \
+                self.direction == "left" and \
+                collide_x + collide_width - 1 < self.xpos:
             self.direction = "right"
-            self.collide = False
 
         if collide_id != -1 and \
                 collide_x - self.width - collide_width < self.xpos and \
@@ -178,16 +266,21 @@ class SquareMe:
                 collide_y < self.ypos + self.height:
             self.enable_gravity = False
             self.jump_ability = True
-            self.fall_time = pygame.time.get_ticks()
+            self.gravity_counter = 50
         else:
             self.enable_gravity = True
-        """if collide_y + 1 < self.ypos + self.height and collide_x < (self.xpos + self.height / 6) < collide_x + collide_width:
-            self.ypos = collide_y - self.height"""
-
 
     def gravity(self):
-        if self.enable_gravity and not self.jump_ability and self.collide:
-            self.ypos += 0.0009 * (pygame.time.get_ticks() - self.fall_time)
+        if self.enable_gravity and not self.jump_ability:
+            self.ypos += (self.gravity_counter ** 2) * 0.000005
+
+        if self.gravity_counter < 600:
+            self.gravity_counter += 1
+
+    def death(self, death_list: [pygame.Rect]):
+        collide_id = self.square_render.collidelist(death_list)
+        if collide_id != -1:
+            self.alive = False
 
 
 class Program:
