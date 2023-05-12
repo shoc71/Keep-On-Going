@@ -1,3 +1,20 @@
+v.0.0.4 
+----- Death, Victory and Respawning
+- death zones were added in the SquareMe class to determine if a collision occur and will cause the player to unalive if in contact. These zones are rendered in red. Death zones are also implemented in the LevelClass, as defined below.
+- on start or whenever the player square dies, it will be placed into it's defined spawning location and be frozen in place. Furthermore, the square will wait for the player to press the jump button ("w" or "space") to initiate movement again.
+- victory/win zones were added in the LevelClass to detect if the square collided with the zone to win the level. A text animation was added playing "don't stop now" sequentially to indicate that the player won. The player also freezes up too to stop movement as the level ended.
+
+----- LevelScene and TutorialLevel
+- LevelScene and TutorialLevel are their own separate classes. More specifically, TutorialLevel is the child class of LevelScene. All future levels will be made using LevelScene as the parent. LevelScene contains all the required logic for this game to function, including death, respawn, pausing/freezing the game, square movement and collision detection. Therefore, every level will be it's child class, using the parent's init, input and update (still need to be defined). The parent's render function is also used in the child's render function but will have additional rendering for death, win, platform and wall zones. Every level child class will have a different render function, defining the different level arrangements/layouts.
+
+----- Additional Information
+- in the future, text needs to be added
+- a menu screen is also needed too with it's options.
+- bug hunting for the collision, as it seems to work fine in the TutorialLevel.
+- apologies for the delay in updates
+
+=======
+
 v.0.0.3
 ----- LevelScene
 - in the __init__ function:
