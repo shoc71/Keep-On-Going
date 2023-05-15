@@ -1,6 +1,7 @@
 import pygame
 
 
+# todo: move text class to it's own py file
 class Text:
     def __init__(self, text, text_pos, font_size, font_type,
                  font_color, text_other):
@@ -75,7 +76,7 @@ class MenuScene(Scene):
     def input(self, pressed, held):
         for every_key in pressed:
             if every_key == pygame.K_c:
-                self.change_scene(LevelScene())
+                self.change_scene(TutorialLevel1(40, 300))
 
     def update(self):
         pass
@@ -130,13 +131,17 @@ class LevelScene(Scene):
         if self.player.alive and not self.player.freeze and 0 <= self.respawns\
                 and not self.level_condition:
             self.player.death(self.death_zones)
-            self.player.collision(self.platforms + self.walls)
+            self.player.collision_plat(self.platforms)
+            self.player.collision_wall(self.walls)
             self.player.move()
         if not self.player.alive and not self.player.freeze and \
                 not self.level_condition:
             self.player.xpos = self.x_spawn
             self.player.ypos = self.y_spawn
             self.player.direction = "right"
+
+        if 580 + self.player.height < self.player.ypos:
+            self.player.alive = False
 
         if self.player.alive and \
                 self.player.square_render.collidelist(self.win_zones) != -1:
@@ -163,7 +168,82 @@ class LevelScene(Scene):
             self.victory_time = pygame.time.get_ticks()
 
 
-class TutorialLevel(LevelScene):
+class TutorialLevel1(LevelScene):
+    def __init__(self, x_spawn, y_spawn):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - self.victory_time:
+            self.change_scene(TutorialLevel2(40, 540))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+
+        # No death zones in this level!
+        self.death_zones = []
+
+        win1 = pygame.draw.rect(screen, (47, 237, 237), [1070, 278, 20, 40])
+        self.win_zones = [win1]
+
+        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 310, 1100, 10])
+        platform2 = pygame.draw.rect(screen, (0, 0, 0), [350, 290, 300, 30])
+        self.platforms = [platform1, platform2]
+
+        wall1 = pygame.draw.rect(screen, (0, 0, 0), [1070, 0, 10, 278])
+        wall2 = pygame.draw.rect(screen, (0, 0, 0), [350, 290, 10, 30])
+        wall3 = pygame.draw.rect(screen, (0, 0, 0), [640, 290, 10, 30])
+        wall4 = pygame.draw.rect(screen, (0, 0, 0), [0, 0, 10, 320])
+        self.walls = [wall1, wall2, wall3, wall4]
+
+
+class TutorialLevel2(LevelScene):
+    def __init__(self, x_spawn, y_spawn):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - self.victory_time:
+            self.change_scene(TutorialLevel3(0, 300))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+
+        # No death zones in this level!
+        self.death_zones = []
+
+        win1 = pygame.draw.rect(screen, (47, 237, 237), [650, 546, 10, 20])
+        self.win_zones = [win1]
+
+        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 566, 1100, 10])
+        platform2 = pygame.draw.rect(screen, (0, 0, 0), [0, 446, 406, 10])
+        platform3 = pygame.draw.rect(screen, (0, 0, 0), [510, 536, 90, 10])
+        platform4 = pygame.draw.rect(screen, (0, 0, 0), [380, 506, 90, 10])
+        platform5 = pygame.draw.rect(screen, (0, 0, 0), [510, 476, 90, 10])
+        platform6 = pygame.draw.rect(screen, (0, 0, 0), [380, 446, 90, 10])
+        platform7 = pygame.draw.rect(screen, (0, 0, 0), [510, 416, 90, 10])
+        platform8 = pygame.draw.rect(screen, (0, 0, 0), [380, 386, 90, 10])
+        platform9 = pygame.draw.rect(screen, (0, 0, 0), [510, 356, 90, 10])
+        self.platforms = [platform1, platform2, platform3, platform4,
+                          platform5, platform6, platform7, platform8,
+                          platform9]
+
+        wall1 = pygame.draw.rect(screen, (0, 0, 0), [600, 356, 10, 220])
+        wall2 = pygame.draw.rect(screen, (0, 0, 0), [380, 0, 10, 516])
+        wall3 = pygame.draw.rect(screen, (0, 0, 0), [650, 0, 10, 546])
+        wall4 = pygame.draw.rect(screen, (0, 0, 0), [0, 0, 10, 576])
+        self.walls = [wall1, wall2, wall3, wall4, platform3, platform4,
+                      platform5, platform6, platform7, platform8,
+                      platform9]
+
+
+class TutorialLevel3(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
 
@@ -215,7 +295,7 @@ class SquareMe:
         self.jump_ability = False
         self.enable_gravity = True
         self.max_jump = 130
-        self.jump_boost = -self.max_jump - 1
+        self.jump_boost = -1 * (self.max_jump - 1)
         self.direction = "right"
         self.gravity_counter = 50
 
@@ -241,23 +321,15 @@ class SquareMe:
                                                                    self.width,
                                                                    self.height])
 
-    def collision(self, object_list: [pygame.Rect]):
+    def collision_plat(self, object_list: [pygame.Rect]):
+        if len(object_list) < 1:
+            return None
+
         collide_id = self.square_render.collidelist(object_list)
         collide_x = object_list[collide_id].x
         collide_y = object_list[collide_id].y
         collide_width = object_list[collide_id].width
         # collide_height = object_list[collide_id].height
-
-        if collide_id != -1 and \
-                (collide_y + 1 < self.ypos + self.height) and \
-                self.direction == "right" and \
-                self.xpos + self.width <= collide_x + 1:
-            self.direction = "left"
-        if collide_id != -1 and \
-                (collide_y + 1 < self.ypos + self.height - 1) and \
-                self.direction == "left" and \
-                collide_x + collide_width - 1 < self.xpos:
-            self.direction = "right"
 
         if collide_id != -1 and \
                 collide_x - self.width - collide_width < self.xpos and \
@@ -270,6 +342,27 @@ class SquareMe:
         else:
             self.enable_gravity = True
 
+    def collision_wall(self, object_list: [pygame.Rect]):
+        if len(object_list) < 1:
+            return None
+
+        collide_id = self.square_render.collidelist(object_list)
+        collide_x = object_list[collide_id].x
+        collide_y = object_list[collide_id].y
+        collide_width = object_list[collide_id].width
+        # collide_height = object_list[collide_id].height
+
+        if collide_id != -1 and \
+                (collide_y + 2 < self.ypos + self.height) and \
+                self.direction == "right" and \
+                self.xpos + self.width <= collide_x + 1:
+            self.direction = "left"
+        if collide_id != -1 and \
+                (collide_y + 2 < self.ypos + self.height - 1) and \
+                self.direction == "left" and \
+                collide_x + collide_width - 1 < self.xpos:
+            self.direction = "right"
+
     def gravity(self):
         if self.enable_gravity and not self.jump_ability:
             self.ypos += (self.gravity_counter ** 2) * 0.000005
@@ -278,6 +371,8 @@ class SquareMe:
             self.gravity_counter += 1
 
     def death(self, death_list: [pygame.Rect]):
+        if len(death_list) < 1:
+            return None
         collide_id = self.square_render.collidelist(death_list)
         if collide_id != -1:
             self.alive = False
