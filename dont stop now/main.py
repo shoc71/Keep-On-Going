@@ -1,6 +1,10 @@
 import random
 import pygame
 
+fps = pygame.time.Clock()
+
+DARK_RED = (139,0,0)
+YELLOW = (235, 195, 65)
 
 # todo: move text class to it's own py file
 class Text:
@@ -88,18 +92,22 @@ class LevelScene(Scene):
         self.victory_time = 0
         self.victory_counter = 0
         self.victory_text = [
-            Text("DON'T", (310, 100), 100, "impact", (235, 195, 65), None),
-            Text("STOP", (570, 100), 100, "impact", (235, 195, 65), None),
-            Text("NOW", (820, 100), 100, "impact", (235, 195, 65), None)
+            Text("DON'T", (310, 100), 100, "impact", YELLOW, None),
+            Text("STOP", (570, 100), 100, "impact", YELLOW, None),
+            Text("NOW", (820, 100), 100, "impact", YELLOW, None)
         ]
         self.pause_text = Text("PAUSED", (540, 213),
-                               100, "impact", (139, 0, 0), None)
+                               100, "impact", DARK_RED, None)
+        self.pause_text_2 = Text("Press esc to unpause", (540, 280),
+                               30, "impact", DARK_RED, None)
+        self.pause_text_3 = Text("Press q to quit", (540, 315),
+                               30, "impact", DARK_RED, None)
 
     def input(self, pressed, held):
         for every_key in pressed:
             if every_key == pygame.K_c:
-                self.change_scene(MenuScene(40, 540))
-            if every_key in [pygame.K_w, pygame.KEYUP, pygame.K_SPACE] and not \
+                self.change_scene(MenuScene(40, 340))
+            if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
                     self.player.enable_gravity and self.player.alive:
                 self.player.jump_ability = True
                 self.player.jump_boost = self.player.max_jump
@@ -109,6 +117,8 @@ class LevelScene(Scene):
                 self.player.alive = True
             if every_key == pygame.K_ESCAPE:
                 self.player.freeze = not self.player.freeze
+            if (every_key == pygame.K_q) and self.player.freeze:
+                self.close_game()
 
     def update(self):
         if self.player.alive and not self.player.freeze and 0 <= self.respawns\
@@ -154,7 +164,10 @@ class LevelScene(Scene):
         """ This function will be altered in the child class (the individual
         levels)"""
         if self.player.freeze:
-            screen.blit(self.pause_text.text_img, self.pause_text.text_rect)
+            screen.blit(self.pause_text.text_img, self.pause_text.text_rect)# big bold for pausing
+            screen.blit(self.pause_text_2.text_img, self.pause_text_2.text_rect)# instructions to unpause
+            screen.blit(self.pause_text_3.text_img, self.pause_text_3.text_rect)# drawing quitting text
+            # adding quitting thing draw here as well
 
         if self.level_condition:
             self.victory(screen)
@@ -170,7 +183,9 @@ class MenuScene(LevelScene):
         self.respawns += 1
         self.mid_jump = False
         self.title_text = Text("Press Space or W To Start", (530, 100), 50, "impact",
-                          (235, 195, 65), None)
+                          YELLOW, None)
+        self.title_text_2 = Text("Press esc to pause", (530, 150), 30, "impact",
+                          YELLOW, None)# 
 
     def input(self, pressed, held):
         """Do not use LevelScene for input since we don't want to control
@@ -191,6 +206,7 @@ class MenuScene(LevelScene):
         self.render_level(screen)               # Level Elements or Middle
         LevelScene.render_text(self, screen)    # Text or Front-most
         screen.blit(self.title_text.text_img, self.title_text.text_rect)
+        screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)
 
     def render_level(self, screen):
         # No death zones
@@ -487,6 +503,7 @@ class Program:
                 scene.render(screen)
                 scene = scene.this_scene
 
+            fps.tick(1000)
             pygame.display.update()
 
 
