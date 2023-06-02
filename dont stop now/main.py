@@ -1,7 +1,7 @@
 import random
 import pygame
 
-fps = pygame.time.Clock()
+fps = pygame.time.Clock() #time
 
 DARK_RED = (139,0,0)
 YELLOW = (235, 195, 65)
