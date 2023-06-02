@@ -3,11 +3,59 @@ import pygame
 
 fps = pygame.time.Clock()
 
+pygame.mixer.init()
+
+
 DARK_RED = (139,0,0)
 YELLOW = (235, 195, 65)
 BLACK = (0, 0, 0)
 CYAN = (47, 237, 237)
 RED = (194, 57, 33)
+WHITE = (255, 255, 255)
+
+c_key = False # this only exists becuz I need the c key to work
+
+# Load sound effects
+jump_sound_1 = pygame.mixer.Sound("jump_sfx.wav")
+jump_sound_1.set_volume(0.02) #out of 1 = 100%
+# collect_coin_sound = pygame.mixer.Sound("collect_coin_sound.wav")
+
+# Load background music
+current_track_index = 0
+music_tracks = [
+    "main-menu.wav",
+    "level-loop1_v2.wav",
+    "work_around_lead_edited.wav",
+    "credits.wav"
+]
+pygame.mixer.music.load(music_tracks[current_track_index])
+pygame.mixer.music.set_volume(0.7)
+pygame.mixer.music.play(-1)  # Play the background music on a loop
+
+# Function to switch background music based on level completion
+# todo: move into LevelScene class
+def switch_music(level_complete):
+    global current_track_index
+
+    # if level_complete 
+    if c_key == False:
+        if level_complete:
+            current_track_index += 1 # Increment the track index
+
+            # Check if all tracks have been played, then loop back to the first track
+            if current_track_index >= len(music_tracks):
+                current_track_index = 0
+            
+            # Load and play the new background music track
+            pygame.mixer.music.load(music_tracks[current_track_index])
+            if current_track_index == 2:
+                pygame.mixer.music.set_volume(0.15)
+            if current_track_index == 3:
+                pygame.mixer.music.set_volume(1.5)
+            pygame.mixer.music.play(-1)  # Play the background music on a loop
+    else:
+        current_track_index = 0
+
 
 # todo: move text class to it's own py file
 class Text:
@@ -155,7 +203,7 @@ class LevelScene(Scene):
                         self.victory_text[x].text_rect)
 
     def render(self, screen):
-        screen.fill((255, 255, 255))
+        screen.fill(WHITE)
         self.player.render(screen)
 
     def render_level(self, screen):
@@ -238,10 +286,11 @@ class MenuScene(LevelScene):
         wall7 = pygame.draw.rect(screen, BLACK, [1000, 430, 10, 45])
         self.walls = [wall1, wall2, wall3, wall4, wall5, wall6, wall7]
 
-
 class TutorialLevel1(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        level_complete = True
+        switch_music(level_complete)
 
     def input(self, pressed, held):
         LevelScene.input(self, pressed, held)
@@ -273,7 +322,6 @@ class TutorialLevel1(LevelScene):
         wall3 = pygame.draw.rect(screen, BLACK, [640, 290, 10, 30])
         wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 320])
         self.walls = [wall1, wall2, wall3, wall4]
-
 
 class TutorialLevel2(LevelScene):
     def __init__(self, x_spawn, y_spawn):
@@ -365,6 +413,12 @@ class TutorialLevel3(LevelScene):
 class TutorialLevel4(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
+
+        level_complete = True
+        # todo: use LevelScene's level_condition variable, it's the same thing 
+        # current_track_index = 0
+        switch_music(level_complete)
+
         self.Tut4_text = Text("Jump under platform", (400, 100), 15, "impact", YELLOW, None)
 
     def input(self, pressed, held):
@@ -392,6 +446,7 @@ class TutorialLevel4(LevelScene):
         platform1 = pygame.draw.rect(screen, BLACK, [0, 150, 200, 10])
         platform2 = pygame.draw.rect(screen, BLACK, [200, 100, 200, 10])
         platform3 = pygame.draw.rect(screen, BLACK, [500, 500, 200, 10])
+        platform4 = pygame.draw.rect(screen, BLACK, [700, 500, 270, 10])
         platform4 = pygame.draw.rect(screen, BLACK, [700, 500, 330, 10])
         self.platforms = [platform1, platform2, platform3, platform4]
 
@@ -441,6 +496,7 @@ class SquareMe: #lil purple dude
         if self.jump_ability and 0 <= self.jump_boost:
             self.ypos -= (self.jump_boost ** 2) * 0.00005
             self.jump_boost -= 1
+            jump_sound_1.play()
         else:
             self.jump_ability = False
 
