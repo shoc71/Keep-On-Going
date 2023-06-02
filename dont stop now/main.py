@@ -1,10 +1,58 @@
 import random
 import pygame
 
-fps = pygame.time.Clock() #time
+fps = pygame.time.Clock()
+pygame.mixer.init()
 
 DARK_RED = (139,0,0)
 YELLOW = (235, 195, 65)
+BLACK = (0, 0, 0)
+CYAN = (47, 237, 237)
+RED = (194, 57, 33)
+WHITE = (255, 255, 255)
+
+c_key = False # this only exists becuz I need the c key to work
+
+# Load sound effects
+jump_sound_1 = pygame.mixer.Sound("jump_sfx.wav")
+jump_sound_1.set_volume(0.02) #out of 1 = 100%
+# collect_coin_sound = pygame.mixer.Sound("collect_coin_sound.wav")
+
+# Load background music
+current_track_index = 0
+music_tracks = [
+    "main-menu.wav",
+    "level-loop1_v2.wav",
+    "work_around_lead_edited.wav",
+    "credits.wav"
+]
+pygame.mixer.music.load(music_tracks[current_track_index])
+pygame.mixer.music.set_volume(0.7)
+pygame.mixer.music.play(-1)  # Play the background music on a loop
+
+# Function to switch background music based on level completion
+def switch_music(level_complete):
+    global current_track_index
+
+    # if level_complete 
+    if c_key == False:
+        if level_complete:
+            current_track_index += 1 # Increment the track index
+
+            # Check if all tracks have been played, then loop back to the first track
+            if current_track_index >= len(music_tracks):
+                current_track_index = 0
+            
+            # Load and play the new background music track
+            pygame.mixer.music.load(music_tracks[current_track_index])
+            if current_track_index == 2:
+                pygame.mixer.music.set_volume(0.15)
+            if current_track_index == 3:
+                pygame.mixer.music.set_volume(1.5)
+            pygame.mixer.music.play(-1)  # Play the background music on a loop
+    else:
+        current_track_index = 0
+
 
 # todo: move text class to it's own py file
 class Text:
@@ -152,7 +200,7 @@ class LevelScene(Scene):
                         self.victory_text[x].text_rect)
 
     def render(self, screen):
-        screen.fill((255, 255, 255))
+        screen.fill(WHITE)
         self.player.render(screen)
 
     def render_level(self, screen):
@@ -215,30 +263,31 @@ class MenuScene(LevelScene):
         # No win zones
         self.win_zones = []
 
-        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 566, 1080, 10])
-        platform2 = pygame.draw.rect(screen, (0, 0, 0), [0, 500, 1080, 10])
-        platform3 = pygame.draw.rect(screen, (0, 0, 0), [200, 475, 200, 10])
-        platform4 = pygame.draw.rect(screen, (0, 0, 0), [400, 460, 200, 10])
-        platform5 = pygame.draw.rect(screen, (0, 0, 0), [600, 445, 200, 10])
-        platform6 = pygame.draw.rect(screen, (0, 0, 0), [800, 430, 200, 10])
-        platform7 = pygame.draw.rect(screen, (0, 0, 0), [200, 475, 810, 10])
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 566, 1080, 10])
+        platform2 = pygame.draw.rect(screen, BLACK, [0, 500, 1080, 10])
+        platform3 = pygame.draw.rect(screen, BLACK, [200, 475, 200, 10])
+        platform4 = pygame.draw.rect(screen, BLACK, [400, 460, 200, 10])
+        platform5 = pygame.draw.rect(screen, BLACK, [600, 445, 200, 10])
+        platform6 = pygame.draw.rect(screen, BLACK, [800, 430, 200, 10])
+        platform7 = pygame.draw.rect(screen, BLACK, [200, 475, 810, 10])
 
         self.platforms = [platform1, platform2, platform3, platform4, platform5,
                           platform6, platform7]
 
-        wall1 = pygame.draw.rect(screen, (0, 0, 0), [0, 0, 10, 576])
-        wall2 = pygame.draw.rect(screen, (0, 0, 0), [1070, 0, 10, 576])
-        wall3 = pygame.draw.rect(screen, (0, 0, 0), [200, 465, 10, 10])
-        wall4 = pygame.draw.rect(screen, (0, 0, 0), [400, 450, 10, 10])
-        wall5 = pygame.draw.rect(screen, (0, 0, 0), [600, 435, 10, 10])
-        wall6 = pygame.draw.rect(screen, (0, 0, 0), [800, 420, 10, 10])
-        wall7 = pygame.draw.rect(screen, (0, 0, 0), [1000, 430, 10, 45])
+        wall1 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
+        wall2 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 576])
+        wall3 = pygame.draw.rect(screen, BLACK, [200, 465, 10, 10])
+        wall4 = pygame.draw.rect(screen, BLACK, [400, 450, 10, 10])
+        wall5 = pygame.draw.rect(screen, BLACK, [600, 435, 10, 10])
+        wall6 = pygame.draw.rect(screen, BLACK, [800, 420, 10, 10])
+        wall7 = pygame.draw.rect(screen, BLACK, [1000, 430, 10, 45])
         self.walls = [wall1, wall2, wall3, wall4, wall5, wall6, wall7]
-
 
 class TutorialLevel1(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        level_complete = True
+        switch_music(level_complete)
 
     def input(self, pressed, held):
         LevelScene.input(self, pressed, held)
@@ -258,19 +307,18 @@ class TutorialLevel1(LevelScene):
         # No death zones in this level!
         self.death_zones = []
 
-        win1 = pygame.draw.rect(screen, (47, 237, 237), [1070, 278, 20, 40])
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 278, 20, 40])
         self.win_zones = [win1]
 
-        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 310, 1100, 10])
-        platform2 = pygame.draw.rect(screen, (0, 0, 0), [350, 290, 300, 30])
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 310, 1100, 10])
+        platform2 = pygame.draw.rect(screen, BLACK, [350, 290, 300, 30])
         self.platforms = [platform1, platform2]
 
-        wall1 = pygame.draw.rect(screen, (0, 0, 0), [1070, 0, 10, 278])
-        wall2 = pygame.draw.rect(screen, (0, 0, 0), [350, 290, 10, 30])
-        wall3 = pygame.draw.rect(screen, (0, 0, 0), [640, 290, 10, 30])
-        wall4 = pygame.draw.rect(screen, (0, 0, 0), [0, 0, 10, 320])
+        wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 278])
+        wall2 = pygame.draw.rect(screen, BLACK, [350, 290, 10, 30])
+        wall3 = pygame.draw.rect(screen, BLACK, [640, 290, 10, 30])
+        wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 320])
         self.walls = [wall1, wall2, wall3, wall4]
-
 
 class TutorialLevel2(LevelScene):
     def __init__(self, x_spawn, y_spawn):
@@ -296,26 +344,26 @@ class TutorialLevel2(LevelScene):
         # No death zones in this level!
         self.death_zones = []
 
-        win1 = pygame.draw.rect(screen, (47, 237, 237), [650, 546, 10, 20])
+        win1 = pygame.draw.rect(screen, CYAN, [650, 546, 10, 20])
         self.win_zones = [win1]
 
-        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 566, 1100, 10])
-        platform2 = pygame.draw.rect(screen, (0, 0, 0), [0, 446, 406, 10])
-        platform3 = pygame.draw.rect(screen, (0, 0, 0), [510, 536, 90, 10])
-        platform4 = pygame.draw.rect(screen, (0, 0, 0), [380, 506, 90, 10])
-        platform5 = pygame.draw.rect(screen, (0, 0, 0), [510, 476, 90, 10])
-        platform6 = pygame.draw.rect(screen, (0, 0, 0), [380, 446, 90, 10])
-        platform7 = pygame.draw.rect(screen, (0, 0, 0), [510, 416, 90, 10])
-        platform8 = pygame.draw.rect(screen, (0, 0, 0), [380, 386, 90, 10])
-        platform9 = pygame.draw.rect(screen, (0, 0, 0), [510, 356, 90, 10])
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 566, 1100, 10])
+        platform2 = pygame.draw.rect(screen, BLACK, [0, 446, 406, 10])
+        platform3 = pygame.draw.rect(screen, BLACK, [510, 536, 90, 10])
+        platform4 = pygame.draw.rect(screen, BLACK, [380, 506, 90, 10])
+        platform5 = pygame.draw.rect(screen, BLACK, [510, 476, 90, 10])
+        platform6 = pygame.draw.rect(screen, BLACK, [380, 446, 90, 10])
+        platform7 = pygame.draw.rect(screen, BLACK, [510, 416, 90, 10])
+        platform8 = pygame.draw.rect(screen, BLACK, [380, 386, 90, 10])
+        platform9 = pygame.draw.rect(screen, BLACK, [510, 356, 90, 10])
         self.platforms = [platform1, platform2, platform3, platform4,
                           platform5, platform6, platform7, platform8,
                           platform9]
 
-        wall1 = pygame.draw.rect(screen, (0, 0, 0), [600, 356, 10, 220])
-        wall2 = pygame.draw.rect(screen, (0, 0, 0), [380, 0, 10, 516])
-        wall3 = pygame.draw.rect(screen, (0, 0, 0), [650, 0, 10, 546])
-        wall4 = pygame.draw.rect(screen, (0, 0, 0), [0, 0, 10, 576])
+        wall1 = pygame.draw.rect(screen, BLACK, [600, 356, 10, 220])
+        wall2 = pygame.draw.rect(screen, BLACK, [380, 0, 10, 516])
+        wall3 = pygame.draw.rect(screen, BLACK, [650, 0, 10, 546])
+        wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
         self.walls = [wall1, wall2, wall3, wall4, platform3, platform4,
                       platform5, platform6, platform7, platform8,
                       platform9]
@@ -330,6 +378,9 @@ class TutorialLevel3(LevelScene):
 
     def update(self):
         LevelScene.update(self)
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(TutorialLevel4(0, 140))
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -339,24 +390,67 @@ class TutorialLevel3(LevelScene):
     def render_level(self, screen):
         LevelScene.render(self, screen)
 
-        death1 = pygame.draw.rect(screen, (194, 57, 33), [0, 550, 1080, 30])
+        death1 = pygame.draw.rect(screen, RED, [0, 550, 1080, 30])
         self.death_zones = [death1]
 
-        win1 = pygame.draw.rect(screen, (47, 237, 237), [1060, 275, 20, 40])
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 278, 10, 30])
         self.win_zones = [win1]
 
-        platform1 = pygame.draw.rect(screen, (0, 0, 0), [0, 310, 200, 10])
-        platform2 = pygame.draw.rect(screen, (0, 0, 0), [200, 360, 200, 10])
-        platform3 = pygame.draw.rect(screen, (0, 0, 0), [500, 360, 150, 10])
-        platform4 = pygame.draw.rect(screen, (0, 0, 0), [700, 335, 330, 10])
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 310, 200, 10])
+        platform2 = pygame.draw.rect(screen, BLACK, [200, 360, 200, 10])
+        platform3 = pygame.draw.rect(screen, BLACK, [500, 360, 150, 10])
+        platform4 = pygame.draw.rect(screen, BLACK, [700, 335, 330, 10])
         self.platforms = [platform1, platform2, platform3, platform4]
 
-        wall1 = pygame.draw.rect(screen, (0, 0, 0), [1070, 0, 10, 278])
-        wall2 = pygame.draw.rect(screen, (0, 0, 0), [1070, 308, 10, 288])
+        wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 278])
+        wall2 = pygame.draw.rect(screen, BLACK, [1070, 308, 10, 288])
         self.walls = [wall1, wall2]
 
 
-class SquareMe:
+class TutorialLevel4(LevelScene):
+    def __init__(self, x_spawn, y_spawn):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        level_complete = True
+        # current_track_index = 0
+        switch_music(level_complete)
+        self.Tut4_text = Text("Jump under platform", (400, 100), 15, "impact", YELLOW, None)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+        # if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+        #         self.victory_time:
+        #     self.change_scene(TutorialLevel5(0, 300)) 
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+
+        screen.blit(self.Tut4_text.text_img, self.Tut4_text.text_rect)
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        # death1 = pygame.draw.rect(screen, RED, [0, 550, 1080, 30])# death floor
+        # self.death_zones = [death1]
+
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 150, 200, 10])
+        platform2 = pygame.draw.rect(screen, BLACK, [200, 100, 200, 10])
+        platform3 = pygame.draw.rect(screen, BLACK, [500, 500, 200, 10])
+        platform4 = pygame.draw.rect(screen, BLACK, [700, 500, 270, 10])
+        self.platforms = [platform1, platform2, platform3, platform4]
+
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 480, 10, 30])# win box
+        self.win_zones = [win1]
+
+        wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 480])# win wall 1
+        wall2 = pygame.draw.rect(screen, BLACK, [1070, 510, 10, 288])# win wall 2
+        self.walls = [wall1, wall2]
+
+class SquareMe: #lil purple dude
 
     def __init__(self, x_spawn, y_spawn, width, height, rgb):
         """
@@ -395,6 +489,7 @@ class SquareMe:
         if self.jump_ability and 0 <= self.jump_boost:
             self.ypos -= (self.jump_boost ** 2) * 0.00005
             self.jump_boost -= 1
+            jump_sound_1.play()
         else:
             self.jump_ability = False
 
