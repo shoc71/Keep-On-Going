@@ -2,7 +2,9 @@ import random
 import pygame
 
 fps = pygame.time.Clock()
+
 pygame.mixer.init()
+
 
 DARK_RED = (139,0,0)
 YELLOW = (235, 195, 65)
@@ -31,6 +33,7 @@ pygame.mixer.music.set_volume(0.7)
 pygame.mixer.music.play(-1)  # Play the background music on a loop
 
 # Function to switch background music based on level completion
+# todo: move into LevelScene class
 def switch_music(level_complete):
     global current_track_index
 
@@ -410,9 +413,12 @@ class TutorialLevel3(LevelScene):
 class TutorialLevel4(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
+
         level_complete = True
+        # todo: use LevelScene's level_condition variable, it's the same thing 
         # current_track_index = 0
         switch_music(level_complete)
+
         self.Tut4_text = Text("Jump under platform", (400, 100), 15, "impact", YELLOW, None)
 
     def input(self, pressed, held):
@@ -441,6 +447,7 @@ class TutorialLevel4(LevelScene):
         platform2 = pygame.draw.rect(screen, BLACK, [200, 100, 200, 10])
         platform3 = pygame.draw.rect(screen, BLACK, [500, 500, 200, 10])
         platform4 = pygame.draw.rect(screen, BLACK, [700, 500, 270, 10])
+        platform4 = pygame.draw.rect(screen, BLACK, [700, 500, 330, 10])
         self.platforms = [platform1, platform2, platform3, platform4]
 
         win1 = pygame.draw.rect(screen, CYAN, [1070, 480, 10, 30])# win box
