@@ -3,7 +3,15 @@ have a previous attempts of the character (last 15) if at all possible
 lore? - nah keep the game and story simple
 
 color editing options?
-
+________________________________
+things to work on:
+- crappy pause and menu scene (see if we can click on that)
+- restart button for each lvl
+- level select for different levels
+- checkpoint boxes
+- death counter
+- fixing jump (frame rate or speed or class positioning)
+__________________________________
 
 moving red objects
 
