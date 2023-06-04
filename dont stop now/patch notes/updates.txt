@@ -1,11 +1,26 @@
+v.0.1.2
+---- File
+- main.py has been split into 3 major files (main.py, dsn_class.py, dsn_levels.py) for ease of editing and reading for other coders and viewers
+
+---- Additional informaiton
+- each level has its oown themes for music, so we will have to fix that accordingly
+
+==============
+
 v.0.1.1
 ---- Level Making
 - 2 extra levels have been added
 
----- Menu 
+---- Menu Scene
 - quiting option has been made
+- More details have been addded for quiting and unpausing
+
+---- Music
 - sfx for jumping has been added
-- music updated to work
+- music has been added and updated to work
+
+---- Text
+- more texts have been written onto levels
 
 ==============
 
