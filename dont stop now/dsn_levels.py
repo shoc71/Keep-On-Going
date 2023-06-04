@@ -27,7 +27,7 @@ class LevelScene(dsnclass.Scene):
         self.y_spawn = y_spawn
         self.player = dsnclass.SquareMe(self.x_spawn, self.y_spawn,
                                10, 10, (181, 60, 177))
-        self.respawns = -1
+        self.deaths = 0
         self.play_time = 0
         self.level_condition = False
         self.victory_time = 0
@@ -55,7 +55,6 @@ class LevelScene(dsnclass.Scene):
                 self.player.jump_sound_1.play()
             if (every_key == pygame.K_SPACE or every_key == pygame.K_w) \
                     and not self.player.alive:
-                self.respawns += 1
                 self.player.alive = True
             if every_key == pygame.K_ESCAPE:
                 self.player.freeze = not self.player.freeze
@@ -63,9 +62,13 @@ class LevelScene(dsnclass.Scene):
                 self.close_game()
 
     def update(self):
-        if self.player.alive and not self.player.freeze and 0 <= self.respawns\
-                and not self.level_condition:
-            self.player.death(self.death_zones)
+        if self.player.square_render is None:   # very important, else game crashes
+            return None
+
+        if self.player.alive and not self.player.freeze and \
+                not self.level_condition:
+            self.deaths += self.player.death(self.death_zones)
+            print(self.deaths)    # todo: add death counter in render_text class
             self.player.collision_plat(self.platforms)
             self.player.collision_wall(self.platforms + self.walls)
             self.player.move()
@@ -77,6 +80,7 @@ class LevelScene(dsnclass.Scene):
 
         if 580 + self.player.height < self.player.ypos:
             self.player.alive = False
+            self.deaths += 1
 
         if self.player.alive and \
                 self.player.square_render.collidelist(self.win_zones) != -1:
@@ -121,7 +125,6 @@ class MenuScene(LevelScene):
     def __init__(self, xspawn, yspawn, music_value):
         LevelScene.__init__(self, xspawn, yspawn)
         self.options = []
-        self.respawns += 1
         self.mid_jump = False
         self.title_text = dsnclass.Text("Press Space or W To Start", (530, 100), 50, "impact",
                           YELLOW, None)
