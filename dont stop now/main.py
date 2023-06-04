@@ -389,6 +389,7 @@ class TutorialLevel2(LevelScene):
         wall3 = pygame.draw.rect(screen, BLACK, [650, 0, 10, 546])
         wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
         wall5 = pygame.draw.rect(screen, BLACK, [380, 306, 10, 226])#small wall
+        wall5 = pygame.draw.rect(screen, BLACK, [380, 326, 10, 186])
         self.walls = [wall1, wall2, wall3, wall4, platform3, platform4,
                       platform5, platform6, platform7, platform8,
                       platform9, wall5] #why is this like this
@@ -532,6 +533,9 @@ class TutorialLevel6(LevelScene):
         # level_complete = True
         # # current_track_index = 0
         # switch_music(level_complete)
+        level_complete = True
+        # current_track_index = 0
+        switch_music(level_complete)
         self.Tut4_text = Text("Jump under platform", (800, 100), 15, IMPACT_FONT, YELLOW, None)
 
     def input(self, pressed, held):
