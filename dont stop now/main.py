@@ -1,39 +1,41 @@
 import random
 import pygame
 
+#important initializers - could be moved with pygame.init()
 fps = pygame.time.Clock()
-
 pygame.mixer.init()
 
-
+#colors
 DARK_RED = (139,0,0)
 YELLOW = (235, 195, 65)
 BLACK = (0, 0, 0)
 CYAN = (47, 237, 237)
 RED = (194, 57, 33)
 WHITE = (255, 255, 255)
+GREY = (125, 125, 125)
+IMPACT_FONT = "impact"
 
 c_key = False # this only exists becuz I need the c key to work
 
 # Load sound effects
-jump_sound_1 = pygame.mixer.Sound("jump_sfx.wav")
+filepath_sfx = ("assets/audio/jump_sfx.wav")
+jump_sound_1 = pygame.mixer.Sound(filepath_sfx)
 jump_sound_1.set_volume(0.02) #out of 1 = 100%
 # collect_coin_sound = pygame.mixer.Sound("collect_coin_sound.wav")
 
 # Load background music
 current_track_index = 0
 music_tracks = [
-    "main-menu.wav",
-    "level-loop1_v2.wav",
-    "work_around_lead_edited.wav",
-    "credits.wav"
+    "assets/audio/main-menu.wav",
+    "assets/audio/level-loop1_v2.wav",
+    "assets/audio/work_around_lead_edited.wav",
+    "assets/audio/credits.wav"
 ]
 pygame.mixer.music.load(music_tracks[current_track_index])
 pygame.mixer.music.set_volume(0.7)
 pygame.mixer.music.play(-1)  # Play the background music on a loop
 
 # Function to switch background music based on level completion
-# todo: move into LevelScene class
 def switch_music(level_complete):
     global current_track_index
 
@@ -143,16 +145,16 @@ class LevelScene(Scene):
         self.victory_time = 0
         self.victory_counter = 0
         self.victory_text = [
-            Text("DON'T", (310, 100), 100, "impact", YELLOW, None),
-            Text("STOP", (570, 100), 100, "impact", YELLOW, None),
-            Text("NOW", (820, 100), 100, "impact", YELLOW, None)
+            Text("DON'T", (310, 100), 100, IMPACT_FONT, YELLOW, None),
+            Text("STOP", (570, 100), 100, IMPACT_FONT, YELLOW, None),
+            Text("NOW", (820, 100), 100, IMPACT_FONT, YELLOW, None)
         ]
         self.pause_text = Text("PAUSED", (540, 213),
-                               100, "impact", DARK_RED, None)
+                               100, IMPACT_FONT, DARK_RED, None)
         self.pause_text_2 = Text("Press esc to unpause", (540, 280),
-                               30, "impact", DARK_RED, None)
+                               30, IMPACT_FONT, DARK_RED, None)
         self.pause_text_3 = Text("Press q to quit", (540, 315),
-                               30, "impact", DARK_RED, None)
+                               30, IMPACT_FONT, DARK_RED, None)
 
     def input(self, pressed, held):
         for every_key in pressed:
@@ -233,9 +235,9 @@ class MenuScene(LevelScene):
         self.options = []
         self.respawns += 1
         self.mid_jump = False
-        self.title_text = Text("Press Space or W To Start", (530, 100), 50, "impact",
+        self.title_text = Text("Press Space or W To Start", (530, 100), 50, IMPACT_FONT,
                           YELLOW, None)
-        self.title_text_2 = Text("Press esc to pause", (530, 150), 30, "impact",
+        self.title_text_2 = Text("Press esc to pause", (530, 150), 30, IMPACT_FONT,
                           YELLOW, None)# 
 
     def input(self, pressed, held):
@@ -291,6 +293,7 @@ class TutorialLevel1(LevelScene):
         LevelScene.__init__(self, x_spawn, y_spawn)
         level_complete = True
         switch_music(level_complete)
+        self.Tut6_text = Text("Ta dudorial", (600, 400), 45, IMPACT_FONT, GREY, None)
 
     def input(self, pressed, held):
         LevelScene.input(self, pressed, held)
@@ -323,9 +326,12 @@ class TutorialLevel1(LevelScene):
         wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 320])
         self.walls = [wall1, wall2, wall3, wall4]
 
+        screen.blit(self.Tut6_text.text_img, self.Tut6_text.text_rect)
+
 class TutorialLevel2(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.Tut5_text = Text("The mAze...", (210, 400), 75, IMPACT_FONT, GREY, None)
 
     def input(self, pressed, held):
         LevelScene.input(self, pressed, held)
@@ -359,17 +365,35 @@ class TutorialLevel2(LevelScene):
         platform7 = pygame.draw.rect(screen, BLACK, [510, 416, 90, 10])
         platform8 = pygame.draw.rect(screen, BLACK, [380, 386, 90, 10])
         platform9 = pygame.draw.rect(screen, BLACK, [510, 356, 90, 10])
+        platform10 = pygame.draw.rect(screen, BLACK, [380, 326, 90, 10])
+        platform11 = pygame.draw.rect(screen, BLACK, [510, 296, 90, 10])
+        platform12 = pygame.draw.rect(screen, BLACK, [380, 266, 90, 10])
+        platform13 = pygame.draw.rect(screen, BLACK, [510, 236, 90, 10])
+        platform14 = pygame.draw.rect(screen, BLACK, [380, 206, 90, 10])
+        platform15 = pygame.draw.rect(screen, BLACK, [510, 176, 90, 10])
+        platform16 = pygame.draw.rect(screen, BLACK, [380, 146, 90, 10])
+        platform17 = pygame.draw.rect(screen, BLACK, [510, 116, 90, 10])
+        platform18 = pygame.draw.rect(screen, BLACK, [380, 86, 90, 10])
+        platform19 = pygame.draw.rect(screen, BLACK, [510, 56, 90, 10])
+        platform20 = pygame.draw.rect(screen, BLACK, [380, 26, 90, 10])
+        platform21 = pygame.draw.rect(screen, BLACK, [0, 326, 380, 10]) # this is intentional, move this around
         self.platforms = [platform1, platform2, platform3, platform4,
                           platform5, platform6, platform7, platform8,
-                          platform9]
+                          platform9, platform10, platform11, platform12,
+                          platform13, platform14, platform15, platform16,
+                          platform17, platform18, platform19, platform20,
+                          platform21]
 
-        wall1 = pygame.draw.rect(screen, BLACK, [600, 356, 10, 220])
-        wall2 = pygame.draw.rect(screen, BLACK, [380, 0, 10, 516])
+        wall1 = pygame.draw.rect(screen, BLACK, [600, 36, 10, 1340])#x,y , width/hieght - big right
+        wall2 = pygame.draw.rect(screen, BLACK, [380, 0, 10, 266])
         wall3 = pygame.draw.rect(screen, BLACK, [650, 0, 10, 546])
         wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
+        wall5 = pygame.draw.rect(screen, BLACK, [380, 326, 10, 186])
         self.walls = [wall1, wall2, wall3, wall4, platform3, platform4,
                       platform5, platform6, platform7, platform8,
-                      platform9]
+                      platform9, wall5] #why is this like this
+        
+        screen.blit(self.Tut5_text.text_img, self.Tut5_text.text_rect)
 
 
 class TutorialLevel3(LevelScene):
@@ -413,13 +437,10 @@ class TutorialLevel3(LevelScene):
 class TutorialLevel4(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
-
         level_complete = True
-        # todo: use LevelScene's level_condition variable, it's the same thing 
         # current_track_index = 0
         switch_music(level_complete)
-
-        self.Tut4_text = Text("Jump under platform", (400, 100), 15, "impact", YELLOW, None)
+        self.Tut4_text = Text("Jump under platform", (800, 100), 15, IMPACT_FONT, YELLOW, None)
 
     def input(self, pressed, held):
         LevelScene.input(self, pressed, held)
@@ -447,7 +468,6 @@ class TutorialLevel4(LevelScene):
         platform2 = pygame.draw.rect(screen, BLACK, [200, 100, 200, 10])
         platform3 = pygame.draw.rect(screen, BLACK, [500, 500, 200, 10])
         platform4 = pygame.draw.rect(screen, BLACK, [700, 500, 270, 10])
-        platform4 = pygame.draw.rect(screen, BLACK, [700, 500, 330, 10])
         self.platforms = [platform1, platform2, platform3, platform4]
 
         win1 = pygame.draw.rect(screen, CYAN, [1070, 480, 10, 30])# win box
