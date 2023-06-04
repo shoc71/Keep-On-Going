@@ -1,3 +1,19 @@
+v.0.0.5 and v.0.0.6
+----- Level Making
+- very crude level making
+- platforms originally had only top and side collision, but now have bottom collision
+- walls only have side collision
+- it might be better in the future to only use platforms and rename them to blocks
+
+----- Collision Update
+- the collision is now dependent on collidelistall to get all collisions happening on that frame. this is useful for detecting instances of multiple collisions at once and having the square respond to them
+
+----- MenuScene Redfined
+- MenuScene is now a child class of LevelScene, but with altered functionality. It doesn't use any of the square controls, as the square is made to move and jump by itself.
+- In the future, a menu title splash and options need to be implemented.
+
+=======
+
 v.0.0.4 
 ----- Death, Victory and Respawning
 - death zones were added in the SquareMe class to determine if a collision occur and will cause the player to unalive if in contact. These zones are rendered in red. Death zones are also implemented in the LevelClass, as defined below.
