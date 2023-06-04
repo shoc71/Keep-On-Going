@@ -1,3 +1,14 @@
+v.0.1.1
+---- Level Making
+- 2 extra levels have been added
+
+---- Menu 
+- quiting option has been made
+- sfx for jumping has been added
+- music updated to work
+
+==============
+
 v.0.0.5 and v.0.0.6
 ----- Level Making
 - very crude level making
