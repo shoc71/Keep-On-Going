@@ -388,6 +388,7 @@ class TutorialLevel2(LevelScene):
         wall2 = pygame.draw.rect(screen, BLACK, [380, 0, 10, 266])
         wall3 = pygame.draw.rect(screen, BLACK, [650, 0, 10, 546])
         wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
+        wall5 = pygame.draw.rect(screen, BLACK, [380, 306, 10, 226])#small wall
         wall5 = pygame.draw.rect(screen, BLACK, [380, 326, 10, 186])
         self.walls = [wall1, wall2, wall3, wall4, platform3, platform4,
                       platform5, platform6, platform7, platform8,
@@ -407,7 +408,7 @@ class TutorialLevel3(LevelScene):
         LevelScene.update(self)
         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                 self.victory_time:
-            self.change_scene(TutorialLevel4(0, 140))
+            self.change_scene(TutorialLevel4(10, 100))
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -437,6 +438,101 @@ class TutorialLevel3(LevelScene):
 class TutorialLevel4(LevelScene):
     def __init__(self, x_spawn, y_spawn):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.Tut7_text = Text("sandwich", (110, 400), 75, IMPACT_FONT, GREY, None)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(TutorialLevel5(0, 140))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        death1 = pygame.draw.rect(screen, RED, [475, 370, 180, 600])# bottom red block 1
+        death2 = pygame.draw.rect(screen, RED, [475, 0, 180, 330])# top red block 1
+        death3 = pygame.draw.rect(screen, RED, [750, 350, 250, 230])# bottom red block 2
+        death4 = pygame.draw.rect(screen, RED, [750, 0, 250, 280])# top red block 2
+        self.death_zones = [death1, death2, death3, death4]
+
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 278, 10, 30]) # win box 1
+        self.win_zones = [win1]
+
+        platform1 = pygame.draw.rect(screen, BLACK, [10, 110, 75, 10])# spawn platform
+        platform2 = pygame.draw.rect(screen, BLACK, [310, 360, 100, 10]) # dorp platfomr
+        platform3 = pygame.draw.rect(screen, BLACK, [475, 360, 180, 10]) # sandwich bottom 1
+        platform4 = pygame.draw.rect(screen, BLACK, [750, 340, 250, 10]) # sandwich bottom 2
+        platform5 = pygame.draw.rect(screen, BLACK, [475, 330, 180, 10]) # sandwich top 1
+        platform6 = pygame.draw.rect(screen, BLACK, [750, 280, 250, 10]) # sandwich top 2
+        self.platforms = [platform1, platform2, platform3, platform4,
+                          platform5, platform6]
+
+        wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 278])# win wall 1
+        wall2 = pygame.draw.rect(screen, BLACK, [1070, 308, 10, 288])# win wall 2
+        self.walls = [wall1, wall2]
+
+        screen.blit(self.Tut7_text.text_img, self.Tut7_text.text_rect)
+
+class TutorialLevel5(LevelScene):
+    def __init__(self, x_spawn, y_spawn):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        level_complete = True
+        # current_track_index = 0
+        switch_music(level_complete)
+        self.Tut4_text = Text("This is not the same spot", (800, 100), 15, IMPACT_FONT, YELLOW, None)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(TutorialLevel6(0, 120)) 
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+
+        screen.blit(self.Tut4_text.text_img, self.Tut4_text.text_rect)
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        # death1 = pygame.draw.rect(screen, RED, [0, 550, 1080, 30])# death floor
+        # self.death_zones = [death1]
+
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 150, 200, 10])# spawn platform
+        platform2 = pygame.draw.rect(screen, BLACK, [200, 100, 200, 10])
+        # platform3 = pygame.draw.rect(screen, BLACK, [500, 500, 200, 10])
+        platform4 = pygame.draw.rect(screen, BLACK, [870, 530, 100, 10])
+        platform5 = pygame.draw.rect(screen, BLACK, [445, 300, 270, 10])# new land 
+        self.platforms = [platform1, platform2, #platform3, 
+                          platform4,
+                          platform5]
+
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 480, 10, 30])# win box
+        self.win_zones = [win1]
+
+        wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 480])# win wall 1
+        wall2 = pygame.draw.rect(screen, BLACK, [1070, 510, 10, 288])# win wall 2
+        self.walls = [wall1, wall2]
+
+class TutorialLevel6(LevelScene):
+    def __init__(self, x_spawn, y_spawn):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        # level_complete = True
+        # # current_track_index = 0
+        # switch_music(level_complete)
         level_complete = True
         # current_track_index = 0
         switch_music(level_complete)
