@@ -4,6 +4,7 @@ v.0.1.2
 
 ---- Additional informaiton
 - each level has its oown themes for music, so we will have to fix that accordingly
+- already set it up so each level will have it's own theme, we just need to have those made and ready. Currently, all the tutorial levels are playing level-loop1 and the main menu is playing the main menu music
 
 ==============
 
