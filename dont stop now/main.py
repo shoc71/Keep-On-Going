@@ -47,6 +47,6 @@ if __name__ == "__main__":
     fps = pygame.time.Clock()
     start_music = Music()
     start_game = Program()
-    start_scene = MenuScene(40, 460)
+    start_scene = dsnlevel.MenuScene(40, 460)
     start_game.run(1080, 576, start_scene, start_music)
     pygame.quit()
