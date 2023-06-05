@@ -1,4 +1,3 @@
-import random
 import pygame
 
 DARK_RED = (139, 0, 0)
@@ -8,6 +7,7 @@ CYAN = (47, 237, 237)
 RED = (194, 57, 33)
 WHITE = (255, 255, 255)
 GREY = (125, 125, 125)
+
 
 class Text:
     def __init__(self, text, text_pos, font_size, font_type,
@@ -88,10 +88,11 @@ class SquareMe: #lil purple dude
 
         self.jump_ability = False
         self.enable_gravity = True
-        self.max_jump = 130
+        self.max_jump = 100
         self.jump_boost = -1 * (self.max_jump - 1)
         self.direction = "right"
-        self.gravity_counter = 50
+        self.max_gravity = 75
+        self.gravity_counter = self.max_gravity
 
         self.jump_sound_1 = pygame.mixer.Sound("jump_sfx.wav")
         self.jump_sound_1.set_volume(0.1)  # out of 1 = 100%
@@ -107,7 +108,6 @@ class SquareMe: #lil purple dude
 
     def jump(self):
         if self.jump_ability and 0 <= self.jump_boost:
-            self.ypos -= (self.jump_boost ** 2) * 0.000075
             self.jump_boost -= 1
         else:
             self.jump_ability = False
@@ -135,7 +135,7 @@ class SquareMe: #lil purple dude
                     collide_y < self.ypos + self.height:
                 self.enable_gravity = False
                 self.jump_ability = True
-                self.gravity_counter = 50
+                self.gravity_counter = self.max_gravity
 
             # Bottom Platform Collision
             # Todo: separate into own function later: collision_bottom
