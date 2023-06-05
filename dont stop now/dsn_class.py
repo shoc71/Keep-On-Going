@@ -1,4 +1,3 @@
-import random
 import pygame
 
 DARK_RED = (139, 0, 0)
@@ -8,6 +7,7 @@ CYAN = (47, 237, 237)
 RED = (194, 57, 33)
 WHITE = (255, 255, 255)
 GREY = (125, 125, 125)
+
 
 class Text:
     def __init__(self, text, text_pos, font_size, font_type,
@@ -88,26 +88,27 @@ class SquareMe: #lil purple dude
 
         self.jump_ability = False
         self.enable_gravity = True
-        self.max_jump = 130
+        self.max_jump = 100
         self.jump_boost = -1 * (self.max_jump - 1)
         self.direction = "right"
-        self.gravity_counter = 50
+        self.max_gravity = 75
+        self.gravity_counter = self.max_gravity
 
         self.jump_sound_1 = pygame.mixer.Sound("jump_sfx.wav")
         self.jump_sound_1.set_volume(0.1)  # out of 1 = 100%
 
     def move(self):
         if self.direction == "right":
-            self.xpos += 0.5
+            self.xpos += 1
         elif self.direction == "left":
-            self.xpos -= 0.5
+            self.xpos -= 1
 
         self.gravity()
         self.jump()
 
     def jump(self):
         if self.jump_ability and 0 <= self.jump_boost:
-            self.ypos -= (self.jump_boost ** 2) * 0.00005
+            self.ypos -= (self.jump_boost ** 2) * 0.0001
             self.jump_boost -= 1
         else:
             self.jump_ability = False
@@ -135,7 +136,7 @@ class SquareMe: #lil purple dude
                     collide_y < self.ypos + self.height:
                 self.enable_gravity = False
                 self.jump_ability = True
-                self.gravity_counter = 50
+                self.gravity_counter = self.max_gravity
 
             # Bottom Platform Collision
             # Todo: separate into own function later: collision_bottom
@@ -166,22 +167,23 @@ class SquareMe: #lil purple dude
                     (collide_y + 2 <= self.ypos + self.height - 1) and \
                     (self.ypos <= collide_y + collide_height + 2) and \
                     self.direction == "left" and \
-                    collide_x + collide_width - 1 < self.xpos:
+                    collide_x + collide_width - 2 < self.xpos:
                 self.direction = "right"
 
     def gravity(self):
         if self.enable_gravity and not self.jump_ability:
-            self.ypos += (self.gravity_counter ** 2) * 0.000005
+            self.ypos += (self.gravity_counter ** 2) * 0.0000075
 
-        if self.gravity_counter < 600:
-            self.gravity_counter += 1
+        if self.gravity_counter < 1000:
+            self.gravity_counter += 1.5
 
     def death(self, death_list: [pygame.Rect]):
-        if len(death_list) < 1:
-            return None
         collide_id = self.square_render.collidelist(death_list)
         if collide_id != -1:
             self.alive = False
+            return 1
+        else:
+            return 0
 
 
 class Scene:
