@@ -108,6 +108,7 @@ class SquareMe: #lil purple dude
 
     def jump(self):
         if self.jump_ability and 0 <= self.jump_boost:
+            self.ypos -= (self.jump_boost ** 2) * 0.0001
             self.jump_boost -= 1
         else:
             self.jump_ability = False
@@ -218,3 +219,4 @@ class Scene:
         Set the current scene to nothing and is used to stop the game.
         """
         self.change_scene(None)
+
