@@ -8,14 +8,13 @@ class Program:
     def __init__(self) -> None:
         self.running = True
 
-    def run(self, width, height, current_scene, current_music):
+    def run(self, width, height, current_scene):
         """
         self.scene = self.scene.this_scene updates the scene. If the scene is
         changed, then this line will update it accordingly.
         """
         screen = pygame.display.set_mode([width, height])
         scene = current_scene
-        music = current_music
         while self.running:
             keys_pressed = []
             keys_held = pygame.key.get_pressed()
@@ -45,8 +44,7 @@ if __name__ == "__main__":
     pygame.init()
     pygame.mixer.init()
     fps = pygame.time.Clock()
-    start_music = Music()
     start_game = Program()
-    start_scene = dsnlevel.MenuScene(40, 460)
-    start_game.run(1080, 576, start_scene, start_music)
+    start_scene = dsnlevel.MenuScene(40, 460, 0)
+    start_game.run(1080, 576, start_scene)
     pygame.quit()
