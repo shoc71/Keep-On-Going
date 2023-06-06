@@ -365,9 +365,9 @@ class TutorialLevel4(LevelScene):
         LevelScene.render(self, screen)
 
         death1 = pygame.draw.rect(screen, RED,
-                                  [475, 370, 180, 600])  # bottom red block 1
+                                  [505, 370, 180, 600])  # bottom red block 1
         death2 = pygame.draw.rect(screen, RED,
-                                  [475, 0, 180, 330])  # top red block 1
+                                  [505, 0, 180, 330])  # top red block 1
         death3 = pygame.draw.rect(screen, RED,
                                   [750, 350, 250, 230])  # bottom red block 2
         death4 = pygame.draw.rect(screen, RED,
@@ -382,11 +382,11 @@ class TutorialLevel4(LevelScene):
         platform2 = pygame.draw.rect(screen, BLACK,
                                      [310, 360, 100, 10])  # dorp platfomr
         platform3 = pygame.draw.rect(screen, BLACK,
-                                     [475, 360, 180, 10])  # sandwich bottom 1
+                                     [505, 360, 180, 10])  # sandwich bottom 1
         platform4 = pygame.draw.rect(screen, BLACK,
                                      [750, 340, 250, 10])  # sandwich bottom 2
         platform5 = pygame.draw.rect(screen, BLACK,
-                                     [475, 330, 180, 10])  # sandwich top 1
+                                     [505, 330, 180, 10])  # sandwich top 1
         platform6 = pygame.draw.rect(screen, BLACK,
                                      [750, 280, 250, 10])  # sandwich top 2
         self.platforms = [platform1, platform2, platform3, platform4,
