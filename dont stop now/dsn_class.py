@@ -67,6 +67,15 @@ class Music:
         pygame.mixer.music.play(-1)  # Play the background music on a loop
 
 
+class Memory:
+    def __init__(self):
+        self.total_deaths = 0
+        self.total_jumps = 0
+
+        self.level_deaths = {}
+        self.level_jumps = {}
+
+
 class SquareMe: #lil purple dude
 
     def __init__(self, x_spawn, y_spawn, width, height, rgb):
@@ -86,6 +95,7 @@ class SquareMe: #lil purple dude
         self.alive = False
         self.freeze = False
 
+        self.jumps = 0
         self.jump_ability = False
         self.enable_gravity = True
         self.max_jump = 100
@@ -134,6 +144,7 @@ class SquareMe: #lil purple dude
                     self.xpos + self.width < \
                     collide_x + collide_width + self.width and \
                     collide_y < self.ypos + self.height:
+                # improved gravity: self.ypos < collide_y
                 self.enable_gravity = False
                 self.jump_ability = True
                 self.gravity_counter = self.max_gravity
@@ -220,3 +231,4 @@ class Scene:
         """
         self.change_scene(None)
 
+        
