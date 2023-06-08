@@ -1,3 +1,15 @@
+v.0.1.5
+---- Levels
+- all tutorials levels have been added and 1 easy level has been added
+- levels have been split into 4-5 major sections; tutorial, easy, hard, night, gravity
+- improved gravity and removed jumping instantouely in the start glitch
+
+---- Additional informaiton
+- each level has its oown themes for music, so we will have to fix that accordingly
+- already set it up so each level will have it's own theme, we just need to have those made and ready. Currently, all the tutorial levels are playing level-loop1 and the main menu is playing the main menu music
+
+==============
+
 v.0.1.2
 ---- File
 - main.py has been split into 3 major files (main.py, dsn_class.py, dsn_levels.py) for ease of editing and reading for other coders and viewers
