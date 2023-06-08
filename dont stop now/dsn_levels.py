@@ -7,6 +7,8 @@ YELLOW = (235, 195, 65)
 BLACK = (0, 0, 0)
 CYAN = (47, 237, 237)
 RED = (194, 57, 33)
+LIME_GREEN = (50, 205, 50)
+LIGHT_RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (125, 125, 125)
 
@@ -76,7 +78,8 @@ class LevelScene(dsnclass.Scene):
         if self.player.alive and not self.player.freeze and \
                 not self.level_condition:
             self.deaths += self.player.death(self.death_zones)
-            print(self.deaths)    # todo: add death counter in render_text class
+            # print(self.deaths)    # todo: add death counter in render_text class
+            # @shoc71 - commented out cuz its annoying for me
             self.player.collision_plat(self.platforms)
             self.player.collision_wall(self.platforms + self.walls)
             self.player.move()
@@ -146,7 +149,8 @@ class MenuScene(LevelScene):
         for every_key in pressed:
             if every_key in [pygame.K_SPACE, pygame.K_w]:
                 self.change_scene(TutorialLevel1(12, 320, 1)) # MAKE NOTE OF THIS
-####################################################################################
+                # self.change_scene (EasyLevel2(12, 12, 1)) # changing the spawn to skip the tutorials
+
     def update(self):
         LevelScene.update(self)
         self.player.alive = True
@@ -206,7 +210,7 @@ class TutorialLevel1(LevelScene): # Hallway
         LevelScene.update(self)
         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                 self.victory_time:
-            self.change_scene(TutorialLevel2(12, 10, 1)) # spawn for next level
+            self.change_scene(TutorialLevel2(12, 80, 1)) # spawn for next level
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -259,8 +263,8 @@ class TutorialLevel2(LevelScene): # DropGuide to Solution
         win1 = pygame.draw.rect(screen, CYAN, [1070, 528, 20, 40])
         self.win_zones = [win1]
 
-        platform3 = pygame.draw.rect(screen, BLACK, [0, 100, 800, 10]) # spawn platform extended
-        platform4 = pygame.draw.rect(screen, BLACK, [200, 348, 880, 10]) # mid-platform
+        platform3 = pygame.draw.rect(screen, BLACK, [0, 90, 800, 40]) # spawn platform extended
+        platform4 = pygame.draw.rect(screen, BLACK, [200, 308, 880, 40]) # mid-platform
         platform1 = pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]) # floor
         self.platforms = [platform1, platform3, platform4]
 
@@ -300,6 +304,7 @@ class TutorialLevel3(LevelScene): # jump over box
         platform1 = pygame.draw.rect(screen, BLACK, [0, 310, 1100, 10])
         platform2 = pygame.draw.rect(screen, BLACK, [350, 290, 300, 30])
 
+        # visual-only, no collision necessary
         block1 = pygame.draw.rect(screen, BLACK, [0, 310, 1080, 576])
 
         self.platforms = [platform1, platform2]
@@ -325,7 +330,7 @@ class TutorialLevel4(LevelScene): # mind the gap
         LevelScene.update(self)
         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                 self.victory_time:
-            self.change_scene(EasyLevel1(12, 12, 1)) # easy level 1 spawn
+            self.change_scene(EasyLevel1(12, 292, 1)) # easy level 1 spawn
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -354,10 +359,66 @@ class TutorialLevel4(LevelScene): # mind the gap
 ###################################   easy levels   #################################
 #####################################################################################
 
-class EasyLevel1(LevelScene):
+# left to right order for numbering platforms
+
+class EasyLevel1(LevelScene): # candles
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
-        self.Tut1_text = dsnclass.Text("small steps", (210, 400), 75, "impact", GREY,
+        self.Tut1_text = dsnclass.Text("candles", (210, 400), 75, "impact", GREY,
+                              None)
+        self.music = dsnclass.Music(music_value)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+    
+    def update(self):
+        LevelScene.update(self)
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(EasyLevel2(12, 12, 1))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+        screen.blit(self.Tut1_text.text_img, self.Tut1_text.text_rect) # draw text on screen
+    
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        death1 = pygame.draw.rect(screen, LIGHT_RED, [125, 110, 10, 20]) # candle light 1
+        death2 = pygame.draw.rect(screen, LIGHT_RED, [425, 110, 10, 20]) # candle light 2
+        death3 = pygame.draw.rect(screen, LIGHT_RED, [725, 110, 10, 20]) # candle light 3
+        death4 = pygame.draw.rect(screen, LIGHT_RED, [990, 110, 10, 20]) # candle light 4
+        self.death_zones = [death1, death2, death3, death4]
+
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]) # floor
+        platform2 = pygame.draw.rect(screen, BLACK, [0, 0, 1100, 10]) # roof
+        block1 = pygame.draw.rect(screen, BLACK, [0, 300, 1100, 276]) # block - cut
+        block2 = pygame.draw.rect(screen, BLACK, [0, 0, 1100, 90]) # block - cut
+        platform3 = pygame.draw.rect(screen, BLACK, [40, 270, 200, 10]) # plat 1
+        platform4 = pygame.draw.rect(screen, BLACK, [340, 240, 200, 10]) # plat 2
+        platform5 = pygame.draw.rect(screen, BLACK, [640, 210, 200, 10]) # plat 3
+        platform6 = pygame.draw.rect(screen, BLACK, [940, 180, 100, 10]) # plat 4
+
+        self.platforms = [platform1, platform2, block1, platform3,
+                          platform4, platform5, platform6, block2]
+
+        wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]) # side wall right
+        wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]) # side wall left
+        wall2 = pygame.draw.rect(screen, BLACK, [125, 130, 10, 120]) # candle stick 1
+        wall3 = pygame.draw.rect(screen, BLACK, [425, 130, 10, 90]) # candle stick 2
+        wall5 = pygame.draw.rect(screen, BLACK, [725, 120, 10, 70]) # candle stick 3
+        wall6 = pygame.draw.rect(screen, BLACK, [990, 120, 10, 40]) # candle stick 4
+        self.walls = [wall1, wall4, wall2, wall3, wall5, wall6]
+
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])
+        self.win_zones = [win1]
+
+class EasyLevel2(LevelScene): # block maze 5
+    def __init__(self, x_spawn, y_spawn, music_value):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        self.Tut1_text = dsnclass.Text("block maze 5", (210, 400), 75, "impact", GREY,
                               None)
         self.music = dsnclass.Music(music_value)
 
@@ -368,25 +429,94 @@ class EasyLevel1(LevelScene):
         LevelScene.update(self)
 #         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
 #                 self.victory_time:
-#             self.change_scene(TutorialLevel5(0, 300, 1))
+#             self.change_scene(EasyLevel2(0, 300, 1))
 
     def render(self, screen):
         LevelScene.render(self, screen)
         self.render_level(screen)
         LevelScene.render_text(self, screen)
-        screen.blit(self.Tut1_text.text_img, self.Tut1_text.text_rect)
+        screen.blit(self.Tut1_text.text_img, self.Tut1_text.text_rect) # draw text on screen
     
     def render_level(self, screen):
         LevelScene.render(self, screen)
 
         platform1 = pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]) # floor
         platform2 = pygame.draw.rect(screen, BLACK, [0, 0, 1100, 10]) # roof
-        self.platforms = [platform1, platform2]
+        block1 = pygame.draw.rect(screen, BLACK, [0, 300, 1100, 276]) # block - cut
+        platform4 = pygame.draw.rect(screen, BLACK, [250, 40, 600, 10]) # plat 2 - x250/y40
+        platform5 = pygame.draw.rect(screen, BLACK, [900, 60, 50, 10]) # plat 1 - x900/y60
+        platform6 = pygame.draw.rect(screen, BLACK, [1000, 70, 100, 10]) # plat 1 - x1000/y70
+        block2 = pygame.draw.rect(screen, BLACK, [950, 40, 50, 20]) # block - y40/y80
+        platform7 = pygame.draw.rect(screen, BLACK, [0, 85, 150, 10]) # plat 1 - x0/y85
+        platform8 = pygame.draw.rect(screen, BLACK, [200, 85, 675, 10]) # plat 1 - x200/y85
+        block3 = pygame.draw.rect(screen, BLACK, [550, 50, 200, 35]) # block - x400/y50
+        platform9 = pygame.draw.rect(screen, BLACK, [250, 130, 300, 10]) # plat 1 - x250/y130
+        block4 = pygame.draw.rect(screen, BLACK, [0, 85, 125, 55]) # block - x0/y85
+        platform10 = pygame.draw.rect(screen, BLACK, [650, 150, 450, 10]) # plat 1 - x650/y150
+        platform11 = pygame.draw.rect(screen, BLACK, [0, 180, 450, 10])
+        platform13 = pygame.draw.rect(screen, BLACK, [50, 265, 300, 10])
+        platform12 = pygame.draw.rect(screen, BLACK, [500, 180, 150, 10])
+        block5 = pygame.draw.rect(screen, BLACK, [850, 120, 250, 30])
+        platform14 = pygame.draw.rect(screen, BLACK, [665, 265, 450, 10])
+        platform15 = pygame.draw.rect(screen, BLACK, [800, 230, 220, 10])
+        platform16 = pygame.draw.rect(screen, BLACK, [675, 200, 100, 10])
+        block6 = pygame.draw.rect(screen, BLACK, [850, 275, 100, 25])
+        block7 = pygame.draw.rect(screen, BLACK, [450, 280, 125, 20])
+        block8 = pygame.draw.rect(screen, BLACK, [480, 240, 62, 20])
+
+        self.platforms = [platform1, platform2, block1,
+                          platform4, platform5, platform6, block2,
+                          platform8, platform7, platform9, platform10,
+                          platform11, platform12, block5, block3, block4,
+                          platform13, platform14, block6, block7, block8,
+                          platform15, platform16,
+                          pygame.draw.rect(screen, BLACK, [0, 40, 200, 10]) # plat 1 - x0/y40
+                          ]
 
         wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]) # side wall right
         wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]) # side wall left
-        self.walls = [wall1, wall4]
+        wall2 = pygame.draw.rect(screen, BLACK, [400, 0, 10, 40]) # wall - x400/y0
+        wall3 = pygame.draw.rect(screen, BLACK, [940, 40, 10, 20]) # wall - x940/y40
+        wall5 = pygame.draw.rect(screen, BLACK, [990, 40, 10, 40]) # wall - x990/y40
+        wall6 = pygame.draw.rect(screen, BLACK, [500, 140, 10, 40]) # candle stick 4
+        wall7 = pygame.draw.rect(screen, BLACK, [400, 104, 10, 20])
+        self.walls = [wall1, wall4, wall2, wall3, wall5, wall6, wall7]
 
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 50, 20, 20])
+        self.win_zones = [win1]
+
+        # guideline_x_100 = pygame.draw.line(screen, LIME_GREEN, [100,0], [100,600], 2)
+        # guideline_x_200 = pygame.draw.line(screen, LIME_GREEN, [200,0], [200,600], 2)
+        # guideline_x_300 = pygame.draw.line(screen, LIME_GREEN, [300,0], [300,600], 2)
+        # guideline_x_400 = pygame.draw.line(screen, LIME_GREEN, [400,0], [400,600], 2)
+        # guideline_x_500 = pygame.draw.line(screen, LIME_GREEN, [500,0], [500,600], 2)
+        # guideline_x_600 = pygame.draw.line(screen, LIME_GREEN, [600,0], [600,600], 2)
+        # guideline_x_700 = pygame.draw.line(screen, LIME_GREEN, [700,0], [700,600], 2)
+        # guideline_x_800 = pygame.draw.line(screen, LIME_GREEN, [800,0], [800,600], 2)
+        # guideline_x_900 = pygame.draw.line(screen, LIME_GREEN, [900,0], [900,600], 2)
+        # guideline_x_1000 = pygame.draw.line(screen, LIME_GREEN, [1000,0], [1000,600], 2)
+        # guideline_x_50 = pygame.draw.line(screen, LIME_GREEN, [50,0], [50,600], 2)
+        # guideline_x_150 = pygame.draw.line(screen, LIME_GREEN, [150,0], [150,600], 2)
+        # guideline_x_250 = pygame.draw.line(screen, LIME_GREEN, [250,0], [250,600], 2)
+        # guideline_x_350 = pygame.draw.line(screen, LIME_GREEN, [350,0], [350,600], 2)
+        # guideline_x_450 = pygame.draw.line(screen, LIME_GREEN, [450,0], [450,600], 2)
+        # guideline_x_550 = pygame.draw.line(screen, LIME_GREEN, [550,0], [550,600], 2)
+        # guideline_x_650 = pygame.draw.line(screen, LIME_GREEN, [650,0], [650,600], 2)
+        # guideline_x_750 = pygame.draw.line(screen, LIME_GREEN, [750,0], [750,600], 2)
+        # guideline_x_850 = pygame.draw.line(screen, LIME_GREEN, [850,0], [850,600], 2)
+        # guideline_x_950 = pygame.draw.line(screen, LIME_GREEN, [950,0], [950,600], 2)
+        # guideline_x_1050 = pygame.draw.line(screen, LIME_GREEN, [1050,0], [1050,600], 2)
+        # guideline_y_100 = pygame.draw.line(screen, LIME_GREEN, [0,100], [1100,100], 2)
+        # guideline_y_200 = pygame.draw.line(screen, LIME_GREEN, [0,200], [1100,200], 2)
+        # guideline_y_300 = pygame.draw.line(screen, LIME_GREEN, [0,300], [1100,300], 2)
+        # guideline_y_400 = pygame.draw.line(screen, LIME_GREEN, [0,400], [1100,400], 2)
+        # guideline_y_500 = pygame.draw.line(screen, LIME_GREEN, [0,500], [1100,500], 2)
+        # guideline_y_50 = pygame.draw.line(screen, LIME_GREEN, [0,50], [1100,50], 2)
+        # guideline_y_150 = pygame.draw.line(screen, LIME_GREEN, [0,150], [1100,150], 2)
+        # guideline_y_250 = pygame.draw.line(screen, LIME_GREEN, [0,250], [1100,250], 2)
+        # guideline_y_350 = pygame.draw.line(screen, LIME_GREEN, [0,350], [1100,350], 2)
+        # guideline_y_450 = pygame.draw.line(screen, LIME_GREEN, [0,450], [1100,450], 2)
+        # guideline_y_550 = pygame.draw.line(screen, LIME_GREEN, [0,550], [1100,550], 2)
 #####################################################################################
 ##############################   unorganized levels   ###############################
 #####################################################################################
@@ -503,7 +633,7 @@ class TutorialLevel24(LevelScene): # red floor
         self.walls = [wall1, wall2]
 
 
-class TutorialLevel5(LevelScene):
+class TutorialLevel5(LevelScene): #sanwich
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
         self.Tut7_text = dsnclass.Text("sandwich", (110, 400), 75, "impact", GREY, None)
@@ -656,3 +786,64 @@ class TutorialLevel7(LevelScene):
         wall2 = pygame.draw.rect(screen, BLACK,
                                  [1070, 510, 10, 288])  # win wall 2
         self.walls = [wall1, wall2]
+
+class HardLevel1(LevelScene):
+    def __init__(self, x_spawn, y_spawn, music_value):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        self.Tut1_text = dsnclass.Text("small steps", (210, 400), 75, "impact", GREY,
+                              None)
+        self.music = dsnclass.Music(music_value)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+    
+    def update(self):
+        LevelScene.update(self)
+#         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+#                 self.victory_time:
+#             self.change_scene(EasyLevel2(0, 300, 1))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+        screen.blit(self.Tut1_text.text_img, self.Tut1_text.text_rect) # draw text on screen
+    
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        platform1 = pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]) # floor
+        platform2 = pygame.draw.rect(screen, BLACK, [0, 0, 1100, 10]) # roof
+        platform3 = pygame.draw.rect(screen, BLACK, [700, 540, 150, 10]) # plat 1
+        platform4 = pygame.draw.rect(screen, BLACK, [510, 510, 150, 10]) # plat 2
+        platform5 = pygame.draw.rect(screen, BLACK, [320, 480, 150, 10]) # plat 3
+        platform6 = pygame.draw.rect(screen, BLACK, [130, 450, 150, 10]) # plat 4
+        platform11 = pygame.draw.rect(screen, BLACK, [0, 460, 150, 10]) # plat 4.5
+        platform7 = pygame.draw.rect(screen, BLACK, [320, 420, 150, 10]) # plat 5
+        platform8 = pygame.draw.rect(screen, BLACK, [510, 390, 150, 10]) # plat 6
+        platform9 = pygame.draw.rect(screen, BLACK, [700, 360, 150, 10]) # plat 7
+        platform10 = pygame.draw.rect(screen, BLACK, [900, 330, 100, 10]) # plat 8
+        platform12 = pygame.draw.rect(screen, BLACK, [1000, 340, 180, 10]) # plat 8.5
+        platform13 = pygame.draw.rect(screen, BLACK, [700, 300, 150, 10]) # plat 9
+        platform14 = pygame.draw.rect(screen, BLACK, [510, 270, 150, 10]) # plat 10
+        platform15 = pygame.draw.rect(screen, BLACK, [320, 240, 150, 10]) # plat 11
+        platform16 = pygame.draw.rect(screen, BLACK, [130, 210, 150, 10]) # plat 12
+        platform17 = pygame.draw.rect(screen, BLACK, [0, 220, 150, 10]) # plat 12.5
+        platform18 = pygame.draw.rect(screen, BLACK, [320, 180, 150, 10]) # plat 13
+        platform19 = pygame.draw.rect(screen, BLACK, [510, 150, 150, 10]) # plat 14
+        platform20 = pygame.draw.rect(screen, BLACK, [700, 120, 150, 10]) # plat 15
+        platform21 = pygame.draw.rect(screen, BLACK, [900, 90, 150, 10]) # plat 16
+
+        self.platforms = [platform1, platform2, platform3, platform4,
+                          platform5, platform6, platform7, platform8,
+                          platform9, platform10, platform11, platform12,
+                          platform13, platform14, platform15, platform16,
+                          platform17, platform18, platform19, platform20,
+                          platform21]
+
+        wall1 = pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]) # side wall right
+        wall4 = pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]) # side wall left
+        self.walls = [wall1, wall4]
+
+        win1 = pygame.draw.rect(screen, CYAN, [1070, 60, 20, 30])
+        self.win_zones = [win1]
