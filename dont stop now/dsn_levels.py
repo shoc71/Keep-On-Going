@@ -68,7 +68,7 @@ class LevelScene(dsnclass.Scene):
                 self.player.jump_boost = self.player.max_jump
                 self.player.jump_sound_1.play()
                 self.player.jumps += 1
-            if (every_key == pygame.K_SPACE or every_key == pygame.K_w) \
+            if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] \
                     and not self.player.alive:
                 self.player.alive = True
             if every_key == pygame.K_ESCAPE and not self.level_condition:
@@ -482,8 +482,6 @@ class EasyLevel1(LevelScene):   # candles
     def render_level(self, screen):
         LevelScene.render(self, screen)
 
-        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])]
-
         self.death_zones = [pygame.draw.rect(screen, LIGHT_RED, [125, 110, 10, 20]), # candle light 1
                             pygame.draw.rect(screen, LIGHT_RED, [425, 110, 10, 20]), # candle light 2
                             pygame.draw.rect(screen, LIGHT_RED, [725, 110, 10, 20]), # candle light 3
@@ -507,6 +505,8 @@ class EasyLevel1(LevelScene):   # candles
                       pygame.draw.rect(screen, BLACK, [725, 120, 10, 70]), # candle stick 3
                       pygame.draw.rect(screen, BLACK, [990, 120, 10, 40]), # candle stick 4]
                       ]
+        
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])]
 
 
 class EasyLevel2(LevelScene):  # block maze 5
@@ -536,8 +536,6 @@ class EasyLevel2(LevelScene):  # block maze 5
 
     def render_level(self, screen):
         LevelScene.render(self, screen)
-
-        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 50, 20, 20])]
 
         self.platforms = [pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]) , # floor
                           pygame.draw.rect(screen, BLACK, [0, 0, 1100, 10]),  # roof
@@ -591,6 +589,8 @@ class EasyLevel2(LevelScene):  # block maze 5
                                              [500, 140, 10, 40]),  # candle stick 4
                       pygame.draw.rect(screen, BLACK, [400, 104, 10, 20])
                       ]
+        
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 50, 20, 20])]
 
         # guideline_x_100 = pygame.draw.line(screen, LIME_GREEN, [100,0], [100,600], 2)
         # guideline_x_200 = pygame.draw.line(screen, LIME_GREEN, [200,0], [200,600], 2)
