@@ -1,6 +1,6 @@
-import random
 import pygame
 import dsn_levels as dsnlevel
+import dsn_class as dsnclass
 
 
 class Program:
@@ -15,6 +15,7 @@ class Program:
         """
         screen = pygame.display.set_mode([width, height])
         scene = current_scene
+        memory = dsnclass.Memory()
         while self.running:
             keys_pressed = []
             keys_held = pygame.key.get_pressed()
@@ -45,6 +46,6 @@ if __name__ == "__main__":
     pygame.mixer.init()
     fps = pygame.time.Clock()
     start_game = Program()
-    start_scene = dsnlevel.MenuScene(40, 460, 0)
+    start_scene = dsnlevel.MenuScene(40, 360, 0)
     start_game.run(1080, 576, start_scene)
     pygame.quit()
