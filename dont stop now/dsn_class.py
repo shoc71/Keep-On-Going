@@ -98,10 +98,10 @@ class SquareMe: #lil purple dude
         self.jumps = 0
         self.jump_ability = False
         self.enable_gravity = True
-        self.max_jump = 100
+        self.max_jump = 50
         self.jump_boost = -1 * (self.max_jump - 1)
         self.direction = "right"
-        self.max_gravity = 75
+        self.max_gravity = 95
         self.gravity_counter = self.max_gravity
 
         self.jump_sound_1 = pygame.mixer.Sound("jump_sfx.wav")
@@ -109,16 +109,16 @@ class SquareMe: #lil purple dude
 
     def move(self):
         if self.direction == "right":
-            self.xpos += 1
+            self.xpos += 2
         elif self.direction == "left":
-            self.xpos -= 1
+            self.xpos -= 2
 
         self.gravity()
         self.jump()
 
     def jump(self):
         if self.jump_ability and 0 <= self.jump_boost:
-            self.ypos -= (self.jump_boost ** 2) * 0.0001
+            self.ypos -= (self.jump_boost ** 2) * 0.001
             self.jump_boost -= 1
         else:
             self.jump_ability = False
@@ -140,11 +140,11 @@ class SquareMe: #lil purple dude
             collide_width = object_list[collide_id].width
             collide_height = object_list[collide_id].height
 
-            if collide_x - self.width - collide_width < self.xpos and \
+            if collide_x + 2 < self.xpos and \
                     self.xpos + self.width < \
-                    collide_x + collide_width + self.width and \
-                    collide_y < self.ypos + self.height:
-                # improved gravity: self.ypos < collide_y
+                    collide_x + collide_width + self.width - 2 and \
+                    self.ypos - 10 < collide_y:
+                # collide_y < self.ypos + self.height
                 self.enable_gravity = False
                 self.jump_ability = True
                 self.gravity_counter = self.max_gravity
@@ -168,25 +168,25 @@ class SquareMe: #lil purple dude
             collide_height = object_list[collide_id].height
 
             if collide_id != -1 and \
-                    (collide_y + 2 <= self.ypos + self.height - 1) and \
-                    (self.ypos <= collide_y + collide_height + 2) and \
+                    (collide_y <= self.ypos + self.height) and \
+                    (self.ypos <= collide_y + collide_height) and \
                     self.direction == "right" and \
-                    self.xpos + self.width <= collide_x + 1:
+                    self.xpos + self.width <= collide_x + 2:
                 self.direction = "left"
 
             if collide_id != -1 and \
-                    (collide_y + 2 <= self.ypos + self.height - 1) and \
-                    (self.ypos <= collide_y + collide_height + 2) and \
+                    (collide_y <= self.ypos + self.height) and \
+                    (self.ypos <= collide_y + collide_height) and \
                     self.direction == "left" and \
-                    collide_x + collide_width - 2 < self.xpos:
+                    collide_x + collide_width - 3 < self.xpos:
                 self.direction = "right"
 
     def gravity(self):
         if self.enable_gravity and not self.jump_ability:
-            self.ypos += (self.gravity_counter ** 2) * 0.0000075
+            self.ypos += (self.gravity_counter ** 2) * 0.000015
 
-        if self.gravity_counter < 1000:
-            self.gravity_counter += 1.5
+        if self.gravity_counter < 1100:
+            self.gravity_counter += 2.5
 
     def death(self, death_list: [pygame.Rect]):
         collide_id = self.square_render.collidelist(death_list)
@@ -230,5 +230,3 @@ class Scene:
         Set the current scene to nothing and is used to stop the game.
         """
         self.change_scene(None)
-
-        
