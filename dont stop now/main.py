@@ -37,7 +37,7 @@ class Program:
                 scene.render(screen)
                 scene = scene.this_scene
 
-            fps.tick(500)
+            fps.tick(240)
             pygame.display.update()
 
 
