@@ -1,11 +1,15 @@
 v.0.1.4 - v.0.1.6
+
+--- Rendering
+- fps changed form 500 to 240
+
 --- Memory
 - Main was changed to have memory and record data
 - Added function to the Memory class in main and in the Levels and level_id to Scene. Levels with id lesser than -1 are invalid levels (such as filler, or options/credits in the future)
 - the data will only be recorded for levels once it has been beaten
 
 ---- Level Making
-- mouse level added
+- mouse, candles, and block maze 5 levels were created and added
 - Level ID is also used to track the player's level progress by adding the most recently played game to it's dictionary 
 
 --- Menu Scene
@@ -14,8 +18,14 @@ v.0.1.4 - v.0.1.6
 - altered main to complement these changes, allowing the game to be closed (not scene.run_scene) with a button press (in the levels) while the game is still running (self.running)
 - MenuScene now has a jump counter, but doesn't have a death counter (as you cannot die in the menu, yet)
 
+--- Square Me (class)
+- held jumps glitch was fixed (player always started off jumping which was not intended)
+- SquareMe (square player) class has an additional jumps statistic to complement the memory class. This jumps variable is apart of the dsn_levels bug fix in holding jumps.
+- Added win boxes after walls/platforms to make it visible, as gaps weren't left for them to be rendered. Key up (arrow) was added as a possible key to start the level
+
 ----- Collision Update
 - collision of bouncing bewteen boxes been resolved through both collision logic in code and replacing them with either blocks and removing the walls
+- frame rate changed for collision logic to be consistent
 
 ---- Additional informaiton
 - filler options have been added for the menuscene as settings and level-select hasn't been implented into the code yet
