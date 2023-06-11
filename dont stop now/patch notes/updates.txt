@@ -1,3 +1,28 @@
+v.0.1.4 - v.0.1.6
+--- Memory
+- Main was changed to have memory and record data
+- Added function to the Memory class in main and in the Levels and level_id to Scene. Levels with id lesser than -1 are invalid levels (such as filler, or options/credits in the future)
+- the data will only be recorded for levels once it has been beaten
+
+---- Level Making
+- mouse level added
+- Level ID is also used to track the player's level progress by adding the most recently played game to it's dictionary 
+
+--- Menu Scene
+- menu scene has been updated with optional choices that the player can choose
+- Changed pause + quit (with q) to set self.run_scene to False instead of closing game to avoid crashing
+- altered main to complement these changes, allowing the game to be closed (not scene.run_scene) with a button press (in the levels) while the game is still running (self.running)
+- MenuScene now has a jump counter, but doesn't have a death counter (as you cannot die in the menu, yet)
+
+----- Collision Update
+- collision of bouncing bewteen boxes been resolved through both collision logic in code and replacing them with either blocks and removing the walls
+
+---- Additional informaiton
+- filler options have been added for the menuscene as settings and level-select hasn't been implented into the code yet
+- Both are still inefficient processes as the menu is always recording and updating, and the levels have a burst in recording data (during the level transition). There was an additional bug fix where the player would sink into the platform for each bounce it did. This update is in addition to dsn_class and dsn_level v.0.1.6.
+
+==============
+
 v.0.1.3
 ---- Levels
 - all tutorials levels have been added and 1 easy level has been added
