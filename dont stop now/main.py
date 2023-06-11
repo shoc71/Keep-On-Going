@@ -7,6 +7,7 @@ class Program:
 
     def __init__(self) -> None:
         self.running = True
+        self.memory = dsnclass.Memory()
 
     def run(self, width, height, current_scene):
         """
@@ -15,27 +16,33 @@ class Program:
         """
         screen = pygame.display.set_mode([width, height])
         scene = current_scene
-        memory = dsnclass.Memory()
         while self.running:
             keys_pressed = []
             keys_held = pygame.key.get_pressed()
             for event in pygame.event.get():
+                # Quit condition if you press the X on the top right
                 if event.type == pygame.QUIT:
-                    # Quit condition if you press the X on the top right
                     self.running = False
                     scene.run_scene = False
                 if event.type == pygame.KEYDOWN:
                     keys_pressed.append(event.key)
 
-            if not scene.run_scene:
-                # Stop the game using other conditions
-                scene.close_game()
+            # Stop the game using other conditions
+            if self.running and not scene.run_scene:
                 self.running = False
+                scene.close_game()
             else:
                 scene.input(keys_pressed, keys_held)
                 scene.update()
                 scene.render(screen)
                 scene = scene.this_scene
+
+                # Check for a valid level, then if level done, record data
+                if -1 < scene.level_id and \
+                        scene.victory_counter == len(scene.victory_text):
+                    self.memory.update_mem(scene.level_id, scene.deaths,
+                                           scene.player.jumps)
+                    #print(self.memory.level_progress, self.memory.level_jumps, self.memory.level_deaths)
 
             fps.tick(240)
             pygame.display.update()
