@@ -75,6 +75,31 @@ class Memory:
         self.level_deaths = {}
         self.level_jumps = {}
 
+        self.level_progress = []    # collection of level_id's
+
+    def update_mem(self, level_id, death_count, jump_count):
+        self.total_deaths += death_count
+        self.total_jumps += jump_count
+
+        if level_id not in self.level_progress:
+            self.level_progress += [level_id]
+
+        if level_id in self.level_deaths and \
+                death_count < self.level_deaths[level_id]:
+            self.level_deaths[level_id] += death_count
+            # add to current amount of deaths for that level
+        else:
+            self.level_deaths[level_id] = death_count
+            # first time completing that level, make a death count
+
+        if level_id in self.level_jumps and \
+                jump_count < self.level_jumps[level_id]:
+            self.level_jumps[level_id] += jump_count
+            # add to current amount of jumps for that level
+        else:
+            self.level_jumps[level_id] = jump_count
+            # first time completing that level, make a death count
+
 
 class SquareMe: #lil purple dude
 
@@ -140,21 +165,19 @@ class SquareMe: #lil purple dude
             collide_width = object_list[collide_id].width
             collide_height = object_list[collide_id].height
 
-            if collide_x + 2 < self.xpos and \
+            if collide_x < self.xpos and \
                     self.xpos + self.width < \
-                    collide_x + collide_width + self.width - 2 and \
-                    self.ypos - 10 < collide_y:
-                # collide_y < self.ypos + self.height
+                    collide_x + collide_width + self.width - 2:
                 self.enable_gravity = False
                 self.jump_ability = True
                 self.gravity_counter = self.max_gravity
 
             # Bottom Platform Collision
             # Todo: separate into own function later: collision_bottom
-            if collide_x - self.width - collide_width < self.xpos and \
+            if collide_x - collide_width < self.xpos + 2 and \
                     self.xpos + self.width < \
-                    collide_x + collide_width + self.width and \
-                    collide_y + 5 < self.ypos < collide_y + collide_height:
+                    collide_x + collide_width + 2 and \
+                    collide_y + collide_height - self.height + 3 < self.ypos:
                 self.jump_ability = False
                 self.jump_boost = -1
                 self.enable_gravity = True
@@ -168,25 +191,25 @@ class SquareMe: #lil purple dude
             collide_height = object_list[collide_id].height
 
             if collide_id != -1 and \
-                    (collide_y <= self.ypos + self.height) and \
-                    (self.ypos <= collide_y + collide_height) and \
+                    (collide_y < self.ypos + self.height - 1.5) and \
+                    (self.ypos < collide_y + collide_height - 1.5) and \
                     self.direction == "right" and \
                     self.xpos + self.width <= collide_x + 2:
                 self.direction = "left"
 
             if collide_id != -1 and \
-                    (collide_y <= self.ypos + self.height) and \
-                    (self.ypos <= collide_y + collide_height) and \
+                    (collide_y < self.ypos + self.height - 1.5) and \
+                    (self.ypos < collide_y + collide_height - 1.5) and \
                     self.direction == "left" and \
-                    collide_x + collide_width - 3 < self.xpos:
+                    collide_x + collide_width - 2 <= self.xpos:
                 self.direction = "right"
 
     def gravity(self):
         if self.enable_gravity and not self.jump_ability:
-            self.ypos += (self.gravity_counter ** 2) * 0.000015
+            self.ypos += (self.gravity_counter ** 2) * 0.00004
 
         if self.gravity_counter < 1100:
-            self.gravity_counter += 2.5
+            self.gravity_counter += 1.5
 
     def death(self, death_list: [pygame.Rect]):
         collide_id = self.square_render.collidelist(death_list)
@@ -206,6 +229,7 @@ class Scene:
         """
         self.this_scene = self
         self.run_scene = True
+        self.level_id = -1
 
     def input(self, pressed, held):
         # this will be overridden in subclasses
