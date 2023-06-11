@@ -2,6 +2,7 @@ v.0.1.4 - v.0.1.6
 
 --- Rendering
 - fps changed form 500 to 240
+- self.draw list was added for level effects to make the game more visually interesting
 
 --- Memory
 - Main was changed to have memory and record data
