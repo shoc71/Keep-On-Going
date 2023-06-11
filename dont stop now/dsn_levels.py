@@ -74,7 +74,7 @@ class LevelScene(dsnclass.Scene):
             if every_key == pygame.K_ESCAPE and not self.level_condition:
                 self.player.freeze = not self.player.freeze
             if every_key == pygame.K_q and self.player.freeze:
-                self.close_game()
+                self.run_scene = False
             if self.player.freeze and every_key == pygame.K_r:
                 self.change_scene(MenuScene(40, 360, 0))
 
@@ -145,6 +145,7 @@ class LevelScene(dsnclass.Scene):
 class MenuScene(LevelScene):
     def __init__(self, xspawn, yspawn, music_value):
         LevelScene.__init__(self, xspawn, yspawn)
+        self.level_id = 0
         self.option_count = 0
         self.options = [TutorialLevel1(12, 320, 1), Filler(), Filler(), Filler()]
         self.mid_jump = False
@@ -194,6 +195,7 @@ class MenuScene(LevelScene):
         the character on the menu"""
         for every_key in pressed:
             if every_key in [pygame.K_SPACE, pygame.K_w]:
+                self.victory_counter = len(self.victory_text)
                 self.change_scene(self.options[self.option_count])
             if every_key is pygame.K_d:
                 self.option_count += 1
@@ -207,7 +209,9 @@ class MenuScene(LevelScene):
     def update(self):
         LevelScene.update(self)
         self.player.alive = True
+        self.victory_counter = len(self.victory_text)
         if (random.randint(1, 2500) <= 10) and not self.player.enable_gravity:
+            self.player.jumps += 1
             self.player.jump_ability = True
             self.player.jump_boost = self.player.max_jump
 
@@ -254,6 +258,7 @@ class MenuScene(LevelScene):
 class Filler(dsnclass.Scene):
     def __init__(self):
         dsnclass.Scene.__init__(self)
+        self.level_id = -1
         self.filler_text = dsnclass.Text("THERE'S NOTHING HERE, PRESS R TO GO BACK",
                           (540, 213), 50, "impact", DARK_RED, None)
 
@@ -291,6 +296,7 @@ class LevelSelect(dsnclass.Scene):
 class TutorialLevel1(LevelScene):  # Hallway
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 1
         self.Tut6_text = dsnclass.Text("Hallway", (600, 400), 45, "impact",
                                        GREY,
                                        None)
@@ -330,6 +336,7 @@ class TutorialLevel1(LevelScene):  # Hallway
 class TutorialLevel2(LevelScene):  # DropGuide to Solution
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 2
         self.Tut6_text = dsnclass.Text("Guide to Solution", (600, 400), 45,
                                        "impact", GREY,
                                        None)
@@ -370,6 +377,7 @@ class TutorialLevel2(LevelScene):  # DropGuide to Solution
 class TutorialLevel3(LevelScene):  # jump over box
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 3
         self.Tut6_text = dsnclass.Text("Hit Space/up/w to jump", (600, 400), 45,
                                        "impact", GREY,
                                        None)
@@ -403,8 +411,6 @@ class TutorialLevel3(LevelScene):  # jump over box
                           ]
 
         self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 278]),
-                      pygame.draw.rect(screen, BLACK, [350, 290, 10, 30]),
-                      pygame.draw.rect(screen, BLACK, [640, 290, 10, 30]),
                       pygame.draw.rect(screen, BLACK, [0, 0, 10, 320])
                       ]
 
@@ -412,6 +418,7 @@ class TutorialLevel3(LevelScene):  # jump over box
 class TutorialLevel4(LevelScene):  # mind the gap
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 4
         self.Tut6_text = dsnclass.Text("Mind the Gap", (600, 400), 45, "impact",
                                        GREY,
                                        None)
@@ -459,6 +466,7 @@ class TutorialLevel4(LevelScene):  # mind the gap
 class EasyLevel1(LevelScene):   # candles
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 5
         self.Tut1_text = dsnclass.Text("candles", (210, 400), 75, "impact",
                                        GREY,
                                        None)
@@ -505,13 +513,14 @@ class EasyLevel1(LevelScene):   # candles
                       pygame.draw.rect(screen, BLACK, [725, 120, 10, 70]), # candle stick 3
                       pygame.draw.rect(screen, BLACK, [990, 120, 10, 40]), # candle stick 4]
                       ]
-        
+
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])]
 
 
 class EasyLevel2(LevelScene):  # block maze 5
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 6
         self.Tut1_text = dsnclass.Text("block maze 5", (210, 400), 75, "impact",
                                        GREY,
                                        None)
@@ -589,7 +598,7 @@ class EasyLevel2(LevelScene):  # block maze 5
                                              [500, 140, 10, 40]),  # candle stick 4
                       pygame.draw.rect(screen, BLACK, [400, 104, 10, 20])
                       ]
-        
+
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 50, 20, 20])]
 
         # guideline_x_100 = pygame.draw.line(screen, LIME_GREEN, [100,0], [100,600], 2)
