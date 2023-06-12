@@ -85,7 +85,7 @@ class LevelScene(dsnclass.Scene):
         if self.player.alive and not self.player.freeze and \
                 not self.level_condition:
             self.deaths += self.player.death(self.death_zones)
-            self.player.collision_plat(self.platforms)
+            self.player.collision_plat(self.platforms + self.walls)
             self.player.collision_wall(self.platforms + self.walls)
             self.player.move()
         if not self.player.alive and not self.player.freeze and \
@@ -210,7 +210,7 @@ class MenuScene(LevelScene):
         LevelScene.update(self)
         self.player.alive = True
         self.victory_counter = len(self.victory_text)
-        if (random.randint(1, 2500) <= 10) and not self.player.enable_gravity:
+        if (random.randint(1, 2500) <= 15) and not self.player.enable_gravity:
             self.player.jumps += 1
             self.player.jump_ability = True
             self.player.jump_boost = self.player.max_jump
@@ -479,7 +479,7 @@ class EasyLevel1(LevelScene):   # candles
         LevelScene.update(self)
         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                 self.victory_time:
-            self.change_scene(EasyLevel2(12, 12, 1))
+            self.change_scene(EasyLevel2(132, 282, 1))
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -516,11 +516,74 @@ class EasyLevel1(LevelScene):   # candles
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])]
 
-
-class EasyLevel2(LevelScene):  # block maze 5
+class EasyLevel2(LevelScene):   # mouse
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
+        self.Tut1_text = dsnclass.Text("mouse", (120, 400), 75, "impact",
+                                       GREY,
+                                       None)
         self.level_id = 6
+        self.music = dsnclass.Music(music_value)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(EasyLevel3(12, 12, 1))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+        screen.blit(self.Tut1_text.text_img, self.Tut1_text.text_rect) # draw text on screen
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        self.platforms = [pygame.draw.rect(screen, BLACK, [0, 300, 1100, 277]), # floor
+                          pygame.draw.rect(screen, BLACK, [0, 0, 1100, 10]), # roof
+                          pygame.draw.rect(screen, BLACK, [350, 130, 500, 200]), # mouse body
+                          pygame.draw.rect(screen, YELLOW, [0, 200, 100, 100]), # cheese
+                          pygame.draw.rect(screen, BLACK, [230, 270, 120, 30]), # mouse arm
+                          pygame.draw.rect(screen, BLACK, [120, 235, 100, 10]), # platform above arm
+                          pygame.draw.rect(screen, LIGHT_PINK, [320, 180, 30, 30]), # mouse nose
+                          pygame.draw.rect(screen, BLACK, [140, 160, 100, 10]), # platform above above the cheese
+                          pygame.draw.rect(screen, BLACK, [450, 100, 50, 30]), # mouse ear
+                          pygame.draw.rect(screen, LIGHT_PINK, [850, 240, 300, 25]) # mouse tail
+                          ]
+
+        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]), # side wall right
+                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]), # side wall left
+                      ]
+        
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])] # win condition
+
+        self.draw = [pygame.draw.rect(screen, WHITE, [385, 165, 20, 20]), # mouse eye
+                     pygame.draw.rect(screen, LIGHT_PINK, [260, 270, 90, 30]), # mouse arm detail
+                     pygame.draw.rect(screen, LIGHT_PINK, [460, 110, 25, 20]), # mouse ear detail
+                     pygame.draw.rect(screen, BLACK, [30, 210, 15, 20]), # cheese black hole - left hole
+                     pygame.draw.rect(screen, BLACK, [15, 270, 20, 20]), # cheese black hole - left square
+                     pygame.draw.rect(screen, BLACK, [50, 240, 15, 20]), # cheese black hole - middle hole
+                     pygame.draw.rect(screen, BLACK, [70, 270, 15, 20]), # cheese black hole - big left
+                     pygame.draw.line(screen, WHITE, [360, 200], [450, 190], 5), # mouse whisker #1
+                     pygame.draw.line(screen, WHITE, [360, 210], [450, 215], 5), # mouse whisker #2
+                     pygame.draw.line(screen, WHITE, [360, 220], [450, 245], 5), # mouse whisker #3
+                     pygame.draw.rect(screen, BLACK, [870, 240, 10, 25]), # mouse tail detail #1
+                     pygame.draw.rect(screen, BLACK, [900, 240, 10, 25]), # mouse tail detail #2
+                     pygame.draw.rect(screen, BLACK, [930, 240, 10, 25]), # mouse tail detail #3
+                     pygame.draw.rect(screen, BLACK, [960, 240, 10, 25]), # mouse tail detail #4
+                     pygame.draw.rect(screen, BLACK, [990, 240, 10, 25]), # mouse tail detail #5
+                     pygame.draw.rect(screen, BLACK, [1020, 240, 10, 25]), # mouse tail detail #6
+                     pygame.draw.rect(screen, BLACK, [1050, 240, 10, 25]), # mouse tail detail #7
+                     ]
+
+class EasyLevel3(LevelScene):  # block maze 5
+    def __init__(self, x_spawn, y_spawn, music_value):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 7
         self.Tut1_text = dsnclass.Text("block maze 5", (210, 400), 75, "impact",
                                        GREY,
                                        None)
