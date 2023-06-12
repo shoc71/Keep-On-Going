@@ -138,6 +138,8 @@ class SquareMe: #lil purple dude
         elif self.direction == "left":
             self.xpos -= 2
 
+        self.xpos = round(self.xpos)
+
         self.gravity()
         self.jump()
 
@@ -164,9 +166,8 @@ class SquareMe: #lil purple dude
             collide_y = object_list[collide_id].y
             collide_width = object_list[collide_id].width
             collide_height = object_list[collide_id].height
-
-            if collide_x < self.xpos and \
-                    self.xpos + self.width < \
+            # todo: bigggg bug fixes
+            if collide_x + 2 < self.xpos + self.width < \
                     collide_x + collide_width + self.width - 2:
                 self.enable_gravity = False
                 self.jump_ability = True
@@ -177,7 +178,8 @@ class SquareMe: #lil purple dude
             if collide_x - collide_width < self.xpos + 2 and \
                     self.xpos + self.width < \
                     collide_x + collide_width + 2 and \
-                    collide_y + collide_height - self.height + 3 < self.ypos:
+                    collide_y + collide_height <= self.ypos + 2:
+                self.ypos += 0.5
                 self.jump_ability = False
                 self.jump_boost = -1
                 self.enable_gravity = True
@@ -209,7 +211,9 @@ class SquareMe: #lil purple dude
             self.ypos += (self.gravity_counter ** 2) * 0.00004
 
         if self.gravity_counter < 1100:
-            self.gravity_counter += 1.5
+            self.gravity_counter += 2
+
+        self.ypos = round(self.ypos)
 
     def death(self, death_list: [pygame.Rect]):
         collide_id = self.square_render.collidelist(death_list)
