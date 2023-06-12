@@ -4,6 +4,7 @@
 
 (Unique Python game made by 2 indie developers)
 
+Credits;
 main coder - @slysnivy
 bug testing - @slysnivy
 level designer - @shoc71
