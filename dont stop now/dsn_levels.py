@@ -85,7 +85,7 @@ class LevelScene(dsnclass.Scene):
         if self.player.alive and not self.player.freeze and \
                 not self.level_condition:
             self.deaths += self.player.death(self.death_zones)
-            self.player.collision_plat(self.platforms)
+            self.player.collision_plat(self.platforms + self.walls)
             self.player.collision_wall(self.platforms + self.walls)
             self.player.move()
         if not self.player.alive and not self.player.freeze and \
@@ -210,7 +210,7 @@ class MenuScene(LevelScene):
         LevelScene.update(self)
         self.player.alive = True
         self.victory_counter = len(self.victory_text)
-        if (random.randint(1, 2500) <= 10) and not self.player.enable_gravity:
+        if (random.randint(1, 2500) <= 15) and not self.player.enable_gravity:
             self.player.jumps += 1
             self.player.jump_ability = True
             self.player.jump_boost = self.player.max_jump
