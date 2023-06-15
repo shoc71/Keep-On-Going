@@ -1,14 +1,5 @@
 import pygame
 
-DARK_RED = (139, 0, 0)
-YELLOW = (235, 195, 65)
-BLACK = (0, 0, 0)
-CYAN = (47, 237, 237)
-RED = (194, 57, 33)
-WHITE = (255, 255, 255)
-GREY = (125, 125, 125)
-
-
 class Text:
     def __init__(self, text, text_pos, font_size, font_type,
                  font_color, text_other):
@@ -40,7 +31,7 @@ class Music:
     def __init__(self, set_track):
         self.music_tracks = [
             "main-menu.wav",
-            "level-loop1_v2.wav",
+            "level-loop1.wav",
             "work_around_lead_edited.wav",
             "credits.wav"
         ]
