@@ -53,7 +53,7 @@ class LevelScene(dsnclass.Scene):
     def input(self, pressed, held):
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
                 and not self.player.enable_gravity and self.player.alive and \
-                0 < self.player.jumps:
+                0 < self.player.jumps and not self.player.freeze:
             self.player.jump_ability = True
             self.player.jump_boost = self.player.max_jump
             self.player.jump_sound_1.play()
@@ -64,7 +64,8 @@ class LevelScene(dsnclass.Scene):
             pause menu now
             """
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
-                    self.player.enable_gravity and self.player.alive:
+                    self.player.enable_gravity and self.player.alive and not \
+                    self.player.freeze:
                 self.player.jump_ability = True
                 self.player.jump_boost = self.player.max_jump
                 self.player.jump_sound_1.play()
@@ -150,7 +151,7 @@ class MenuScene(LevelScene):
         self.option_count = 0
         #start_spawn
         current_spawn = TutorialLevel1(12, 320, 1) # Added this in so it's less painful to find spawn
-        current_spawn = EasyLevel4(12, 552, 1)
+        current_spawn = EasyLevel4(37, 489, 1)
         self.options = [current_spawn, Filler(), Filler(), Filler()]
         #SPEANWNSS
         '''
@@ -611,7 +612,7 @@ class EasyLevel3(LevelScene):  # block maze 5
 
         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                 self.victory_time:
-            self.change_scene(EasyLevel4(12, 12, 1))
+            self.change_scene(EasyLevel4(37, 489, 1))
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -679,11 +680,11 @@ class EasyLevel3(LevelScene):  # block maze 5
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 50, 20, 20])]
 
 
-class EasyLevel4(LevelScene):  # block maze 5
+class EasyLevel4(LevelScene):  # letters
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
         self.level_id = 8
-        self.Tut1_text = dsnclass.Text("incomplete lvl. letter", (410, 400), 60, "impact",
+        self.Tut1_text = dsnclass.Text("letters", (660, 212), 60, "impact",
                                        GREY,
                                        None)
         self.music = dsnclass.Music(music_value)
@@ -708,54 +709,93 @@ class EasyLevel4(LevelScene):  # block maze 5
     def render_level(self, screen):
         LevelScene.render(self, screen)
 
-        self.platforms = [pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]) , # floor
-                          pygame.draw.rect(screen, BLACK, [0, 0, 1100, 10]),  # roof
-                          pygame.draw.rect(screen, BLACK, [150, 536, 200, 40]), # bottom A
-                        #   pygame.draw.rect(screen, BLACK, [500, 546, 150, 30]), # bottom G1
-                          pygame.draw.rect(screen, BLACK, [500, 526, 50, 50]), # bottom G jump
-                          ]
+        self.platforms =  [
+            pygame.draw.rect(screen, BLACK, [0, 547, 1080, 29]), # roof
+            pygame.draw.rect(screen, BLACK, [0, 0, 1078, 29]), # floor
+            pygame.draw.rect(screen, BLACK, [0, 0, 26, 575]), # left wall
+            pygame.draw.rect(screen, BLACK, [168, 487, 40, 64]), # bottom A stand 1
+            pygame.draw.rect(screen, BLACK, [0, 512, 178, 41]), # right wall
+            pygame.draw.rect(screen, BLACK, [325, 487, 40, 64]), # bottom A stand 2
+            pygame.draw.rect(screen, BLACK, [168, 477, 197, 16]), # bottom A platform
+            pygame.draw.rect(screen, BLACK, [547, 248, 59, 116]), # bottom G stand pt.3
+            pygame.draw.rect(screen, BLACK, [714, 418, 87, 22]), # botttom G hook
+            pygame.draw.rect(screen, BLACK, [626, 455, 152, 23]), # bottom G hanging thing
+            pygame.draw.rect(screen, BLACK, [736, 428, 42, 80]), # botoom G hook stand
+            pygame.draw.rect(screen, BLACK, [566, 503, 212, 44]), # bottom G base 
+            pygame.draw.rect(screen, BLACK, [168, 338, 41, 91]), # left side A top
+            pygame.draw.rect(screen, BLACK, [326, 338, 41, 91]), # right side A top
+            pygame.draw.rect(screen, BLACK, [168, 413, 197, 16]), # top A bottom part
+            pygame.draw.rect(screen, BLACK, [851, 378, 206, 38]), # below e platform
+            pygame.draw.rect(screen, BLACK, [822, 212, 38, 136]), # e stand
+            pygame.draw.rect(screen, BLACK, [550, 478, 55, 91]), # bottom G stand pt.1
+            pygame.draw.rect(screen, BLACK, [547, 314, 59, 116]), # bottom G stand pt.2
+            pygame.draw.rect(screen, BLACK, [936, 309, 125, 15]), # bottom E teeth jump
+            pygame.draw.rect(screen, BLACK, [899, 238, 160, 14]), # top E teeth jump
+            pygame.draw.rect(screen, BLACK, [1057, 0, 26, 575]), # second right wall
+            pygame.draw.rect(screen, BLACK, [821, 198, 200, 18]), # top E
+            pygame.draw.rect(screen, BLACK, [717, 236, 61, 73]), # bottom G jumping to hook block
+            pygame.draw.rect(screen, BLACK, [388, 309, 142, 98]), # platform inbewteen A and G
+            pygame.draw.rect(screen, BLACK, [547, 182, 231, 70]), # bottom G top 
+            pygame.draw.rect(screen, BLACK, [421, 139, 82, 23]), # top g hook
+            pygame.draw.rect(screen, BLACK, [821, 340, 199, 21]), # bottom E
+            pygame.draw.rect(screen, BLACK, [821, 272, 199, 21]), # middle E
+            pygame.draw.rect(screen, BLACK, [168, 287, 199, 91]), # top part of A
+            pygame.draw.rect(screen, BLACK, [443, 158, 28, 47]), # top G hook stand
+            pygame.draw.rect(screen, BLACK, [201, 198, 270, 37]), # top down G block
+            pygame.draw.rect(screen, BLACK, [201, 17, 43, 126]), # top g hieght
+            pygame.draw.rect(screen, BLACK, [520, 108, 49, 23]), # left side big O
+            pygame.draw.rect(screen, BLACK, [775, 108, 49, 23]), # right side big O
+            pygame.draw.rect(screen, BLACK, [520, 128, 304, 23]), # big O bottom
+            pygame.draw.rect(screen, BLACK, [520, 8, 304, 57]), # top big O
+            pygame.draw.rect(screen, BLACK, [12, 225, 54, 15]), # JUMPINNG O TO G TO O
+            pygame.draw.rect(screen, LIGHT_RED, [257, 311, 14, 96]), # eye of A
+            pygame.draw.rect(screen, BLACK, [866, 97, 21, 77]), # bottom F
+            pygame.draw.rect(screen, BLACK, [882, 121, 47, 21]), # F hieght
+            pygame.draw.rect(screen, BLACK, [866, 90, 192, 21]), # top F
+            pygame.draw.rect(screen, BLACK, [444, 512, 42, 38]), # SUPER ANNOYING BLOCK - dont remove
+            pygame.draw.rect(screen, BLACK, [67, 254, 111, 12]), # below O platform
+            pygame.draw.rect(screen, BLACK, [166, 192, 14, 35]), #right side O
+            pygame.draw.rect(screen, BLACK, [111, 194, 15, 32]), # left side O
+            pygame.draw.rect(screen, BLACK, [111, 218, 68, 10]), # bottom O
+            pygame.draw.rect(screen, BLACK, [111, 189, 69, 12]), # top side O
+            pygame.draw.rect(screen, BLACK, [201, 174, 42, 50]), # top G enterance
+            pygame.draw.rect(screen, BLACK, [295, 170, 175, 15])
+        ]
 
-        self.walls = [pygame.draw.rect(screen, BLACK,
-                                 [1070, 0, 10, 580]),  # side wall right
-                      pygame.draw.rect(screen, BLACK,
-                                             [0, 0, 10, 580]),  # side wall left
-                    #   pygame.draw.rect(screen, EDIT_DARK_GREEN, [645, 496, 5, 50]) # bottom G wall
-                      ]
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [1057, 55, 27, 35])]
 
-        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 50, 20, 20])]
-
-        guideline_x_100 = pygame.draw.line(screen, LIME_GREEN, [100,0], [100,600], 2)
-        guideline_x_200 = pygame.draw.line(screen, LIME_GREEN, [200,0], [200,600], 2)
-        guideline_x_300 = pygame.draw.line(screen, LIME_GREEN, [300,0], [300,600], 2)
-        guideline_x_400 = pygame.draw.line(screen, LIME_GREEN, [400,0], [400,600], 2)
-        guideline_x_500 = pygame.draw.line(screen, LIME_GREEN, [500,0], [500,600], 2)
-        guideline_x_600 = pygame.draw.line(screen, LIME_GREEN, [600,0], [600,600], 2)
-        guideline_x_700 = pygame.draw.line(screen, LIME_GREEN, [700,0], [700,600], 2)
-        guideline_x_800 = pygame.draw.line(screen, LIME_GREEN, [800,0], [800,600], 2)
-        guideline_x_900 = pygame.draw.line(screen, LIME_GREEN, [900,0], [900,600], 2)
-        guideline_x_1000 = pygame.draw.line(screen, LIME_GREEN, [1000,0], [1000,600], 2)
-        guideline_x_50 = pygame.draw.line(screen, LIME_GREEN, [50,0], [50,600], 2)
-        guideline_x_150 = pygame.draw.line(screen, LIME_GREEN, [150,0], [150,600], 2)
-        guideline_x_250 = pygame.draw.line(screen, LIME_GREEN, [250,0], [250,600], 2)
-        guideline_x_350 = pygame.draw.line(screen, LIME_GREEN, [350,0], [350,600], 2)
-        guideline_x_450 = pygame.draw.line(screen, LIME_GREEN, [450,0], [450,600], 2)
-        guideline_x_550 = pygame.draw.line(screen, LIME_GREEN, [550,0], [550,600], 2)
-        guideline_x_650 = pygame.draw.line(screen, LIME_GREEN, [650,0], [650,600], 2)
-        guideline_x_750 = pygame.draw.line(screen, LIME_GREEN, [750,0], [750,600], 2)
-        guideline_x_850 = pygame.draw.line(screen, LIME_GREEN, [850,0], [850,600], 2)
-        guideline_x_950 = pygame.draw.line(screen, LIME_GREEN, [950,0], [950,600], 2)
-        guideline_x_1050 = pygame.draw.line(screen, LIME_GREEN, [1050,0], [1050,600], 2)
-        guideline_y_100 = pygame.draw.line(screen, LIME_GREEN, [0,100], [1100,100], 2)
-        guideline_y_200 = pygame.draw.line(screen, LIME_GREEN, [0,200], [1100,200], 2)
-        guideline_y_300 = pygame.draw.line(screen, LIME_GREEN, [0,300], [1100,300], 2)
-        guideline_y_400 = pygame.draw.line(screen, LIME_GREEN, [0,400], [1100,400], 2)
-        guideline_y_500 = pygame.draw.line(screen, LIME_GREEN, [0,500], [1100,500], 2)
-        guideline_y_50 = pygame.draw.line(screen, LIME_GREEN, [0,50], [1100,50], 2)
-        guideline_y_150 = pygame.draw.line(screen, LIME_GREEN, [0,150], [1100,150], 2)
-        guideline_y_250 = pygame.draw.line(screen, LIME_GREEN, [0,250], [1100,250], 2)
-        guideline_y_350 = pygame.draw.line(screen, LIME_GREEN, [0,350], [1100,350], 2)
-        guideline_y_450 = pygame.draw.line(screen, LIME_GREEN, [0,450], [1100,450], 2)
-        guideline_y_550 = pygame.draw.line(screen, LIME_GREEN, [0,550], [1100,550], 2)
+        # guideline_x_100 = pygame.draw.line(screen, LIME_GREEN, [100,0], [100,600], 2)
+        # guideline_x_200 = pygame.draw.line(screen, LIME_GREEN, [200,0], [200,600], 2)
+        # guideline_x_300 = pygame.draw.line(screen, LIME_GREEN, [300,0], [300,600], 2)
+        # guideline_x_400 = pygame.draw.line(screen, LIME_GREEN, [400,0], [400,600], 2)
+        # guideline_x_500 = pygame.draw.line(screen, LIME_GREEN, [500,0], [500,600], 2)
+        # guideline_x_600 = pygame.draw.line(screen, LIME_GREEN, [600,0], [600,600], 2)
+        # guideline_x_700 = pygame.draw.line(screen, LIME_GREEN, [700,0], [700,600], 2)
+        # guideline_x_800 = pygame.draw.line(screen, LIME_GREEN, [800,0], [800,600], 2)
+        # guideline_x_900 = pygame.draw.line(screen, LIME_GREEN, [900,0], [900,600], 2)
+        # guideline_x_1000 = pygame.draw.line(screen, LIME_GREEN, [1000,0], [1000,600], 2)
+        # guideline_x_50 = pygame.draw.line(screen, LIME_GREEN, [50,0], [50,600], 2)
+        # guideline_x_150 = pygame.draw.line(screen, LIME_GREEN, [150,0], [150,600], 2)
+        # guideline_x_250 = pygame.draw.line(screen, LIME_GREEN, [250,0], [250,600], 2)
+        # guideline_x_350 = pygame.draw.line(screen, LIME_GREEN, [350,0], [350,600], 2)
+        # guideline_x_450 = pygame.draw.line(screen, LIME_GREEN, [450,0], [450,600], 2)
+        # guideline_x_550 = pygame.draw.line(screen, LIME_GREEN, [550,0], [550,600], 2)
+        # guideline_x_650 = pygame.draw.line(screen, LIME_GREEN, [650,0], [650,600], 2)
+        # guideline_x_750 = pygame.draw.line(screen, LIME_GREEN, [750,0], [750,600], 2)
+        # guideline_x_850 = pygame.draw.line(screen, LIME_GREEN, [850,0], [850,600], 2)
+        # guideline_x_950 = pygame.draw.line(screen, LIME_GREEN, [950,0], [950,600], 2)
+        # guideline_x_1050 = pygame.draw.line(screen, LIME_GREEN, [1050,0], [1050,600], 2)
+        # guideline_y_100 = pygame.draw.line(screen, LIME_GREEN, [0,100], [1100,100], 2)
+        # guideline_y_200 = pygame.draw.line(screen, LIME_GREEN, [0,200], [1100,200], 2)
+        # guideline_y_300 = pygame.draw.line(screen, LIME_GREEN, [0,300], [1100,300], 2)
+        # guideline_y_400 = pygame.draw.line(screen, LIME_GREEN, [0,400], [1100,400], 2)
+        # guideline_y_500 = pygame.draw.line(screen, LIME_GREEN, [0,500], [1100,500], 2)
+        # guideline_y_50 = pygame.draw.line(screen, LIME_GREEN, [0,50], [1100,50], 2)
+        # guideline_y_150 = pygame.draw.line(screen, LIME_GREEN, [0,150], [1100,150], 2)
+        # guideline_y_250 = pygame.draw.line(screen, LIME_GREEN, [0,250], [1100,250], 2)
+        # guideline_y_350 = pygame.draw.line(screen, LIME_GREEN, [0,350], [1100,350], 2)
+        # guideline_y_450 = pygame.draw.line(screen, LIME_GREEN, [0,450], [1100,450], 2)
+        # guideline_y_550 = pygame.draw.line(screen, LIME_GREEN, [0,550], [1100,550], 2)
 
 
 #####################################################################################
