@@ -94,7 +94,7 @@ class LevelScene(dsnclass.Scene):
                 not self.level_condition:
             self.player.xpos = self.x_spawn
             self.player.ypos = self.y_spawn
-            self.player.direction = "right"
+            self.player.direction = 1
 
         if 580 + self.player.height < self.player.ypos:
             self.player.alive = False
