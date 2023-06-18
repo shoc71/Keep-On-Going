@@ -125,8 +125,8 @@ class SquareMe: #lil purple dude
         self.jump_sound_1.set_volume(0.1)  # out of 1 = 100%
 
         # Update collision logic position
-        self.left_col = pygame.Rect(self.xpos - 20, self.ypos + 1, 20 + 1, self.height - 2)
-        self.right_col = pygame.Rect(self.xpos + self.width - 1, self.ypos + 1, 20 + 1, self.height - 2)
+        self.left_col = pygame.Rect(self.xpos - 20, self.ypos + 3, 20 + 1, self.height - 4)
+        self.right_col = pygame.Rect(self.xpos + self.width - 1, self.ypos + 3, 20 + 1, self.height - 4)
         self.top_col = pygame.Rect(self.xpos + 1, self.ypos - 20, self.width - 2, 20 + 1)
         self.bot_col = pygame.Rect(self.xpos + 1, self.ypos + self.height - 1, self.width - 2, 20 + 1)
 
@@ -169,8 +169,7 @@ class SquareMe: #lil purple dude
 
     def collision_plat(self, object_list: [pygame.Rect]):
         bot_collisions = self.bot_col.collidelistall(object_list)
-        if len(self.square_render.collidelistall(object_list)) < 1:
-            self.enable_gravity = True
+        self.enable_gravity = True
 
         for bcollide_id in bot_collisions:
             collide_x = object_list[bcollide_id].x
@@ -186,8 +185,9 @@ class SquareMe: #lil purple dude
 
             """New addition to the collision that ensures 
             the player isn't inside the platform"""
-            if 0 < len(bot_collisions) and object_list[bot_collisions[0]].y < self.ypos + self.height and \
-                    collide_x + 4 < self.xpos + self.width and self.xpos < collide_x + collide_width - 4:
+            if 0 < len(bot_collisions) and object_list[bot_collisions[0]].y < self.ypos + self.height < \
+                object_list[bot_collisions[0]].y + self.height and \
+                    collide_x + 6 < self.xpos + self.width and self.xpos < collide_x + collide_width - 6:
                 self.ypos = object_list[bcollide_id].y - self.height
         # Old platform collision, might delete later :P
 
@@ -247,7 +247,9 @@ class SquareMe: #lil purple dude
             collide_height = object_list[lcollide_id].height
             if lcollide_id != -1 and self.square_render.colliderect(object_list[lcollide_id]) and \
                     collide_y < self.ypos + self.height and \
-                    self.ypos < collide_y + collide_height:
+                    self.ypos < collide_y + collide_height and \
+                object_list[lcollide_id].x + object_list[lcollide_id].width <= self.xpos + 2:
+                self.enable_gravity = True
                 self.direction = 1
 
         # Right side collision, going right to turn left
@@ -256,10 +258,11 @@ class SquareMe: #lil purple dude
             collide_y = object_list[rcollide_id].y
             collide_width = object_list[rcollide_id].width
             collide_height = object_list[rcollide_id].height
-
             if rcollide_id != -1 and self.square_render.colliderect(object_list[rcollide_id]) and \
                     collide_y < self.ypos + self.height and \
-                    self.ypos < collide_y + collide_height:
+                    self.ypos < collide_y + collide_height and \
+                self.xpos + self.width - 2 <= object_list[rcollide_id].x:
+                self.enable_gravity = True
                 self.direction = -1
 
         # Old left and right collision
