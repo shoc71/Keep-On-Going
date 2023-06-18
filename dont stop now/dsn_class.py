@@ -289,8 +289,8 @@ class SquareMe: #lil purple dude
             gravity_y = (self.gravity_counter ** 2) * 0.00004
             self.ypos += gravity_y
 
-            if self.gravity_counter < 1100:
-                self.gravity_counter += 2
+        if self.gravity_counter < 1100:
+            self.gravity_counter += 2
 
     def death(self, death_list: [pygame.Rect]):
         collide_id = self.square_render.collidelist(death_list)
