@@ -151,7 +151,8 @@ class MenuScene(LevelScene):
         self.option_count = 0
         #start_spawn
         current_spawn = TutorialLevel1(12, 320, 1) # Added this in so it's less painful to find spawn
-        current_spawn = EasyLevel5(37, 518, 1)
+        # current_spawn = EasyLevel5(37, 518, 1)
+        current_spawn = EasyLevel6(12, 12, 1)
         self.options = [current_spawn, Filler(), Filler(), Filler()]
         #SPEANWNSS
         '''
@@ -765,7 +766,7 @@ class EasyLevel4(LevelScene):  # letters
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1057, 55, 27, 35])]
 
 
-class EasyLevel5(LevelScene):  # letters
+class EasyLevel5(LevelScene):  # staggers
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
         self.level_id = 8
@@ -848,11 +849,11 @@ class EasyLevel5(LevelScene):  # letters
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1064, 16, 17, 26])]
 
-class EasyLevel6(LevelScene):  # letters
+class EasyLevel6(LevelScene):  # spiral
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
         self.level_id = 8
-        self.Tut1_text = dsnclass.Text("staggers", (900, 252), 60, "impact",
+        self.Tut1_text = dsnclass.Text("spiral", (900, 252), 60, "impact",
                                        GREY,
                                        None)
         self.music = dsnclass.Music(music_value)
@@ -863,9 +864,9 @@ class EasyLevel6(LevelScene):  # letters
     def update(self):
         LevelScene.update(self)
 
-        # if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
-        #         self.victory_time:
-        #     self.change_scene(EasyLevel6(21, 21, 1))
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(EasyLevel7(37, 527, 1))
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -935,6 +936,325 @@ class EasyLevel6(LevelScene):  # letters
             ]
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [762, 280, 12, 41])]
+
+
+class EasyLevel7(LevelScene):  # burger
+    def __init__(self, x_spawn, y_spawn, music_value):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 8
+        self.Tut1_text = dsnclass.Text("burger", (900, 252), 60, "impact",
+                                       GREY,
+                                       None)
+        self.music = dsnclass.Music(music_value)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(EasyLevel8(21, 258, 1))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+        screen.blit(self.Tut1_text.text_img,
+                    self.Tut1_text.text_rect)  # draw text on screen
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        self.platforms =  [
+            pygame.draw.rect(screen, (0, 0, 0), [0, 556, 1080, 20]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 20]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 20, 575]),
+            pygame.draw.rect(screen, (0, 0, 0), [1060, 0, 20, 575]),
+            pygame.draw.rect(screen, (0, 0, 0), [74, 520, 921, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [57, 476, 148, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [886, 476, 148, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [148, 435, 374, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [583, 435, 374, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [73, 393, 326, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [671, 393, 326, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [647, 350, 83, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [378, 350, 83, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [257, 350, 83, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [5, 318, 105, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [971, 318, 105, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [70, 288, 929, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [121, 111, 832, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [80, 157, 52, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [946, 157, 52, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [948, 195, 52, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [948, 237, 52, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [81, 237, 52, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [81, 199, 52, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [153, 196, 764, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [173, 160, 728, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 219, 61, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 181, 61, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 132, 85, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [1014, 175, 57, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [1014, 221, 57, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [983, 129, 85, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [484, 482, 148, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [484, 482, 148, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [83, 353, 117, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [781, 350, 83, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [903, 352, 101, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [1022, 269, 51, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 269, 51, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 269, 51, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [495, 347, 109, 12]),
+            pygame.draw.rect(screen, (0, 0, 0), [158, 246, 767, 12])
+            ]
+
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [1058, 64, 13, 38])]
+
+class EasyLevel8(LevelScene):  # Tip-toe
+    def __init__(self, x_spawn, y_spawn, music_value):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 8
+        self.Tut1_text = dsnclass.Text("Tip-toe", (900, 252), 60, "impact",
+                                       GREY,
+                                       None)
+        self.music = dsnclass.Music(music_value)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(EasyLevel9(37, 524, 1))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+        screen.blit(self.Tut1_text.text_img,
+                    self.Tut1_text.text_rect)  # draw text on screen
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        self.platforms = [
+            pygame.draw.rect(screen, (0, 0, 0), [0, 551, 1080, 25]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 25]),
+            pygame.draw.rect(screen, (0, 0, 0), [10, 269, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [142, 225, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [139, 303, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [288, 261, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [433, 261, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [560, 220, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [563, 303, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [716, 303, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [716, 214, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [859, 260, 98, 14]),
+            pygame.draw.rect(screen, (0, 0, 0), [137, 224, 15, 55]),
+            pygame.draw.rect(screen, (0, 0, 0), [224, 224, 15, 36]),
+            pygame.draw.rect(screen, (0, 0, 0), [559, 222, 15, 36]),
+            pygame.draw.rect(screen, (0, 0, 0), [643, 219, 15, 36]),
+            pygame.draw.rect(screen, (0, 0, 0), [715, 281, 15, 36]),
+            pygame.draw.rect(screen, (0, 0, 0), [716, 215, 15, 36]),
+            pygame.draw.rect(screen, (0, 0, 0), [801, 281, 15, 36]),
+            pygame.draw.rect(screen, (0, 0, 0), [799, 215, 15, 36]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 20, 566]),
+            pygame.draw.rect(screen, (0, 0, 0), [1060, 0, 20, 566])
+            ]
+
+        self.death_zones =  [
+            pygame.draw.rect(screen, (139, 0, 0), [401, 223, 15, 32]),
+            pygame.draw.rect(screen, (139, 0, 0), [401, 290, 15, 32]),
+            pygame.draw.rect(screen, (139, 0, 0), [972, 283, 15, 268]),
+            pygame.draw.rect(screen, (139, 0, 0), [20, 534, 1040, 17]),
+            pygame.draw.rect(screen, (139, 0, 0), [20, 24, 1040, 17]),
+            pygame.draw.rect(screen, (139, 0, 0), [20, 24, 15, 209]),
+            pygame.draw.rect(screen, (139, 0, 0), [20, 283, 15, 255]),
+            pygame.draw.rect(screen, (139, 0, 0), [1046, 25, 15, 164]),
+            pygame.draw.rect(screen, (139, 0, 0), [1046, 316, 15, 234]),
+            pygame.draw.rect(screen, (139, 0, 0), [972, 24, 15, 183]),
+            pygame.draw.rect(screen, (139, 0, 0), [285, 39, 20, 125]),
+            pygame.draw.rect(screen, (139, 0, 0), [553, 39, 20, 125]),
+            pygame.draw.rect(screen, (139, 0, 0), [857, 39, 20, 125]),
+            pygame.draw.rect(screen, (139, 0, 0), [133, 39, 20, 125]),
+            pygame.draw.rect(screen, (139, 0, 0), [133, 372, 20, 163]),
+            pygame.draw.rect(screen, (139, 0, 0), [300, 372, 20, 163]),
+            pygame.draw.rect(screen, (139, 0, 0), [605, 372, 20, 163]),
+            pygame.draw.rect(screen, (139, 0, 0), [777, 372, 20, 163]),
+            pygame.draw.rect(screen, (139, 0, 0), [463, 372, 20, 163]),
+            pygame.draw.rect(screen, (139, 0, 0), [686, 36, 20, 106]),
+            pygame.draw.rect(screen, (139, 0, 0), [396, 36, 20, 106])
+            ]
+
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [1060, 212, 15, 90])]
+
+class EasyLevel9(LevelScene):  # Help
+    def __init__(self, x_spawn, y_spawn, music_value):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 8
+        self.Tut1_text = dsnclass.Text("You're not alone", (900, 252), 60, "impact",
+                                       GREY,
+                                       None)
+        self.music = dsnclass.Music(music_value)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+
+        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                self.victory_time:
+            self.change_scene(EasyLevel10(48, 53, 1))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+        screen.blit(self.Tut1_text.text_img,
+                    self.Tut1_text.text_rect)  # draw text on screen
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        self.platforms = [
+            pygame.draw.rect(screen, (0, 0, 0), [0, 556, 1080, 20]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 20]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 20, 572]),
+            pygame.draw.rect(screen, (0, 0, 0), [1060, 0, 20, 572]),
+            pygame.draw.rect(screen, (0, 0, 0), [183, 117, 380, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [661, 117, 17, 451]),
+            pygame.draw.rect(screen, (0, 0, 0), [235, 479, 438, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [184, 521, 432, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [183, 436, 439, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [238, 394, 433, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [185, 353, 445, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [240, 312, 436, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [184, 272, 425, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [238, 232, 434, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [185, 192, 447, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [183, 118, 17, 416]),
+            pygame.draw.rect(screen, (0, 0, 0), [451, 130, 113, 10]),
+            pygame.draw.rect(screen, (0, 0, 0), [451, 130, 113, 10]),
+            pygame.draw.rect(screen, (0, 0, 0), [182, 98, 10, 23]),
+            pygame.draw.rect(screen, (0, 0, 0), [118, 549, 10, 22]),
+            pygame.draw.rect(screen, (0, 0, 0), [22, 547, 10, 22]),
+            pygame.draw.rect(screen, (0, 0, 0), [425, 469, 10, 22]),
+            pygame.draw.rect(screen, (0, 0, 0), [425, 301, 10, 22]),
+            pygame.draw.rect(screen, (0, 0, 0), [236, 158, 437, 13]),
+            pygame.draw.rect(screen, (0, 0, 0), [427, 145, 10, 22]),
+            pygame.draw.rect(screen, (0, 0, 0), [118, 109, 11, 397]),
+            pygame.draw.rect(screen, (0, 0, 0), [22, 108, 11, 401]),
+            pygame.draw.rect(screen, (0, 0, 0), [22, 82, 68, 10]),
+            pygame.draw.rect(screen, (0, 0, 0), [704, 534, 13, 24]),
+            pygame.draw.rect(screen, (0, 0, 0), [723, 534, 13, 24]),
+            pygame.draw.rect(screen, (0, 0, 0), [743, 534, 13, 24]),
+            pygame.draw.rect(screen, (0, 0, 0), [762, 534, 13, 24])
+            ]
+
+        self.death_zones =  [
+            pygame.draw.rect(screen, (139, 0, 0), [1026, 313, 39, 16]),
+            pygame.draw.rect(screen, (139, 0, 0), [464, 300, 8, 14]),
+            pygame.draw.rect(screen, (139, 0, 0), [816, 300, 8, 14]),
+            pygame.draw.rect(screen, (139, 0, 0), [811, 96, 15, 154]),
+            pygame.draw.rect(screen, (139, 0, 0), [627, 96, 15, 153]),
+            pygame.draw.rect(screen, (139, 0, 0), [460, 96, 15, 152]),
+            pygame.draw.rect(screen, (139, 0, 0), [293, 96, 15, 150]),
+            pygame.draw.rect(screen, (139, 0, 0), [966, 95, 15, 63]),
+            pygame.draw.rect(screen, (139, 0, 0), [217, 329, 15, 172]),
+            pygame.draw.rect(screen, (139, 0, 0), [376, 328, 15, 172]),
+            pygame.draw.rect(screen, (139, 0, 0), [546, 328, 15, 172]),
+            pygame.draw.rect(screen, (139, 0, 0), [724, 328, 15, 172]),
+            pygame.draw.rect(screen, (139, 0, 0), [903, 329, 15, 172]),
+            pygame.draw.rect(screen, (139, 0, 0), [977, 516, 8, 14]),
+            pygame.draw.rect(screen, (139, 0, 0), [568, 548, 8, 14]),
+            pygame.draw.rect(screen, (139, 0, 0), [131, 96, 15, 147]),
+            pygame.draw.rect(screen, (139, 0, 0), [134, 300, 8, 14]),
+            pygame.draw.rect(screen, (139, 0, 0), [543, 53, 13, 13]),
+            pygame.draw.rect(screen, (139, 0, 0), [532, 548, 8, 15]),
+            pygame.draw.rect(screen, (139, 0, 0), [14, 71, 34, 15]),
+            pygame.draw.rect(screen, (139, 0, 0), [13, 257, 34, 15])
+            ]
+
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [5, 544, 11, 32])]
+
+class EasyLevel10(LevelScene):  # Hard Ritual
+    def __init__(self, x_spawn, y_spawn, music_value):
+        LevelScene.__init__(self, x_spawn, y_spawn)
+        self.level_id = 8
+        self.Tut1_text = dsnclass.Text("Ritaul", (900, 252), 60, "impact",
+                                       GREY,
+                                       None)
+        self.music = dsnclass.Music(music_value)
+
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+    def update(self):
+        LevelScene.update(self)
+
+        # if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+        #         self.victory_time:
+        #     self.change_scene(EasyLevel9(37, 524, 1))
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        LevelScene.render_text(self, screen)
+        screen.blit(self.Tut1_text.text_img,
+                    self.Tut1_text.text_rect)  # draw text on screen
+
+    def render_level(self, screen):
+        LevelScene.render(self, screen)
+
+        self.platforms = [
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 15, 576]),
+            pygame.draw.rect(screen, (0, 0, 0), [1065, 0, 15, 576]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 15]),
+            pygame.draw.rect(screen, (0, 0, 0), [58, 71, 969, 15]),
+            pygame.draw.rect(screen, (0, 0, 0), [140, 345, 15, 145]),
+            pygame.draw.rect(screen, (0, 0, 0), [295, 345, 15, 145]),
+            pygame.draw.rect(screen, (0, 0, 0), [460, 345, 15, 145]),
+            pygame.draw.rect(screen, (0, 0, 0), [629, 345, 15, 145]),
+            pygame.draw.rect(screen, (0, 0, 0), [813, 345, 15, 145]),
+            pygame.draw.rect(screen, (0, 0, 0), [973, 345, 15, 145]),
+            pygame.draw.rect(screen, (0, 0, 0), [143, 519, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [299, 519, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [464, 519, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [633, 519, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [817, 519, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [969, 300, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [632, 300, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [297, 300, 8, 21]),
+            pygame.draw.rect(screen, (0, 0, 0), [901, 74, 15, 205]),
+            pygame.draw.rect(screen, (0, 0, 0), [722, 73, 15, 205]),
+            pygame.draw.rect(screen, (0, 0, 0), [544, 74, 15, 205]),
+            pygame.draw.rect(screen, (0, 0, 0), [375, 74, 15, 205]),
+            pygame.draw.rect(screen, (0, 0, 0), [58, 314, 969, 15]),
+            pygame.draw.rect(screen, (0, 0, 0), [12, 528, 1019, 15]),
+            pygame.draw.rect(screen, (0, 0, 0), [209, 77, 15, 205]),
+            pygame.draw.rect(screen, (0, 0, 0), [46, 71, 15, 202])
+            ]
+
+        self.death_zones =  [
+            pygame.draw.rect(screen, (139, 0, 0), [678, 547, 179, 10]),
+            pygame.draw.rect(screen, (139, 0, 0), [898, 547, 162, 10]),
+            pygame.draw.rect(screen, (139, 0, 0), [426, 424, 10, 12]),
+            pygame.draw.rect(screen, (139, 0, 0), [425, 261, 10, 12]),
+            pygame.draw.rect(screen, (139, 0, 0), [427, 105, 10, 12]),
+            pygame.draw.rect(screen, (139, 0, 0), [788, 36, 10, 12]),
+            pygame.draw.rect(screen, (139, 0, 0), [181, 87, 11, 12]),
+            pygame.draw.rect(screen, (139, 0, 0), [728, 548, 10, 8]),
+            pygame.draw.rect(screen, (139, 0, 0), [423, 551, 10, 5])
+            ]
+
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [857, 547, 42, 10])]
 
 #####################################################################################
 ##############################   unorganized levels   ###############################
