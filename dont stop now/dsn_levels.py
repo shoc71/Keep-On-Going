@@ -1029,9 +1029,15 @@ class EasyLevel8(LevelScene):  # Tip-toe
     def update(self):
         LevelScene.update(self)
 
+
         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                 self.victory_time:
             self.change_scene(EasyLevel9(37, 524, 1))
+
+        # if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+        #         self.victory_time:
+        #     self.change_scene(EasyLevel6(21, 21, 1))
+
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -1094,6 +1100,7 @@ class EasyLevel8(LevelScene):  # Tip-toe
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1060, 212, 15, 90])]
 
+        
 class EasyLevel9(LevelScene):  # Help
     def __init__(self, x_spawn, y_spawn, music_value):
         LevelScene.__init__(self, x_spawn, y_spawn)
@@ -1255,6 +1262,7 @@ class EasyLevel10(LevelScene):  # Hard Ritual
             ]
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [857, 547, 42, 10])]
+
 
 #####################################################################################
 ##############################   unorganized levels   ###############################
