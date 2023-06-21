@@ -1,3 +1,42 @@
+v.0.2.0
+
+---Render
+- Fixed level text being in front of pause/win text.
+
+- Player rendering has been temporarily put in the render_text functions. The player will still be rendered behind the text but will be in front of level elements. In the future, this function could be renamed to "render_over", as in rendering over the elements. This is an important change for rendering the player above the respawn block.
+
+--- Gravity
+- Fixed gravity counter (amplification) not resetting when respawning. This issue was obvious when the player respawns were set in the air above the platforms.
+
+--- New Function
+- Player respawn has also been added, showing up as lime green. Currently, the respawn for the player colliding with these elements is set to be in the middle of them.
+- Adding respawns needs to be done in a "self.respawn_zones" list within each level "level_render" class function. 
+- The new respawn feature could be seen in the "Mind the Gap" level, or what it's currently set to.
+
+=================
+
+v.0.1.7 - v.0.19
+
+--- Levels
+- 6 new levels have been added to the game
+
+---Collision
+- Fixed collision of the square bumping into the left and right sides. 
+- Also fixed the collision detecting the square going inside of the platform :)
+- Updated collision logic to use hitboxes above, below, and beside the player. Bottom hitboxes are used to obtain the distance between the player and the bottom platform and ensure the player square doesn't go into the platform. If the gravity adding onto the player square's y value exceeds the y position of the platform, then the square's y value will be on top of the platform (platform y position + the square's height).
+- Minor changes include the self.direction being more involved in moving x as an integer (-1 or +1) rather than a boolean. You'll see that there's one less if statement for moving the x position, as it uses the self.direction instead of two if statements for +1 or -1.
+- Fixed an if statement that was over-indented in gravity (gravity counter)
+
+---Player
+- Changed self.player.direction to match with the new dsn_class update
+
+---Additional Features
+- updated readme
+- guidelines for making the game is removed
+- level editor made on a different repository and is being used for future level-making
+
+=================
+
 v.0.1.4 - v.0.1.6
 
 --- Rendering
