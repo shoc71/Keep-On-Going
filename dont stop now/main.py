@@ -32,17 +32,23 @@ class Program:
                 self.running = False
                 scene.close_game()
             else:
+                # Check for a valid level, then if level done, record data
+                if 0 < scene.level_id and 3 <= scene.victory_counter and \
+                        500 <= pygame.time.get_ticks() - scene.victory_time:
+                    self.memory.update_mem(scene.level_id, scene.deaths,
+                                           scene.player.jumps)
+                    """print(self.memory.level_progress, self.memory.level_jumps,
+                          self.memory.level_deaths)"""
+                elif scene.level_id == 0 and 3 <= scene.victory_counter:
+                    self.memory.update_mem(scene.level_id, scene.deaths,
+                                           scene.player.jumps)
+                    """print(self.memory.level_progress, self.memory.level_jumps,
+                          self.memory.level_deaths)"""
+
                 scene.input(keys_pressed, keys_held)
                 scene.update()
                 scene.render(screen)
                 scene = scene.this_scene
-
-                # Check for a valid level, then if level done, record data
-                if -1 < scene.level_id and \
-                        scene.victory_counter == len(scene.victory_text):
-                    self.memory.update_mem(scene.level_id, scene.deaths,
-                                           scene.player.jumps)
-                    #print(self.memory.level_progress, self.memory.level_jumps, self.memory.level_deaths)
 
             fps.tick(240)
             pygame.display.update()
