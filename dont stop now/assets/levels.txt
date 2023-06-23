@@ -1,0 +1,27 @@
+TutorialLevel1(12, 320, 1)
+
+dsnclass.Text("Hallway", (600, 400), 45, "impact", GREY, None)
+
+self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 308, 20, 40])]
+
+self.platforms = [pygame.draw.rect(screen, BLACK, [0, 288, 1100, 20]),
+                          pygame.draw.rect(screen, BLACK, [0, 348, 1100, 20])
+                          pygame.draw.rect(screen, BLACK, [1070, 0, 10, 308]),
+                      pygame.draw.rect(screen, BLACK, [1070, 348, 10, 250]),
+                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
+                      ]
+
+===
+
+TutorialLevel1(12, 320, 1)
+
+dsnclass.Text("Hallway", (600, 400), 45, "impact", GREY, None)
+
+self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 308, 20, 40])]
+
+self.platforms = [pygame.draw.rect(screen, BLACK, [0, 288, 1100, 20]),
+                  pygame.draw.rect(screen, BLACK, [0, 348, 1100, 20]),
+                          pygame.draw.rect(screen, BLACK, [1070, 0, 10, 308]),
+                      pygame.draw.rect(screen, BLACK, [1070, 348, 10, 250]),
+                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
+                      ]
