@@ -166,7 +166,7 @@ class MenuScene(LevelScene):
         current_spawn = TutorialLevel4(12, 200, 1)
         # current_spawn = EasyLevel5(37, 518, 1)
         # current_spawn = EasyLevel6(12, 12, 1)
-        self.options = [current_spawn, Filler(), Filler(), Filler()]
+        self.options = [LevelSelect(), Filler(), Filler(), Filler()]
         # SPEANWNSS
         '''
         filler content to identify current_spawn
@@ -219,6 +219,9 @@ class MenuScene(LevelScene):
 
         self.music = dsnclass.Music(music_value)
 
+        """self.title_guy = dsnclass.SquareMe(xspawn, yspawn,
+                                        10, 10, (181, 60, 177))"""
+
     def input(self, pressed, held):
         """Do not use LevelScene for input since we don't want to control
         the character on the menu"""
@@ -236,6 +239,21 @@ class MenuScene(LevelScene):
 
     def update(self):
         LevelScene.update(self)
+        """if self.title_guy.square_render is not None:
+            self.title_guy.alive = True
+            if self.title_guy.alive and not self.title_guy.freeze and \
+                    not self.level_condition:
+                self.deaths += self.title_guy.death(self.death_zones)
+                self.title_guy.collision_plat(self.platforms + self.walls)
+                self.title_guy.collision_wall(self.platforms + self.walls)
+                self.title_guy.move()
+            if not self.title_guy.alive and not self.title_guy.freeze and \
+                    not self.level_condition:
+                self.title_guy.xpos = self.x_spawn
+                self.title_guy.ypos = self.y_spawn
+                self.title_guy.direction = 1
+                self.title_guy.gravity_counter = self.player.max_gravity"""
+
         self.player.alive = True
         if (random.randint(1, 2500) <= 15) and not self.player.enable_gravity:
             self.victory_counter = len(self.victory_text)
@@ -258,6 +276,7 @@ class MenuScene(LevelScene):
         screen.blit(self.title_text_s4.text_img, self.title_text_s4.text_rect)
 
         LevelScene.render_text(self, screen)
+        # self.title_guy.render(screen)
 
     def render_level(self, screen):
         # No death zones
@@ -306,25 +325,115 @@ class Filler(dsnclass.Scene):
         screen.blit(self.filler_text.text_img, self.filler_text.text_rect)
 
 
-class LevelSelect(dsnclass.Scene):
+class LevelSelect(LevelScene):
     def __init__(self):
-        dsnclass.Scene.__init__(self)
+        LevelScene.__init__(self, (1080 / 2) - (10 / 2), 576 / 2)
         self.filler_text = dsnclass.Text("Choose A Level",
                                          (540, 153), 50, "impact", YELLOW, None)
+        self.disclaimer_text2 = dsnclass.Text("ONLY A PROOF OF CONCEPT",
+                                             (540, 60), 50, "impact", RED, None)
+        self.disclaimer_text = dsnclass.Text("ALL LEVELS LEAD TO LEVEL 1, PRESS JUMP TO START",
+                                             (540, 110), 50, "impact", RED, None)
+
+        self.blockmation_time = 0
+        self.text_x = 0
+        self.direction = 0
+        self.choose_id = 0
+
+        self.first_level = TutorialLevel1(12, 320, 1)
 
     def input(self, pressed, held):
         for every_key in pressed:
             if every_key == pygame.K_r:
                 self.change_scene(MenuScene(40, 360, 0))
+            if every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w]:
+                self.change_scene(self.first_level)
+            if every_key in [pygame.K_a, pygame.K_d] and \
+                    self.player.jump_ability and \
+                    not self.player.enable_gravity and \
+                    405 < pygame.time.get_ticks() - self.blockmation_time:
+                self.player.jump_boost = self.player.max_jump
+                self.player.jump_sound_1.play()
+                self.player.jumps += 1
+
+                if every_key == pygame.K_a and 0 < self.choose_id:
+                    self.blockmation_time = pygame.time.get_ticks()
+                    self.direction = 1
+                if every_key == pygame.K_d and self.choose_id < 999:
+                    self.blockmation_time = pygame.time.get_ticks()
+                    self.direction = -1
+
+    def update(self):
+        LevelScene.update(self)
+        self.player.alive = True
+        self.player.xpos = self.x_spawn
+        if self.y_spawn <= self.player.ypos:
+            self.player.ypos = self.y_spawn
+            self.player.enable_gravity = False
+            self.player.gravity_counter = self.player.max_gravity
+            self.player.jump_ability = True
 
     def render(self, screen):
-        screen.fill(WHITE)
+        LevelScene.render(self, screen)
         screen.blit(self.filler_text.text_img, self.filler_text.text_rect)
+        screen.blit(self.disclaimer_text2.text_img,
+                    self.disclaimer_text2.text_rect)
+        screen.blit(self.disclaimer_text.text_img,
+                    self.disclaimer_text.text_rect)
+
+        LevelScene.render_text(self, screen)
+
+
+        left_text = dsnclass.Text(str(self.choose_id - 1),
+                                       [(1080 / 2) - 200 + self.text_x,
+                                        (576 / 2) + 39], 40, "impact", YELLOW,
+                                       None)
+        middle_text = dsnclass.Text(str(self.choose_id),
+                                         [(1080 / 2) + self.text_x,
+                                          (576 / 2) + 39],
+                                         40, "impact", YELLOW, None)
+        right_text = dsnclass.Text(str(self.choose_id + 1),
+                                        [(1080 / 2) + 200 + self.text_x,
+                                         (576 / 2) + 39], 40, "impact", YELLOW,
+                                        None)
+
+        scroll_text = [left_text, middle_text, right_text]
+
+        for texts in scroll_text:
+            if (1080 / 2) - 225 < texts.text_rect.x < (1080 / 2) + 195 and \
+                    -1 < int(texts.text):
+                screen.blit(texts.text_img, texts.text_rect)
+                pygame.draw.rect(screen, (0, 0, 0), [texts.text_rect.x - 20,
+                                                     texts.text_rect.y - 5,
+                                                     texts.text_rect.width + 40,
+                                                     texts.text_rect.height + 10], 4)
+
+        if pygame.time.get_ticks() - self.blockmation_time < 400:
+            if self.direction == 1:
+                self.text_x += 2.3
+
+            if self.direction == -1:
+                self.text_x -= 2.3
+        else:
+            if self.text_x != 0:
+                self.choose_id += -1 * self.direction
+            self.text_x = 0
+
+        # 4 Sides surrounding level select
+        pygame.draw.rect(screen, (0, 0, 0),
+                         [(1080 / 2) - 250, (576 / 2) - 100, 500, 10])
+        pygame.draw.rect(screen, (0, 0, 0),
+                         [(1080 / 2) - 250, (576 / 2) + 100, 500, 10])
+        pygame.draw.rect(screen, (0, 0, 0),
+                         [(1080 / 2) - 250, (576 / 2) - 100, 70, 200])
+        pygame.draw.rect(screen, (0, 0, 0),
+                         [(1080 / 2) + 250 - 70, (576 / 2) - 100, 70, 200])
 
 
 ########################################################################################
 ################################  tutorial levels   ####################################
 ########################################################################################
+
 
 class TutorialLevel1(LevelScene):  # Hallway
     def __init__(self, x_spawn, y_spawn, music_value):
