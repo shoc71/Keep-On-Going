@@ -1,3 +1,23 @@
+v.0.2.1 - v.0.2.5
+
+--- Level Editor
+- Updated to work with the level selector animation
+
+--- Function
+- respawn boxes were added and fixed
+- level selector has been added but needs the animation to be fixed
+- victory counter added
+- time passed function added
+
+--- Levels 
+- ~12 more levels are being added and spawn were saved in issues
+
+--- Additional Features
+- dns_levels will be transformed into analyzing levels from notepad to reduce size and space and faster rendering of the level
+- most levels have been tested and added
+- dsn_lvl_editor has had a few changes in formating and coloring (for now - more to come)
+==========
+
 v.0.2.0
 
 ---Render
