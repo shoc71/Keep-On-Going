@@ -5,12 +5,12 @@ v.0.2.1 - v.0.2.5
 
 --- Function
 - respawn boxes were added and fixed
-      - Player respawn has also been added, showing up as lime green. Currently, the respawn for the player colliding with these elements is set to be in the middle of them. Adding respawns needs to be done in a "self.respawn_zones" list within each levels "level_render" class function. The new respawn feature could be seen in the "Mind the Gap" level, or what it's currently set to.
+      - Player respawn has also been added, showing up as lime green. Currently, the respawn for the player colliding with these elements is set to be in the middle of them. Adding respawns needs to be done in a "self.respawn_zones" list within each level "level_render" class function. The new respawn feature could be seen in the "Mind the Gap" level, or what it's currently set to.
 - level selector has been added but needs the animation to be fixed
-- victory counter added
-      - Player rendering has been temporarily put in the render_text functions. The player will still be rendered behind the text but will be in front of level elements. In the future, this function could be renamed to "render_over", as in rendering over the elements. This is an important change for rendering the player above the respawn block.
+- memory updating using both times passed and victory counter
+      - The memory is updated first before any scenes are updated/checked (if statement is put before scene methods). The memory update is only called when the level is complete (victory counter and time passed) before changing scenes, which will update the victory counter to not update more than once. This is a part of fixing the memory update bug occurring more than once 
 - time passed function added
-      - (unable to find information on this but will be updated as soon as its found)
+      - this was in dsn_editor (private) v.0.0.3, wherein pygame.time was used as a counter and measurer to prevent drawing objects outside of the world boundaries (1080,576) screen size
 
 --- Levels 
 - ~12 more levels are being added and spawn were saved in issues
@@ -19,7 +19,7 @@ v.0.2.1 - v.0.2.5
 - dns_levels will be transformed into analyzing levels from notepad to reduce size and space and faster rendering of the level
 - most levels have been tested and added
 - dsn_lvl_editor has had a few changes in formatting and coloring (for now - more to come)
-- tons of formatting changes being made (difference in which IDE python is being used; VSC and PyCharm) 
+
 ==========
 
 v.0.2.0
