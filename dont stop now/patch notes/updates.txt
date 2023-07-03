@@ -11,6 +11,7 @@ v.0.2.1 - v.0.2.5
       - The memory is updated first before any scenes are updated/checked (if statement is put before scene methods). The memory update is only called when the level is complete (victory counter and time passed) before changing scenes, which will update the victory counter to not update more than once. This is a part of fixing the memory update bug occurring more than once 
 - time passed function added
       - this was in dsn_editor (private) v.0.0.3, wherein pygame.time was used as a counter and measurer to prevent drawing objects outside of the world boundaries (1080,576) screen size
+      - Allowed for block sizes to be moved faster and quicker across the screen when WASD keys were being held saving time for level creation.
 
 --- Levels 
 - ~12 more levels are being added and spawn were saved in issues
