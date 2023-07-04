@@ -1,4 +1,18 @@
 import pygame
+import re
+
+DARK_RED = (139, 0, 0)
+YELLOW = (235, 195, 65)
+BLACK = (0, 0, 0)
+CYAN = (47, 237, 237)
+RED = (194, 57, 33)
+LIME_GREEN = (50, 205, 50)
+LIGHT_RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+GREY = (125, 125, 125)
+LIGHT_PINK = (255, 182, 193)
+EDIT_DARK_GREEN = (1, 100, 32)
+PURPLE = (181, 60, 177)
 
 
 class Text:
@@ -69,6 +83,9 @@ class Memory:
 
         self.level_progress = []    # collection of level_id's
 
+        self.level_set = {}
+        self.ls_elements = {}
+
     def update_mem(self, level_id, death_count, jump_count):
         self.total_deaths += death_count
         self.total_jumps += jump_count
@@ -91,6 +108,69 @@ class Memory:
         else:
             self.level_jumps[level_id] = jump_count
             # first time completing that level, make a death count
+
+    def load_levels(self, in_file):
+        self.level_set = {}
+        self.ls_elements = {}
+        element_lookup = {"self.platforms": 0,
+                          "self.walls": 1,
+                          "self.win": 2,
+                          "self.deaths": 3}
+        color_lookup = {
+            "DARK_RED": DARK_RED,
+            "YELLOW": YELLOW,
+            "BLACK": BLACK,
+            "CYAN": CYAN,
+            "RED": RED,
+            "LIME_GREEN": LIME_GREEN,
+            "LIGHT_RED": LIGHT_RED,
+            "WHITE": WHITE,
+            "GREY": GREY,
+            "LIGHT_PINK": LIGHT_PINK,
+            "EDIT_DARK_GREEN": EDIT_DARK_GREEN,
+            "PURPLE": PURPLE
+        }
+
+        with open(in_file, "r") as open_file:
+            identifier = ""
+            level_id = 0
+
+            for line in open_file.readlines():
+                if re.search("self.[a-zA-Z]+", line):   # Distinguish level elements
+                    identifier = re.search("self.[a-zA-Z]+", line).group()
+                elif re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line): # Finding level titles
+                    line_search = re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line).group()
+                    self.level_set[level_id] = line_search
+                    self.ls_elements[level_id] = {}
+                elif "=" in line.replace("\n", ""):
+                    level_id += 1
+
+                if re.search(r"\([a-z]+, [A-Z]+, \[[0-9]+, [0-9]+, [0-9]+, [0-9]+]\)", line):  # Add level elements
+                    rect_line = re.search(r"\([a-z]+, [A-Z]+, \[[0-9]+, [0-9]+, [0-9]+, [0-9]+]\)", line).group()
+                    rect_properties = re.search(r"\[[0-9]+, [0-9]+, [0-9]+, [0-9]+]", rect_line).group()[1:-2].split(", ")
+                    in_rect = DSNElement(rect_line.split(", ")[1],
+                                         pygame.Rect(int(rect_properties[0]),
+                                                     int(rect_properties[1]),
+                                                     int(rect_properties[2]),
+                                                     int(rect_properties[3])))
+                    if identifier not in self.ls_elements[level_id]:
+                        self.ls_elements[level_id][identifier] = [in_rect]
+                    else:
+                        self.ls_elements[level_id][identifier] += [in_rect]
+
+        self.print_levels()
+
+    def print_levels(self):
+        print(self.level_set)
+        print()
+        print(self.ls_elements)
+
+
+class DSNElement:
+
+    def __init__(self, color, rect):
+        self.color = color
+        self.rect = rect
 
 
 class SquareMe: #lil purple dude
