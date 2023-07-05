@@ -1,8 +1,6 @@
 TutorialLevel1(12, 320, 1)
 
-dsnclass.Text("Hallway", (600, 400), 45, 
-                          "impact", GREY, 
-                          None)
+dsnclass.Text("Hallway", (600, 400), 45, "impact", GREY, None)
 
 self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 308, 20, 40])]
 
@@ -17,7 +15,7 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 288, 1100, 20]),
 
 TutorialLevel2(12, 80, 1)
 
-dsnclass.("Guide to Solution", (600, 400), 45, "impact", GREY, None)
+dsnclass.Text("Guide to Solution", (600, 400), 45, "impact", GREY, None)
 
 self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 528, 20, 40])]
 
