@@ -17,9 +17,7 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 288, 1100, 20]),
 
 TutorialLevel2(12, 80, 1)
 
-dsnclass.Text("Guide to Solution", (600, 400), 45,
-                                       "impact", GREY,
-                                       None)
+dsnclass.("Guide to Solution", (600, 400), 45, "impact", GREY, None)
 
 self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 528, 20, 40])]
 
@@ -39,9 +37,7 @@ self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 528, 20, 40])]
 
 TutorialLevel3(12, 297, 1))
 
-dsnclass.Text("Hit Space/up/w to jump", (600, 400), 45,
-                                       "impact", GREY,
-                                       None)
+dsnclass.Text("Hit Space/up/w to jump", (600, 400), 45, "impact", GREY, None)
 
 self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 278, 20, 40])]
 
@@ -59,9 +55,7 @@ self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 278, 20, 40])]
 
 TutorialLevel4(12, 200, 1))
 
-dsnclass.Text("Mind the Gap", (600, 400), 45, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("Mind the Gap", (600, 400), 45, "impact", GREY, None)
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 180, 20, 30])]
 
@@ -80,9 +74,7 @@ dsnclass.Text("Mind the Gap", (600, 400), 45, "impact",
 
 EasyLevel1(12, 292, 1)
 
-dsnclass.Text("candles", (210, 400), 75, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("candles", (210, 400), 75, "impact", GREY, None)
 self.death_zones = [
             pygame.draw.rect(screen, LIGHT_RED, [125, 110, 10, 20]),
             # candle light 1
@@ -131,9 +123,7 @@ self.death_zones = [
 
 EasyLevel2(132, 282, 1)
 
-dsnclass.Text("mouse", (120, 400), 75, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("mouse", (120, 400), 75, "impact", GREY, None)
 
 self.platforms = [pygame.draw.rect(screen, BLACK, [0, 300, 1100, 277]),
                           # floor
@@ -206,9 +196,7 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 300, 1100, 277]),
 
 EasyLevel3(12, 12, 1)
 
-dsnclass.Text("block maze 5", (210, 400), 75, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("block maze 5", (210, 400), 75, "impact", GREY, None)
 
 self.platforms = [pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]),
                           # floor
@@ -279,9 +267,7 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]),
 
 EasyLevel4(37, 489, 1)
 
-dsnclass.Text("letters", (660, 212), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("letters", (660, 212), 60, "impact", GREY, None)
 self.platforms = [
             pygame.draw.rect(screen, BLACK, [0, 547, 1080, 29]),  # roof
             pygame.draw.rect(screen, BLACK, [0, 0, 1078, 29]),  # floor
@@ -371,9 +357,7 @@ self.platforms = [
 
 EasyLevel5(30, 518, 1)
 
-dsnclass.Text("staggers", (900, 252), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("staggers", (900, 252), 60, "impact", GREY, None)
 self.platforms = [
             pygame.draw.rect(screen, BLACK, [0, 560, 1080, 16]),
             pygame.draw.rect(screen, BLACK, [0, 0, 1080, 16]),
@@ -432,9 +416,7 @@ self.platforms = [
 
 EasyLevel6(21, 21, 1)
 
-dsnclass.Text("spiral", (900, 252), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("spiral", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, BLACK, [0, 0, 1080, 15]),
@@ -499,9 +481,7 @@ self.platforms = [
 
 EasyLevel7(37, 527, 1)
 
-dsnclass.Text("burger", (900, 252), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("burger", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [0, 556, 1080, 20]),
@@ -555,9 +535,7 @@ self.platforms = [
 
 EasyLevel8(21, 258, 1))
 
-dsnclass.Text("Tip-toe", (900, 252), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("Tip-toe", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [0, 551, 1080, 25]),
@@ -616,10 +594,7 @@ self.platforms = [
 EasyLevel9(37, 524, 1)
 
 
-dsnclass.Text("You're not alone", (900, 252), 60,
-                                       "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("You're not alone", (900, 252), 60, "impact", GREY, None)
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [0, 556, 1080, 20]),
             pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 20]),
@@ -685,9 +660,7 @@ self.platforms = [
 
 EasyLevel10(48, 53, 1)
 
-dsnclass.Text("Ritaul", (900, 252), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("Ritaul", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [0, 0, 15, 576]),
@@ -736,9 +709,7 @@ self.platforms = [
 
 EasyLevel11(32, 338, 1)
 
-dsnclass.Text("REverse Lamp", (900, 252), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("REverse Lamp", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [1061, 0, 19, 315]),
@@ -814,10 +785,7 @@ self.platforms = [
 
 EasyLevel12(37, 47, 1) 
 
-dsnclass.Text("You are getting in my way", (900, 252),
-                                       60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("You are getting in my way", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [0, 0, 21, 576]),
@@ -919,9 +887,7 @@ self.platforms = [
 
 EasyLevel13(23, 259, 1)
 
-dsnclass.Text("split path", (900, 252), 60, "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("split path", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 23]),
@@ -957,10 +923,7 @@ self.platforms = [
 
 EasyLevel14(69, 263, 1)
 
-dsnclass.Text("Uneven Platforms", (900, 252), 60,
-                                       "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("Uneven Platforms", (900, 252), 60, "impact", GREY, None)
 
 self.platforms = [
             pygame.draw.rect(screen, (0, 0, 0), [0, 447, 1080, 129]),
@@ -989,10 +952,7 @@ self.platforms = [
 
 EasyLevel15(6, 272, 1)
 
-dsnclass.Text("Lava drip", (900, 252), 60,
-                                       "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("Lava drip", (900, 252), 60, "impact", GREY, None)
 
 self.platforms =  [
             pygame.draw.rect(screen, (0, 0, 0), [0, 294, 63, 16]),
@@ -1072,10 +1032,7 @@ self.platforms =  [
 
 EasyLevel16(33, 44, 1)
 
-dsnclass.Text("ashtray", (900, 252), 60,
-                                       "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("ashtray", (900, 252), 60, "impact", GREY, None)
 
 self.platforms =  [
             pygame.draw.rect(screen, (0, 0, 0), [786, 61, 10, 18]), 
@@ -1143,10 +1100,7 @@ self.platforms =  [
 
 EasyLevel17(37, 47, 1)
 
-dsnclass.Text("ribbon", (900, 252), 60,
-                                       "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("ribbon", (900, 252), 60, "impact", GREY, None)
 
 self.platforms =  [
             pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 25]),
@@ -1217,10 +1171,7 @@ self.platforms =  [
 
 EasyLevel18(37, 47, 1)
 
-dsnclass.Text("choose bait", (900, 252), 60,
-                                       "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("choose bait", (900, 252), 60, "impact", GREY, None)
 
 self.platforms =  [
             pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 25]),
@@ -1285,10 +1236,7 @@ self.platforms =  [
 
 EasyLevel19(26, 62, 1)
 
-dsnclass.Text("upper gate", (900, 252), 60,
-                                       "impact",
-                                       GREY,
-                                       None)
+dsnclass.Text("upper gate", (900, 252), 60, "impact", GREY, None)
 
 self.platforms =  [
             pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 25]),
