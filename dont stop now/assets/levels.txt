@@ -141,8 +141,7 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 300, 1100, 277]),
                           # platform above above the cheese
                           pygame.draw.rect(screen, BLACK, [450, 100, 50, 30]),
                           # mouse ear
-                          pygame.draw.rect(screen, LIGHT_PINK,
-                                           [850, 240, 300, 25])  # mouse tail
+                          pygame.draw.rect(screen, LIGHT_PINK, [850, 240, 300, 25])  # mouse tail
                           ]
 
         self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),
@@ -151,8 +150,7 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 300, 1100, 277]),
                       # side wall left
                       ]
 
-        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20,
-                                                          30])]  # win condition
+        self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])]  # win condition
 
         self.draw = [pygame.draw.rect(screen, WHITE, [385, 165, 20, 20]),
                      # mouse eye
@@ -200,35 +198,24 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]),
                           # floor
                           pygame.draw.rect(screen, BLACK, [0, 0, 1100, 10]),
                           # roof
-                          pygame.draw.rect(screen, BLACK,
-                                           [0, 300, 1100, 276]),  # block - cut
-                          pygame.draw.rect(screen, BLACK,
-                                           [250, 40, 600, 10]),
+                          pygame.draw.rect(screen, BLACK, [0, 300, 1100, 276]),  # block - cut
+                          pygame.draw.rect(screen, BLACK, [250, 40, 600, 10]),
                           # plat 2 - x250/y40
-                          pygame.draw.rect(screen, BLACK,
-                                           [900, 60, 50, 10]),
+                          pygame.draw.rect(screen, BLACK, [900, 60, 50, 10]),
                           # plat 1 - x900/y60
-                          pygame.draw.rect(screen, BLACK,
-                                           [1000, 70, 100, 10]),
+                          pygame.draw.rect(screen, BLACK, [1000, 70, 100, 10]),
                           # plat 1 - x1000/y70
-                          pygame.draw.rect(screen, BLACK,
-                                           [950, 40, 50, 20]),
+                          pygame.draw.rect(screen, BLACK, [950, 40, 50, 20]),
                           # block - y40/y80
-                          pygame.draw.rect(screen, BLACK,
-                                           [0, 85, 150, 10]),  # plat 1 - x0/y85
-                          pygame.draw.rect(screen, BLACK,
-                                           [200, 85, 675, 10]),
+                          pygame.draw.rect(screen, BLACK, [0, 85, 150, 10]),  # plat 1 - x0/y85
+                          pygame.draw.rect(screen, BLACK, [200, 85, 675, 10]),
                           # plat 1 - x200/y85
-                          pygame.draw.rect(screen, BLACK,
-                                           [550, 50, 200, 35]),
+                          pygame.draw.rect(screen, BLACK, [550, 50, 200, 35]),
                           # block - x400/y50
-                          pygame.draw.rect(screen, BLACK,
-                                           [250, 130, 300, 10]),
+                          pygame.draw.rect(screen, BLACK, [250, 130, 300, 10]),
                           # plat 1 - x250/y130
-                          pygame.draw.rect(screen, BLACK,
-                                           [0, 85, 125, 55]),  # block - x0/y85
-                          pygame.draw.rect(screen, BLACK,
-                                           [650, 150, 450, 10]),
+                          pygame.draw.rect(screen, BLACK, [0, 85, 125, 55]),  # block - x0/y85
+                          pygame.draw.rect(screen, BLACK, [650, 150, 450, 10]),
                           # plat 1 - x650/y150
                           pygame.draw.rect(screen, BLACK, [0, 180, 450, 10]),
                           pygame.draw.rect(screen, BLACK, [50, 265, 300, 10]),
@@ -244,18 +231,12 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]),
                           # plat 1 - x0/y40
                           ]
 
-        self.walls = [pygame.draw.rect(screen, BLACK,
-                                       [1070, 0, 10, 580]),  # side wall right
-                      pygame.draw.rect(screen, BLACK,
-                                       [0, 0, 10, 580]),  # side wall left
-                      pygame.draw.rect(screen, BLACK,
-                                       [400, 0, 10, 40]),  # wall - x400/y0
-                      pygame.draw.rect(screen, BLACK,
-                                       [940, 40, 10, 20]),  # wall - x940/y40
-                      pygame.draw.rect(screen, BLACK,
-                                       [990, 40, 10, 40]),  # wall - x990/y40
-                      pygame.draw.rect(screen, BLACK,
-                                       [500, 140, 10, 40]),  # candle stick 4
+        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),  # side wall right
+                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]),  # side wall left
+                      pygame.draw.rect(screen, BLACK, [400, 0, 10, 40]),  # wall - x400/y0
+                      pygame.draw.rect(screen, BLACK, [940, 40, 10, 20]),  # wall - x940/y40
+                      pygame.draw.rect(screen, BLACK, [990, 40, 10, 40]),  # wall - x990/y40
+                      pygame.draw.rect(screen, BLACK, [500, 140, 10, 40]),  # candle stick 4
                       pygame.draw.rect(screen, BLACK, [400, 104, 10, 20])
                       ]
 
