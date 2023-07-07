@@ -8,6 +8,8 @@ class Program:
     def __init__(self) -> None:
         self.running = True
         self.memory = dsnclass.Memory()
+        self.memory.load_levels("levels.txt")
+        self.current_level = 0
 
     def run(self, width, height, current_scene):
         """
@@ -33,17 +35,15 @@ class Program:
                 scene.close_game()
             else:
                 # Check for a valid level, then if level done, record data
-                if 0 < scene.level_id and 3 <= scene.victory_counter and \
-                        500 <= pygame.time.get_ticks() - scene.victory_time:
+                if (0 < scene.level_id and 3 <= scene.victory_counter and
+                        500 <= pygame.time.get_ticks() - scene.victory_time):
+                    # Update level memory or menu memory
                     self.memory.update_mem(scene.level_id, scene.deaths,
                                            scene.player.jumps)
-                    """print(self.memory.level_progress, self.memory.level_jumps,
-                          self.memory.level_deaths)"""
+                    scene.level_id += 1
                 elif scene.level_id == 0 and 3 <= scene.victory_counter:
                     self.memory.update_mem(scene.level_id, scene.deaths,
                                            scene.player.jumps)
-                    """print(self.memory.level_progress, self.memory.level_jumps,
-                          self.memory.level_deaths)"""
 
                 scene.input(keys_pressed, keys_held)
                 scene.update()
@@ -59,6 +59,7 @@ if __name__ == "__main__":
     pygame.mixer.init()
     fps = pygame.time.Clock()
     start_game = Program()
-    start_scene = dsnlevel.MenuScene(40, 360, 0)
+    start_scene = dsnlevel.MenuScene(40, 360, 0, start_game.memory.level_set,
+                                     start_game.memory.ls_elements)
     start_game.run(1080, 576, start_scene)
     pygame.quit()
