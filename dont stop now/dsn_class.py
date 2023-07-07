@@ -112,10 +112,7 @@ class Memory:
     def load_levels(self, in_file):
         self.level_set = {}
         self.ls_elements = {}
-        element_lookup = {"self.platforms": 0,
-                          "self.walls": 1,
-                          "self.win": 2,
-                          "self.deaths": 3}
+
         color_lookup = {
             "DARK_RED": DARK_RED,
             "YELLOW": YELLOW,
@@ -130,35 +127,95 @@ class Memory:
             "EDIT_DARK_GREEN": EDIT_DARK_GREEN,
             "PURPLE": PURPLE
         }
+        """
+        DARK_RED = (139, 0, 0)
+YELLOW = (235, 195, 65)
+BLACK = (0, 0, 0)
+CYAN = (47, 237, 237)
+RED = (194, 57, 33)
+LIME_GREEN = (50, 205, 50)
+LIGHT_RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+GREY = (125, 125, 125)
+LIGHT_PINK = (255, 182, 193)
+EDIT_DARK_GREEN = (1, 100, 32)
+PURPLE = (181, 60, 177)
+        """
 
         with open(in_file, "r") as open_file:
             identifier = ""
-            level_id = 0
+            level_id = 1
 
             for line in open_file.readlines():
-                if re.search("self.[a-zA-Z]+", line):   # Distinguish level elements
-                    identifier = re.search("self.[a-zA-Z]+", line).group()
+                if re.search("self\..*", line):   # Distinguish level elements
+                    identifier = re.search("self\..* = ", line).group()[:-3]
+                elif re.search(r"Text", line):   # Distinguish text
+                    identifier = "Text"
                 elif re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line): # Finding level titles
                     line_search = re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line).group()
-                    self.level_set[level_id] = line_search
+                    format_search = line_search[1:-1].split(", ")
+                    self.level_set[level_id] = [int(format_search[0]),
+                                                int(format_search[1]),
+                                                int(format_search[2])]
                     self.ls_elements[level_id] = {}
                 elif "=" in line.replace("\n", ""):
                     level_id += 1
 
-                if re.search(r"\([a-z]+, [A-Z]+, \[[0-9]+, [0-9]+, [0-9]+, [0-9]+]\)", line):  # Add level elements
-                    rect_line = re.search(r"\([a-z]+, [A-Z]+, \[[0-9]+, [0-9]+, [0-9]+, [0-9]+]\)", line).group()
-                    rect_properties = re.search(r"\[[0-9]+, [0-9]+, [0-9]+, [0-9]+]", rect_line).group()[1:-2].split(", ")
-                    in_rect = DSNElement(rect_line.split(", ")[1],
-                                         pygame.Rect(int(rect_properties[0]),
-                                                     int(rect_properties[1]),
-                                                     int(rect_properties[2]),
-                                                     int(rect_properties[3])))
+                if re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, [0-9]+, [0-9]+\]\)", line):  # Add rect elements
+                    rect_line = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, [0-9]+, [0-9]+]\)", line).group()
+                    rect_properties = re.search(r"\[[0-9]+, [0-9]+, [0-9]+, [0-9]+]", rect_line).group()[1:-1].split(", ")
+                    if re.search("\([0-9]+, [0-9]+, [0-9]+\)", rect_line):
+                        rect_color = re.search("\([0-9]+, [0-9]+, [0-9]+\)", rect_line).group()
+                        in_rect = DSNElement(rect_color,
+                                             pygame.Rect(
+                                                 int(rect_properties[0]),
+                                                 int(rect_properties[1]),
+                                                 int(rect_properties[2]),
+                                                 int(rect_properties[3])), "rect")
+                    else:
+                        rect_color = re.search("([A-Z]+_[A-Z]+|[A-Z]+)", rect_line).group()
+                        in_rect = DSNElement(color_lookup[rect_color],
+                                             pygame.Rect(int(rect_properties[0]),
+                                                         int(rect_properties[1]),
+                                                         int(rect_properties[2]),
+                                                         int(rect_properties[3])), "rect")
+
+                    # add that rect to our element list
                     if identifier not in self.ls_elements[level_id]:
                         self.ls_elements[level_id][identifier] = [in_rect]
                     else:
                         self.ls_elements[level_id][identifier] += [in_rect]
 
-        self.print_levels()
+                elif re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+\], \[[0-9]+, [0-9]+\], [0-9]\)", line): # add line elements
+                    line_info = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+\], \[[0-9]+, [0-9]+\], [0-9]\)", line).group().split(", ")
+                    in_line = DSNElement(line_info[1], [int(line_info[2][1:]),
+                                         int(line_info[3][:-1]),
+                                         int(line_info[4][1:]),
+                                         int(line_info[5][:-1]),
+                                         int(line_info[6][:-1])],
+                                         "line")
+                    # add that line to our element list
+                    if identifier not in self.ls_elements[level_id]:
+                        self.ls_elements[level_id][identifier] = [in_line]
+                    else:
+                        self.ls_elements[level_id][identifier] += [in_line]
+
+                if re.search(r"\(\".*\", \([0-9]+, [0-9]+\), [0-9]+, \"[a-zA-Z]+\", [A-Z]+, None\)", line):
+                    format_search = re.search(r"\(\".*\", \([0-9]+, [0-9]+\), [0-9]+, \"[a-zA-Z]+\", [A-Z]+, None\)", line).group()[1:-1].split(", ")
+                    add_text = Text(format_search[0][1:-1], (int(format_search[1][1:]),
+                                                             int(format_search[2][0:-1])),
+                                    int(format_search[3]),
+                                    format_search[4][1:],
+                                    color_lookup[format_search[5]],
+                                    None)
+
+                    if identifier not in self.ls_elements[level_id]:
+                        self.ls_elements[level_id][identifier] = [add_text]
+                    else:
+                        self.ls_elements[level_id][identifier] += [add_text]
+
+        # self.print_levels is mainly used for debugging purposes only
+        # self.print_levels()
 
     def print_levels(self):
         print(self.level_set)
@@ -168,9 +225,10 @@ class Memory:
 
 class DSNElement:
 
-    def __init__(self, color, rect):
+    def __init__(self, color, shape, type):
         self.color = color
-        self.rect = rect
+        self.shape = shape
+        self.type = type
 
 
 class SquareMe: #lil purple dude
