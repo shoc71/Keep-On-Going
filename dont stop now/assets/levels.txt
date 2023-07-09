@@ -23,13 +23,11 @@ self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 528, 20, 40])]
                           # spawn platform extended
                           pygame.draw.rect(screen, BLACK, [200, 308, 880, 40]),
                           # mid-platform
-                          pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10])
+                          pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]),
                           # floor
-                          ]
-
-        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 528]),
+			  pygame.draw.rect(screen, BLACK, [1070, 0, 10, 528]),
                       pygame.draw.rect(screen, BLACK, [0, 0, 10, 576])
-                      ]
+                          ]
 
 ===
 
@@ -42,12 +40,10 @@ self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 278, 20, 40])]
         pygame.draw.rect(screen, BLACK, [0, 310, 1080,
                                          576])  # visual-only, no collision necessary
         self.platforms = [pygame.draw.rect(screen, BLACK, [0, 310, 1100, 10]),
-                          pygame.draw.rect(screen, BLACK, [350, 290, 300, 30])
+                          pygame.draw.rect(screen, BLACK, [350, 290, 300, 30]),
+			  pygame.draw.rect(screen, BLACK, [1070, 0, 10, 278]),
+                          pygame.draw.rect(screen, BLACK, [0, 0, 10, 320])
                           ]
-
-        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 278]),
-                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 320])
-                      ]
 
 ===
 
@@ -58,12 +54,10 @@ dsnclass.Text("Mind the Gap", (600, 400), 45, "impact", GREY, None)
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 180, 20, 30])]
 
         self.platforms = [pygame.draw.rect(screen, BLACK, [0, 210, 490, 366]),
-                          pygame.draw.rect(screen, BLACK, [540, 210, 540, 366])
+                          pygame.draw.rect(screen, BLACK, [540, 210, 540, 366]),
+			  pygame.draw.rect(screen, BLACK, [1070, 0, 10, 180]),
+                          pygame.draw.rect(screen, BLACK, [0, 0, 10, 210])
                           ]
-
-        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 180]),
-                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 210])
-                      ]
 
         self.respawn_zones = [
             pygame.draw.rect(screen, LIME_GREEN, [270, 180, 20, 20])]
@@ -98,23 +92,21 @@ self.death_zones = [
                           # plat 2
                           pygame.draw.rect(screen, BLACK, [640, 210, 200, 10]),
                           # plat 3
-                          pygame.draw.rect(screen, BLACK, [940, 180, 100, 10])
+                          pygame.draw.rect(screen, BLACK, [940, 180, 100, 10]),
                           # plat 4
+			  pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),
+                    	  # side wall right
+                   	  pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]),
+         	             # side wall left
+             	         pygame.draw.rect(screen, BLACK, [125, 130, 10, 120]),
+           	           # candle stick 1
+            	          pygame.draw.rect(screen, BLACK, [425, 130, 10, 90]),
+            	          # candle stick 2
+            	          pygame.draw.rect(screen, BLACK, [725, 120, 10, 70]),
+            	          # candle stick 3
+             	         pygame.draw.rect(screen, BLACK, [990, 120, 10, 40]),
+            	          # candle stick 4
                           ]
-
-        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),
-                      # side wall right
-                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]),
-                      # side wall left
-                      pygame.draw.rect(screen, BLACK, [125, 130, 10, 120]),
-                      # candle stick 1
-                      pygame.draw.rect(screen, BLACK, [425, 130, 10, 90]),
-                      # candle stick 2
-                      pygame.draw.rect(screen, BLACK, [725, 120, 10, 70]),
-                      # candle stick 3
-                      pygame.draw.rect(screen, BLACK, [990, 120, 10, 40]),
-                      # candle stick 4
-                      ]
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])]
 ===
@@ -139,16 +131,14 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 300, 1100, 277]),
                                            [320, 180, 30, 30]),  # mouse nose
                           pygame.draw.rect(screen, BLACK, [140, 160, 100, 10]),
                           # platform above above the cheese
-                          pygame.draw.rect(screen, BLACK, [450, 100, 50, 30]),
+                          pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),
+                     	 # side wall right
+                  	    pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]),
+                   	   # side wall left
+			  pygame.draw.rect(screen, BLACK, [450, 100, 50, 30]),
                           # mouse ear
                           pygame.draw.rect(screen, LIGHT_PINK, [850, 240, 300, 25])  # mouse tail
                           ]
-
-        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),
-                      # side wall right
-                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]),
-                      # side wall left
-                      ]
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 190, 20, 30])]  # win condition
 
@@ -227,18 +217,16 @@ self.platforms = [pygame.draw.rect(screen, BLACK, [0, 567, 1100, 10]),
                           pygame.draw.rect(screen, BLACK, [850, 275, 100, 25]),
                           pygame.draw.rect(screen, BLACK, [450, 280, 125, 20]),
                           pygame.draw.rect(screen, BLACK, [480, 240, 62, 20]),
-                          pygame.draw.rect(screen, BLACK, [0, 40, 200, 10])
+                          pygame.draw.rect(screen, BLACK, [0, 40, 200, 10]),
                           # plat 1 - x0/y40
+			  pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),  # side wall right
+             	         pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]),  # side wall left
+                	      pygame.draw.rect(screen, BLACK, [400, 0, 10, 40]),  # wall - x400/y0
+            	          pygame.draw.rect(screen, BLACK, [940, 40, 10, 20]),  # wall - x940/y40
+            	          pygame.draw.rect(screen, BLACK, [990, 40, 10, 40]),  # wall - x990/y40
+           	           pygame.draw.rect(screen, BLACK, [500, 140, 10, 40]),  # candle stick 4
+            	          pygame.draw.rect(screen, BLACK, [400, 104, 10, 20])
                           ]
-
-        self.walls = [pygame.draw.rect(screen, BLACK, [1070, 0, 10, 580]),  # side wall right
-                      pygame.draw.rect(screen, BLACK, [0, 0, 10, 580]),  # side wall left
-                      pygame.draw.rect(screen, BLACK, [400, 0, 10, 40]),  # wall - x400/y0
-                      pygame.draw.rect(screen, BLACK, [940, 40, 10, 20]),  # wall - x940/y40
-                      pygame.draw.rect(screen, BLACK, [990, 40, 10, 40]),  # wall - x990/y40
-                      pygame.draw.rect(screen, BLACK, [500, 140, 10, 40]),  # candle stick 4
-                      pygame.draw.rect(screen, BLACK, [400, 104, 10, 20])
-                      ]
 
         self.win_zones = [pygame.draw.rect(screen, CYAN, [1070, 50, 20, 20])]
 
@@ -1043,11 +1031,8 @@ self.platforms =  [
             pygame.draw.rect(screen, (0, 0, 0), [266, 354, 10, 65]),
             pygame.draw.rect(screen, (0, 0, 0), [516, 227, 10, 32]),
             pygame.draw.rect(screen, (0, 0, 0), [305, 148, 10, 49]),
-            pygame.draw.rect(screen, (0, 0, 0), [767, 89, 10, 31])
-        ]
-
-        self.walls =  [
-                pygame.draw.rect(screen, (0, 0, 0), [0, 556, 1080, 20]),
+            pygame.draw.rect(screen, (0, 0, 0), [767, 89, 10, 31]),
+		pygame.draw.rect(screen, (0, 0, 0), [0, 556, 1080, 20]),
                 pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 20]),
                 pygame.draw.rect(screen, (0, 0, 0), [19, 70, 739, 10]),
                 pygame.draw.rect(screen, (0, 0, 0), [326, 132, 739, 10]),
