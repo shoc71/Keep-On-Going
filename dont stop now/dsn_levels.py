@@ -24,7 +24,6 @@ class LevelScene(dsnclass.Scene):
         """
         dsnclass.Scene.__init__(self)
         self.platforms = []
-        self.walls = []
         self.death_zones = []
         self.win_zones = []
         self.respawn_zones = []  # todo: add new respawn zones to levels
@@ -92,8 +91,8 @@ class LevelScene(dsnclass.Scene):
         if self.player.alive and not self.player.freeze and \
                 not self.level_condition:
             self.deaths += self.player.death(self.death_zones)
-            self.player.collision_plat(self.platforms + self.walls)
-            self.player.collision_wall(self.platforms + self.walls)
+            self.player.collision_plat(self.platforms)
+            self.player.collision_wall(self.platforms)
             self.player.move()
             # Respawn for square players
         if not self.player.alive and not self.player.freeze and \
@@ -165,17 +164,7 @@ class MenuScene(LevelScene):
         self.option_count = 0
         self.options = [LevelSelect(self.level_data, level_elements), Filler(self.level_data, level_elements),
                         Filler(self.level_data, level_elements), Filler(self.level_data, level_elements)]
-        # SPEANWNSS
-        '''
-        filler content to identify current_spawn
-        JASLKDKALSDKAd
-        aaskjdajsdkajsdk
-        akjsdjaklsdjad
-        aksjdalskdjalsdja
-        sddkalsdjalsjdloakdja;dsjkad
-        ajsdkajdslkasjldk
-        '''
-        self.mid_jump = False
+
         self.title_splash = dsnclass.Text("DON'T STOP NOW", (540, 100), 100,
                                           "impact", YELLOW, None)
         self.title_text = dsnclass.Text("Press Space or W To Start", (530, 170),
@@ -237,22 +226,8 @@ class MenuScene(LevelScene):
 
     def update(self):
         LevelScene.update(self)
-        """if self.title_guy.square_render is not None:
-            self.title_guy.alive = True
-            if self.title_guy.alive and not self.title_guy.freeze and \
-                    not self.level_condition:
-                self.deaths += self.title_guy.death(self.death_zones)
-                self.title_guy.collision_plat(self.platforms + self.walls)
-                self.title_guy.collision_wall(self.platforms + self.walls)
-                self.title_guy.move()
-            if not self.title_guy.alive and not self.title_guy.freeze and \
-                    not self.level_condition:
-                self.title_guy.xpos = self.x_spawn
-                self.title_guy.ypos = self.y_spawn
-                self.title_guy.direction = 1
-                self.title_guy.gravity_counter = self.player.max_gravity"""
-
         self.player.alive = True
+
         if (random.randint(1, 2500) <= 15) and not self.player.enable_gravity:
             self.victory_counter = len(self.victory_text)
             self.player.jumps += 1
@@ -289,18 +264,16 @@ class MenuScene(LevelScene):
                           pygame.draw.rect(screen, BLACK, [400, 360, 200, 10]),
                           pygame.draw.rect(screen, BLACK, [600, 345, 200, 10]),
                           pygame.draw.rect(screen, BLACK, [800, 330, 200, 10]),
-                          pygame.draw.rect(screen, BLACK, [200, 375, 810, 10])
-                          ]
+                          pygame.draw.rect(screen, BLACK, [200, 375, 810, 10]),
+                          pygame.draw.rect(screen, BLACK, [0, 0, 10, 576]),
+                          pygame.draw.rect(screen, BLACK, [1070, 0, 10, 576]),
+                          pygame.draw.rect(screen, BLACK, [200, 365, 10, 10]),
+                          pygame.draw.rect(screen, BLACK, [400, 350, 10, 10]),
+                          pygame.draw.rect(screen, BLACK, [600, 335, 10, 10]),
+                          pygame.draw.rect(screen, BLACK, [800, 320, 10, 10]),
+                          pygame.draw.rect(screen, BLACK, [1000, 330, 10, 45])]
 
-        self.walls = [pygame.draw.rect(screen, BLACK, [0, 0, 10, 576]),
-                      pygame.draw.rect(screen, BLACK, [1070, 0, 10, 576]),
-                      pygame.draw.rect(screen, BLACK, [200, 365, 10, 10]),
-                      pygame.draw.rect(screen, BLACK, [400, 350, 10, 10]),
-                      pygame.draw.rect(screen, BLACK, [600, 335, 10, 10]),
-                      pygame.draw.rect(screen, BLACK, [800, 320, 10, 10]),
-                      pygame.draw.rect(screen, BLACK, [1000, 330, 10, 45])
-                      ]
-
+        # Menu selector box highlight
         pygame.draw.rect(screen, DARK_RED,
                          self.option_select[self.option_count], 2)
 
@@ -440,7 +413,6 @@ class PlayLevel(LevelSelect):
         self.level_id = play_id
         self.element_names = list(self.level_elements[self.level_id].keys())
         self.collision_objects = {"self.platforms": self.platforms,
-                                  "self.walls": self.walls,
                                   "self.death_zones": self.death_zones,
                                   "self.win_zones": self.win_zones}
         self.render_objects = []
