@@ -335,7 +335,7 @@ class LevelSelect(LevelScene):
                 if every_key == pygame.K_a and 0 < self.choose_id:
                     self.blockmation_time = pygame.time.get_ticks()
                     self.direction = 1
-                if every_key == pygame.K_d and self.choose_id < 999:
+                if every_key == pygame.K_d and self.choose_id < len(self.level_data) - 1:
                     self.blockmation_time = pygame.time.get_ticks()
                     self.direction = -1
 
@@ -359,7 +359,6 @@ class LevelSelect(LevelScene):
 
         LevelScene.render_text(self, screen)
 
-
         left_text = dsnclass.Text(str(self.choose_id - 1),
                                        [(1080 / 2) - 200 + self.text_x,
                                         (576 / 2) + 39], 40, "impact", YELLOW,
@@ -377,7 +376,7 @@ class LevelSelect(LevelScene):
 
         for texts in scroll_text:
             if (1080 / 2) - 225 < texts.text_rect.x < (1080 / 2) + 195 and \
-                    -1 < int(texts.text):
+                    0 < int(texts.text) < len(self.level_data):
                 screen.blit(texts.text_img, texts.text_rect)
                 pygame.draw.rect(screen, (0, 0, 0), [texts.text_rect.x - 20,
                                                      texts.text_rect.y - 5,
@@ -386,10 +385,10 @@ class LevelSelect(LevelScene):
 
         if pygame.time.get_ticks() - self.blockmation_time < 400:
             if self.direction == 1:
-                self.text_x += 2.3
+                self.text_x += 4.4
 
             if self.direction == -1:
-                self.text_x -= 2.3
+                self.text_x -= 4.4
         else:
             if self.text_x != 0:
                 self.choose_id += -1 * self.direction
