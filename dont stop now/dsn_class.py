@@ -270,7 +270,7 @@ class SquareMe: #lil purple dude
 
     def move(self):
         # Move horizontally depending on the direction
-        self.xpos += 2 * self.direction
+        self.xpos += 4 * self.direction
 
         # Gravity and jump functions
         self.gravity()
@@ -288,8 +288,8 @@ class SquareMe: #lil purple dude
 
     def jump(self):
         if self.jump_ability and 0 <= self.jump_boost:
-            self.ypos -= (self.jump_boost ** 2) * 0.001
-            self.jump_boost -= 1
+            self.ypos -= (self.jump_boost ** 2) * 0.002
+            self.jump_boost -= 2
         else:
             self.jump_ability = False
 
@@ -299,7 +299,7 @@ class SquareMe: #lil purple dude
                                                                    self.width,
                                                                    self.height])
 
-        # Visualize collision
+        # Visualize collision, uncomment to see
         """pygame.draw.rect(screen, (55, 230, 50), self.left_col)
         pygame.draw.rect(screen, (55, 230, 50), self.right_col)
         pygame.draw.rect(screen, (55, 230, 50), self.top_col)
@@ -327,35 +327,6 @@ class SquareMe: #lil purple dude
                 object_list[bot_collisions[0]].y + self.height and \
                     collide_x + 6 < self.xpos + self.width and self.xpos < collide_x + collide_width - 6:
                 self.ypos = object_list[bcollide_id].y - self.height
-        # Old platform collision, might delete later :P
-
-        """collisions = self.square_render.collidelistall(object_list)
-        if len(collisions) < 1:
-            self.enable_gravity = True
-
-        for collide_id in collisions:
-            collide_x = object_list[collide_id].x
-            collide_y = object_list[collide_id].y
-            collide_width = object_list[collide_id].width
-            collide_height = object_list[collide_id].height
-
-            if collide_x + 2 < self.xpos + self.width < \
-                    collide_x + collide_width + self.width - 2:
-                self.enable_gravity = False
-                self.jump_ability = True
-                self.gravity_counter = self.max_gravity"""
-
-        # Old roof collision, r.i.p
-        """ # Bottom Platform Collision
-            # Todo: separate into own function later: collision_bottom
-            if collide_x - collide_width < self.xpos + 2 and \
-                    self.xpos + self.width < \
-                    collide_x + collide_width + 2 and \
-                    collide_y + collide_height <= self.ypos + 2:
-                self.ypos += 0.5
-                self.jump_ability = False
-                self.jump_boost = -1
-                self.enable_gravity = True"""
 
         # Top ceiling collision
         top_collisions = self.top_col.collidelistall(object_list)
@@ -366,8 +337,8 @@ class SquareMe: #lil purple dude
             collide_height = object_list[tcollide_id].height
 
             if tcollide_id != -1 and self.square_render.colliderect(object_list[tcollide_id]) and \
-                    collide_x + 6 < self.xpos + self.width and \
-                    self.xpos < collide_x + collide_width - 6:
+                    collide_x + 8 < self.xpos + self.width and \
+                    self.xpos < collide_x + collide_width - 8:
                 self.jump_ability = False
                 self.jump_boost = -1
                 self.enable_gravity = True
@@ -386,7 +357,7 @@ class SquareMe: #lil purple dude
             if lcollide_id != -1 and self.square_render.colliderect(object_list[lcollide_id]) and \
                     collide_y < self.ypos + self.height and \
                     self.ypos < collide_y + collide_height and \
-                object_list[lcollide_id].x + object_list[lcollide_id].width <= self.xpos + 2:
+                object_list[lcollide_id].x + object_list[lcollide_id].width <= self.xpos + 4:
                 self.enable_gravity = True
                 self.direction = 1
 
@@ -399,35 +370,13 @@ class SquareMe: #lil purple dude
             if rcollide_id != -1 and self.square_render.colliderect(object_list[rcollide_id]) and \
                     collide_y < self.ypos + self.height and \
                     self.ypos < collide_y + collide_height and \
-                self.xpos + self.width - 2 <= object_list[rcollide_id].x:
+                self.xpos + self.width - 4 <= object_list[rcollide_id].x:
                 self.enable_gravity = True
                 self.direction = -1
 
-        # Old left and right collision
-        """collisions = self.square_render.collidelistall(object_list)
-        for collide_id in collisions:
-            collide_x = object_list[collide_id].x
-            collide_y = object_list[collide_id].y
-            collide_width = object_list[collide_id].width
-            collide_height = object_list[collide_id].height
-
-            if collide_id != -1 and \
-                    (collide_y < self.ypos + self.height - 1.5) and \
-                    (self.ypos < collide_y + collide_height - 1.5) and \
-                    self.direction == "right" and \
-                    self.xpos + self.width <= collide_x + 2:
-                self.direction = "left"
-
-            if collide_id != -1 and \
-                    (collide_y < self.ypos + self.height - 1.5) and \
-                    (self.ypos < collide_y + collide_height - 1.5) and \
-                    self.direction == "left" and \
-                    collide_x + collide_width - 2 <= self.xpos:
-                self.direction = "right"""
-
     def gravity(self):
         if self.enable_gravity and not self.jump_ability:
-            gravity_y = (self.gravity_counter ** 2) * 0.00004
+            gravity_y = (self.gravity_counter ** 2) * 0.00015
             self.ypos += gravity_y
 
         if self.gravity_counter < 1100:
