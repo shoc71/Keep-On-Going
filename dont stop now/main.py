@@ -59,7 +59,6 @@ if __name__ == "__main__":
     pygame.mixer.init()
     fps = pygame.time.Clock()
     start_game = Program()
-    start_scene = dsnlevel.MenuScene(40, 360, 0, start_game.memory.level_set,
-                                     start_game.memory.ls_elements)
+    start_scene = dsnlevel.MenuScene(40, 360, 0, start_game.memory)
     start_game.run(1080, 576, start_scene)
     pygame.quit()
