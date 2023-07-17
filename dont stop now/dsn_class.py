@@ -337,11 +337,12 @@ class SquareMe: #lil purple dude
             collide_height = object_list[tcollide_id].height
 
             if tcollide_id != -1 and self.square_render.colliderect(object_list[tcollide_id]) and \
-                    collide_x + 8 < self.xpos + self.width and \
-                    self.xpos < collide_x + collide_width - 8:
+                    collide_x + 4 < self.xpos + self.width and \
+                    self.xpos < collide_x + collide_width - 4:
                 self.jump_ability = False
                 self.jump_boost = -1
                 self.enable_gravity = True
+                self.ypos += 2
 
     def collision_wall(self, object_list: [pygame.Rect]):
         # New collision logic:
