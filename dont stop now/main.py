@@ -39,11 +39,13 @@ class Program:
                         500 <= pygame.time.get_ticks() - scene.victory_time):
                     # Update level memory or menu memory
                     self.memory.update_mem(scene.level_id, scene.deaths,
-                                           scene.player.jumps)
+                                           scene.player.jumps, scene.start_time)
                     scene.level_id += 1
                 elif scene.level_id == 0 and 3 <= scene.victory_counter:
                     self.memory.update_mem(scene.level_id, scene.deaths,
-                                           scene.player.jumps)
+                                           scene.player.jumps, scene.start_time)
+                    scene.start_time = pygame.time.get_ticks()
+
 
                 scene.input(keys_pressed, keys_held)
                 scene.update()
