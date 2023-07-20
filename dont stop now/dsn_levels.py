@@ -31,7 +31,7 @@ class LevelScene(dsnclass.Scene):
         self.x_spawn = x_spawn
         self.y_spawn = y_spawn
         self.player = dsnclass.SquareMe(self.x_spawn, self.y_spawn,
-                                        10, 10, PURPLE)
+                                        10, 10, PURPLE, level_memory.diff_lookup[2])
         self.deaths = 0
         self.play_time = 0
         self.level_condition = False
@@ -54,6 +54,7 @@ class LevelScene(dsnclass.Scene):
 
         self.memory = level_memory
         self.level_data, self.level_elements = level_memory.level_set, level_memory.ls_elements
+        self.start_time = pygame.time.get_ticks()
 
     def input(self, pressed, held):
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
@@ -303,7 +304,6 @@ class StatsPage(LevelScene):
         # For now, leave the player clone out of bounds
         LevelScene.__init__(self, -50, -50, level_memory)
         self.memory.level_progress.sort()
-        print(self.memory.level_progress)
         self.level_id = -1
         self.memory = level_memory
         if len(self.memory.level_progress) == 0:
@@ -314,15 +314,7 @@ class StatsPage(LevelScene):
                 "impact", DARK_RED, None)
         else:
             self.select_level = 0
-
-            self.render_stats = [
-                dsnclass.Text("LEVEL: " + str(self.memory.level_progress[self.select_level]),
-                              (1080 / 2, (576 / 2) - 25), 25, "impact", YELLOW, None),
-                dsnclass.Text("Deaths: " + str(self.memory.level_deaths[self.memory.level_progress[self.select_level]]),
-                              (1080 / 2, (576 / 2)), 25, "impact", YELLOW, None),
-                dsnclass.Text("Jumps: " + str(self.memory.level_jumps[self.memory.level_progress[self.select_level]]),
-                              (1080 / 2, (576 / 2) + 25), 25, "impact", YELLOW, None)
-            ]
+            self.update_stats()
 
         self.return_text = dsnclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
@@ -341,19 +333,40 @@ class StatsPage(LevelScene):
                 self.change_scene(MenuScene(40, 360, 0, self.memory))
 
     def update(self):
-        print(self.select_level)
         if self.select_level is not None:
             if len(self.memory.level_progress) - 1 < self.select_level:
                 self.select_level = 0
             elif self.select_level < 0:
                 self.select_level = len(self.memory.level_progress) - 1
 
-            self.render_stats[0] = dsnclass.Text("LEVEL: " + str(self.memory.level_progress[self.select_level]),
-                              (1080 / 2, (576 / 2) - 25), 25, "impact", YELLOW, None)
-            self.render_stats[1] = dsnclass.Text("Deaths: " + str(self.memory.level_deaths[self.memory.level_progress[self.select_level]]),
-                              (1080 / 2, (576 / 2)), 25, "impact", YELLOW, None)
-            self.render_stats[2] = dsnclass.Text("Jumps: " + str(self.memory.level_jumps[self.memory.level_progress[self.select_level]]),
-                              (1080 / 2, (576 / 2) + 25), 25, "impact", YELLOW, None)
+            self.update_stats()
+
+    def update_stats(self):
+        get_time = self.memory.level_times[self.memory.level_progress[self.select_level]]
+        total_time = dsnclass.convert_time(pygame.time.get_ticks())
+        self.render_stats = [
+            dsnclass.Text(
+                "LEVEL: " + str(self.memory.level_progress[self.select_level]),
+                (1080 / 2, (576 / 2) - 25), 25, "impact", YELLOW, None),
+            dsnclass.Text("Deaths: " + str(self.memory.level_deaths[
+                                               self.memory.level_progress[
+                                                   self.select_level]]),
+                          (1080 / 2, (576 / 2)), 25, "impact", YELLOW, None),
+            dsnclass.Text("Jumps: " + str(self.memory.level_jumps[
+                                              self.memory.level_progress[
+                                                  self.select_level]]),
+                          (1080 / 2, (576 / 2) + 25), 25, "impact", YELLOW, None),
+            dsnclass.Text("Total Deaths: " + str(self.memory.total_deaths),
+                          ((1080 / 4), 50), 25, "impact", YELLOW, None),
+            dsnclass.Text("Total Jumps: " + str(self.memory.total_jumps),
+                          ((1080 / 4 * 3), 50), 25, "impact", YELLOW, None),
+            dsnclass.Text("Total Time:",
+                          ((1080 / 4 * 2), 50), 25, "impact", YELLOW, None),
+            dsnclass.Text(str(total_time[0]) + ":" + str(total_time[1]) + ":" + str(total_time[2]),
+                          ((1080 / 4 * 2), 100), 25, "impact", YELLOW, None),
+            dsnclass.Text("Level Time: " + str(get_time[0]) + ":" + str(get_time[1]) + ":" + str(get_time[2]),
+                          ((1080 / 4 * 2), (576 / 2) + 50), 25, "impact", YELLOW, None)
+        ]
 
     def render(self, screen):
         LevelScene.render(self, screen)  # Background Colors or Back-most
@@ -478,7 +491,8 @@ class LevelSelect(LevelScene):
 
 
 class PlayLevel(LevelSelect):
-    def __init__(self, x_spawn, y_spawn, music_value, level_memory, play_id):
+    def __init__(self, x_spawn, y_spawn, music_value,
+                 level_memory, play_id):
         LevelScene.__init__(self, x_spawn, y_spawn, level_memory)
         self.music = dsnclass.Music(music_value)
         self.level_id = play_id
