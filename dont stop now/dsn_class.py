@@ -77,16 +77,25 @@ class Memory:
     def __init__(self):
         self.total_deaths = 0
         self.total_jumps = 0
+        self.total_time = 0
 
         self.level_deaths = {}
         self.level_jumps = {}
+        self.level_times = {}
 
         self.level_progress = []    # collection of level_id's
 
         self.level_set = {}
         self.ls_elements = {}
 
-    def update_mem(self, level_id, death_count, jump_count):
+        # set up game settings
+        self.diff_lookup = {
+            1: 0.6,
+            2: 0.8,
+            3: 1.0
+        }
+
+    def update_mem(self, level_id, death_count, jump_count, level_time):
         self.total_deaths += death_count
         self.total_jumps += jump_count
 
@@ -109,6 +118,24 @@ class Memory:
             self.level_jumps[level_id] = jump_count
             # first time completing that level, make a death count
 
+        # Retrieve the time for that level
+        current_time = convert_time(pygame.time.get_ticks() - level_time)
+
+        # Overwrite an existing time if it's faster than the old time or
+        # write a time if it doesn't exist yet
+        if level_id not in self.level_times:
+            self.level_times[level_id] = current_time
+        elif 1 <= level_id and self.level_times[level_id][0] * (60 ** 2) + \
+                self.level_times[level_id][1] * 60 + \
+                self.level_times[level_id][2] >= \
+                current_time[0] * (60 ** 2) + \
+                current_time[1] * 60 + \
+                current_time[2]:
+            self.level_times[level_id] = current_time
+        elif level_id == 0:
+            self.level_times[level_id] = add_time(self.level_times[level_id], current_time)
+
+
     def load_levels(self, in_file):
         self.level_set = {}
         self.ls_elements = {}
@@ -127,20 +154,6 @@ class Memory:
             "EDIT_DARK_GREEN": EDIT_DARK_GREEN,
             "PURPLE": PURPLE
         }
-        """
-        DARK_RED = (139, 0, 0)
-YELLOW = (235, 195, 65)
-BLACK = (0, 0, 0)
-CYAN = (47, 237, 237)
-RED = (194, 57, 33)
-LIME_GREEN = (50, 205, 50)
-LIGHT_RED = (255, 0, 0)
-WHITE = (255, 255, 255)
-GREY = (125, 125, 125)
-LIGHT_PINK = (255, 182, 193)
-EDIT_DARK_GREEN = (1, 100, 32)
-PURPLE = (181, 60, 177)
-        """
 
         with open(in_file, "r") as open_file:
             identifier = ""
@@ -233,12 +246,13 @@ class DSNElement:
 
 class SquareMe: #lil purple dude
 
-    def __init__(self, x_spawn, y_spawn, width, height, rgb):
+    def __init__(self, x_spawn, y_spawn, width, height, rgb, diff):
         """
         self.square parameters: [
         [x_spawn, y_spawn],
         [width, height]
         [RGB value],
+        difficuty_value
         ]
         """
         self.xpos = x_spawn
@@ -426,3 +440,33 @@ class Scene:
         Set the current scene to nothing and is used to stop the game.
         """
         self.change_scene(None)
+
+
+"""
+!! NOTICE !!
+BELOW ARE A SET OF HELPER FUNCTIONS (STATIC) - Not restricted to classes
+"""
+
+
+def convert_time(in_time):
+    seconds, minutes, hours = 0, 0, 0
+    if in_time > 1000:
+        seconds = round(in_time / 1000)
+    if seconds >= 60:
+        minutes = round(seconds / 60)
+        seconds = seconds % 60
+    if minutes >= 60:
+        hours = round(minutes / 60)
+        minutes = minutes % 60
+
+    return [hours, minutes, seconds]
+
+
+def add_time(old_times, new_times):
+    seconds = old_times[2] + new_times[2]
+    minutes_to_s = (old_times[1] + new_times[1]) * 60
+    hours_to_s = (old_times[0] + new_times[0]) * (60 ** 2)
+    print(old_times, new_times)
+    print(seconds, minutes_to_s, hours_to_s)
+
+    return convert_time((seconds + minutes_to_s + hours_to_s) * 1000)
