@@ -31,7 +31,7 @@ class LevelScene(dsnclass.Scene):
         self.x_spawn = x_spawn
         self.y_spawn = y_spawn
         self.player = dsnclass.SquareMe(self.x_spawn, self.y_spawn,
-                                        10, 10, PURPLE, level_memory.diff_lookup[2])
+                                        10, 10, PURPLE)
         self.deaths = 0
         self.play_time = 0
         self.level_condition = False
@@ -53,8 +53,9 @@ class LevelScene(dsnclass.Scene):
                                           "impact", DARK_RED, None)
 
         self.memory = level_memory
-        self.level_data, self.level_elements = level_memory.level_set, level_memory.ls_elements
-        self.start_time = pygame.time.get_ticks()
+        if level_memory is not None:
+            self.level_data, self.level_elements = level_memory.level_set, level_memory.ls_elements
+            self.start_time = pygame.time.get_ticks()
 
     def input(self, pressed, held):
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
