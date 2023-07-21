@@ -246,7 +246,7 @@ class DSNElement:
 
 class SquareMe: #lil purple dude
 
-    def __init__(self, x_spawn, y_spawn, width, height, rgb, diff):
+    def __init__(self, x_spawn, y_spawn, width, height, rgb):
         """
         self.square parameters: [
         [x_spawn, y_spawn],
