@@ -90,10 +90,21 @@ class Memory:
 
         # set up game settings
         self.diff_lookup = {
-            1: 0.6,
-            2: 0.8,
-            3: 1.0
+            0: 0.6,
+            1: 0.8,
+            2: 1.0
         }
+        self.diff_value = 1   # Normal/Default difficulty value
+
+        self.musi_lookup = {
+            0: 1,
+            1: 2,
+            2: 3,
+            3: 4,
+            4: 5,
+            5: 6
+        }
+        self.musi_value = 4
 
     def update_mem(self, level_id, death_count, jump_count, level_time):
         self.total_deaths += death_count
@@ -134,7 +145,6 @@ class Memory:
             self.level_times[level_id] = current_time
         elif level_id == 0:
             self.level_times[level_id] = add_time(self.level_times[level_id], current_time)
-
 
     def load_levels(self, in_file):
         self.level_set = {}
@@ -246,7 +256,7 @@ class DSNElement:
 
 class SquareMe: #lil purple dude
 
-    def __init__(self, x_spawn, y_spawn, width, height, rgb):
+    def __init__(self, x_spawn, y_spawn, width, height, rgb, diff):
         """
         self.square parameters: [
         [x_spawn, y_spawn],
@@ -272,6 +282,7 @@ class SquareMe: #lil purple dude
         self.direction = 1
         self.max_gravity = 95
         self.gravity_counter = self.max_gravity
+        self.diff_factor = diff
 
         self.jump_sound_1 = pygame.mixer.Sound("jump_sfx.wav")
         self.jump_sound_1.set_volume(0.1)  # out of 1 = 100%
@@ -284,7 +295,7 @@ class SquareMe: #lil purple dude
 
     def move(self):
         # Move horizontally depending on the direction
-        self.xpos += 4 * self.direction
+        self.xpos += (4 * self.direction) * self.diff_factor
 
         # Gravity and jump functions
         self.gravity()
@@ -302,8 +313,8 @@ class SquareMe: #lil purple dude
 
     def jump(self):
         if self.jump_ability and 0 <= self.jump_boost:
-            self.ypos -= (self.jump_boost ** 2) * 0.002
-            self.jump_boost -= 2
+            self.ypos -= ((self.jump_boost ** 2) * 0.002) * self.diff_factor
+            self.jump_boost -= 2 * self.diff_factor
         else:
             self.jump_ability = False
 
@@ -391,11 +402,11 @@ class SquareMe: #lil purple dude
 
     def gravity(self):
         if self.enable_gravity and not self.jump_ability:
-            gravity_y = (self.gravity_counter ** 2) * 0.00015
-            self.ypos += gravity_y
+            gravity_y = ((self.gravity_counter ** 2) * 0.00015) / self.diff_factor
+            self.ypos += gravity_y * self.diff_factor
 
         if self.gravity_counter < 1100:
-            self.gravity_counter += 2
+            self.gravity_counter += 2 * self.diff_factor
 
     def death(self, death_list: [pygame.Rect]):
         collide_id = self.square_render.collidelist(death_list)
