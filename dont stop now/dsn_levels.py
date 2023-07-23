@@ -31,7 +31,7 @@ class LevelScene(dsnclass.Scene):
         self.x_spawn = x_spawn
         self.y_spawn = y_spawn
         self.player = dsnclass.SquareMe(self.x_spawn, self.y_spawn,
-                                        10, 10, PURPLE)
+                                        10, 10, PURPLE, level_memory.diff_lookup[level_memory.diff_value])
         self.deaths = 0
         self.play_time = 0
         self.level_condition = False
@@ -165,7 +165,7 @@ class MenuScene(LevelScene):
         LevelScene.__init__(self, xspawn, yspawn, level_memory)
         self.level_id = 0
         self.option_count = 0
-        self.options = [LevelSelect(level_memory), Filler(level_memory),
+        self.options = [LevelSelect(level_memory), OptionsPage(level_memory),
                         StatsPage(level_memory), Filler(level_memory)]
 
         self.title_splash = dsnclass.Text("DON'T STOP NOW", (540, 100), 100,
@@ -298,6 +298,96 @@ class Filler(dsnclass.Scene):
     def render(self, screen):
         screen.fill(WHITE)
         screen.blit(self.filler_text.text_img, self.filler_text.text_rect)
+
+
+# todo: Optimize OptionsPage option selecting
+class OptionsPage(LevelScene):
+    def __init__(self, level_memory):
+        LevelScene.__init__(self, -50, -50, level_memory)
+        self.setting_options = {
+            0: level_memory.diff_lookup,
+            1: level_memory.musi_lookup
+        }
+
+        self.num_to_diff = {0.6: "Easy", 0.8: "Medium", 1.0: "Hard"}
+        self.setting_words = []
+        self.update_text()
+
+        self.choose_setting = 0
+        self.change_setting = self.memory.diff_value
+
+        self.option_title = dsnclass.Text("OPTIONS", ((1080 / 2), 50), 50,
+                                          "impact", DARK_RED, None)
+        self.return_text = dsnclass.Text(
+            "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
+            "impact", YELLOW, None)
+
+    def input(self, pressed, held):
+        for action in pressed:
+            if action in [pygame.K_s, pygame.K_DOWN]:
+                self.choose_setting += 1
+            elif action in [pygame.K_w, pygame.K_UP]:
+                self.choose_setting -= 1
+
+            if action in [pygame.K_s, pygame.K_DOWN, pygame.K_w, pygame.K_UP]:
+                if self.choose_setting == 0:
+                    self.change_setting = self.memory.diff_value
+                elif self.choose_setting == 1:
+                    self.change_setting = self.memory.musi_value
+
+            if action in [pygame.K_a, pygame.K_LEFT]:
+                self.change_setting -= 1
+            elif action in [pygame.K_d, pygame.K_RIGHT]:
+                self.change_setting += 1
+
+            if action is pygame.K_r:
+                self.change_scene(MenuScene(40, 360, 0, self.memory))
+
+    def update(self):
+        if self.choose_setting < 0:
+            self.choose_setting = len(self.setting_options) - 1
+        elif len(self.setting_options) - 1 < self.choose_setting:
+            self.choose_setting = 0
+        if self.change_setting < 0:
+            self.change_setting = len(self.setting_options[self.choose_setting]) - 1
+        elif len(self.setting_options[self.choose_setting]) - 1 < self.change_setting:
+            self.change_setting = 0
+
+        # Apply those changes
+        if self.choose_setting == 0:
+            self.memory.diff_value = self.change_setting
+        elif self.choose_setting == 1:
+            self.memory.musi_value = self.change_setting
+
+        self.update_text()
+
+    def render(self, screen):
+        LevelScene.render(self, screen)  # Background Colors or Back-most
+        self.render_level(screen)  # Level Elements or Middle
+
+        for text_index in range(len(self.setting_words)):
+            screen.blit(self.setting_words[text_index].text_img,
+                        self.setting_words[text_index].text_rect)
+
+        # Render option_title
+        screen.blit(self.option_title.text_img, self.option_title.text_rect)
+        screen.blit(self.return_text.text_img, self.return_text.text_rect)
+        hl_rect = self.setting_words[self.choose_setting].text_rect
+        pygame.draw.rect(screen, DARK_RED,
+                         [hl_rect.x - 4, hl_rect.y - 1,
+                          hl_rect.width + 8, hl_rect.height + 2], 2)
+
+        LevelScene.render_text(self, screen)
+
+    def update_text(self):
+        self.setting_words = [
+            dsnclass.Text("Difficulty: " + str(self.num_to_diff[self.memory.diff_lookup[self.memory.diff_value]]),
+                          ((1080 / 2), 300), 50, "impact",
+                          YELLOW, None),
+            dsnclass.Text("Music: " + str(self.memory.musi_value),
+                          ((1080 / 2), 375), 50, "impact",
+                          YELLOW, None)
+        ]
 
 
 class StatsPage(LevelScene):
