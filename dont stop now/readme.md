@@ -7,4 +7,6 @@ You will always be moving in one direction, so it's better to jump, leap, and ma
 * Reach the ${\color{cyan}CYAN}$ to win and continue to the next level.
 * Touch the ${\color{lightgreen}LIGHT \space GREEN}$ for a checkpoint, allowing you to come back here if ${\color{red}STOPPED}$
 
+* If you ever feel that the pacing is too quick, you can change the speed and difficulty in the options!
+
 Complete all the levels that you can (with some secrets too. hehe). But Don't Stop Now.
