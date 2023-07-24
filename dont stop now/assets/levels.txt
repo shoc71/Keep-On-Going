@@ -1328,7 +1328,58 @@ self.win_zones =  [
 
 ===
 
+EasyLevel21(48, 94, 1)
+
+dsnclass.Text("lava comb", (900, 252), 60, "impact", GREY, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 9, 13, 560]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 24]),
+        pygame.draw.rect(screen, (0, 0, 0), [1067, 9, 13, 560]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 552, 1080, 24]),
+        pygame.draw.rect(screen, (0, 0, 0), [42, 120, 158, 14]),
+        pygame.draw.rect(screen, (0, 0, 0), [301, 159, 214, 14]),
+        pygame.draw.rect(screen, (0, 0, 0), [619, 223, 154, 14]),
+        pygame.draw.rect(screen, (0, 0, 0), [869, 320, 182, 14]),
+        pygame.draw.rect(screen, (0, 0, 0), [641, 369, 159, 14]),
+        pygame.draw.rect(screen, (0, 0, 0), [405, 417, 188, 14]),
+        pygame.draw.rect(screen, (0, 0, 0), [241, 474, 133, 14]),
+        pygame.draw.rect(screen, (0, 0, 0), [55, 512, 145, 14])
+]
+
+self.draw =  [
+        pygame.draw.rect(screen, (194, 57, 33), [12, 23, 1055, 18]),
+        pygame.draw.rect(screen, (194, 57, 33), [1054, 38, 13, 200]),
+        pygame.draw.rect(screen, (194, 57, 33), [868, 38, 13, 117]),
+        pygame.draw.rect(screen, (194, 57, 33), [892, 38, 13, 146]),
+        pygame.draw.rect(screen, (194, 57, 33), [916, 38, 13, 164]),
+        pygame.draw.rect(screen, (194, 57, 33), [939, 38, 13, 178]),
+        pygame.draw.rect(screen, (194, 57, 33), [966, 38, 13, 188]),
+        pygame.draw.rect(screen, (194, 57, 33), [989, 38, 13, 195]),
+        pygame.draw.rect(screen, (194, 57, 33), [1010, 38, 13, 98]),
+        pygame.draw.rect(screen, (194, 57, 33), [1032, 38, 13, 117]),
+        pygame.draw.rect(screen, (194, 57, 33), [508, 40, 558, 14])
+]
+
+self.death_zones =  [
+        pygame.draw.rect(screen, (139, 0, 0), [238, 107, 13, 265]),
+        pygame.draw.rect(screen, (139, 0, 0), [546, 140, 13, 163]),
+        pygame.draw.rect(screen, (139, 0, 0), [619, 356, 13, 191]),
+        pygame.draw.rect(screen, (139, 0, 0), [386, 409, 13, 144]),
+        pygame.draw.rect(screen, (139, 0, 0), [211, 469, 13, 68]),
+        pygame.draw.rect(screen, (139, 0, 0), [12, 529, 1055, 23]),
+        pygame.draw.rect(screen, (139, 0, 0), [794, 222, 13, 43])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [0, 462, 13, 68])
+]
+
 ===
+
+EasyLevel22(48, 94, 1)
+
+dsnclass.Text("lava comb", (900, 252), 60, "impact", GREY, None)
 
 ===
 
