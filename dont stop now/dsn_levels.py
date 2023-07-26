@@ -57,35 +57,41 @@ class LevelScene(dsnclass.Scene):
             self.level_data, self.level_elements = level_memory.level_set, level_memory.ls_elements
             self.start_time = pygame.time.get_ticks()
 
-    def input(self, pressed, held):
-        if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
-                and not self.player.enable_gravity and self.player.alive and \
-                0 < self.player.jumps and not self.player.freeze:
-            self.player.jump_ability = True
-            self.player.jump_boost = self.player.max_jump
-            self.player.jump_sound_1.play()
-            self.player.jumps += 1
+        self.jump_timer = pygame.time.get_ticks()
 
+    def input(self, pressed, held):
+        print(pygame.time.get_ticks() - self.jump_timer)
         for every_key in pressed:
             """   removed the instant return to menu, this will be apart of the
             pause menu now
             """
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
                     self.player.enable_gravity and self.player.alive and not \
-                    self.player.freeze:
+                    self.player.freeze and 150 <= pygame.time.get_ticks() - self.jump_timer:
                 self.player.jump_ability = True
                 self.player.jump_boost = self.player.max_jump
                 self.player.jump_sound_1.play()
                 self.player.jumps += 1
+                self.jump_timer = pygame.time.get_ticks()
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] \
                     and not self.player.alive:
                 self.player.alive = True
+                self.jump_timer = pygame.time.get_ticks()
             if every_key == pygame.K_ESCAPE and not self.level_condition:
                 self.player.freeze = not self.player.freeze
             if every_key == pygame.K_q and self.player.freeze:
                 self.run_scene = False
             if self.player.freeze and every_key == pygame.K_r:
                 self.change_scene(MenuScene(40, 360, 0, self.memory))
+
+        if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
+                and not self.player.enable_gravity and self.player.alive and \
+                0 < self.player.jumps and not self.player.freeze and 150 <= pygame.time.get_ticks() - self.jump_timer:
+            self.player.jump_ability = True
+            self.player.jump_boost = self.player.max_jump
+            self.player.jump_sound_1.play()
+            self.player.jumps += 1
+
 
     def update(self):
         if self.player.square_render is None:  # very important, else game crashes
@@ -117,8 +123,10 @@ class LevelScene(dsnclass.Scene):
         if self.player.alive and \
                 self.player.square_render.collidelist(self.respawn_zones) != -1:
             respawn_block = self.player.square_render.collidelist(self.respawn_zones)
-            self.x_spawn = self.respawn_zones[respawn_block].x + (self.respawn_zones[respawn_block].width / 4)
-            self.y_spawn = self.respawn_zones[respawn_block].y + (self.respawn_zones[respawn_block].height / 4)
+            self.x_spawn = self.respawn_zones[respawn_block].x + \
+                           (self.respawn_zones[respawn_block].width / 2) - 5
+            self.y_spawn = self.respawn_zones[respawn_block].y + \
+                           (self.respawn_zones[respawn_block].height / 2) - 5
 
     def victory(self, screen):
         if 500 <= pygame.time.get_ticks() - self.victory_time and \
@@ -490,6 +498,9 @@ class LevelSelect(LevelScene):
 
         self.memory = level_memory
 
+        self.repjump_time = 0
+        self.speed_jump = 1
+
     def input(self, pressed, held):
         for every_key in pressed:
             if every_key == pygame.K_r:
@@ -508,22 +519,54 @@ class LevelSelect(LevelScene):
                 self.player.jump_sound_1.play()
                 self.player.jumps += 1
 
-                if every_key == pygame.K_a and 0 < self.choose_id:
+                if every_key == pygame.K_a and 1 < self.choose_id:
                     self.blockmation_time = pygame.time.get_ticks()
                     self.direction = 1
                 if every_key == pygame.K_d and self.choose_id < len(self.level_data) - 1:
                     self.blockmation_time = pygame.time.get_ticks()
                     self.direction = -1
 
+        if held[pygame.K_a] and 1 < self.choose_id and \
+                self.player.jump_ability and \
+                not self.player.enable_gravity and \
+                (405 / self.speed_jump) < pygame.time.get_ticks() - self.blockmation_time:
+            self.player.jump_boost = self.player.max_jump
+            self.player.jump_sound_1.play()
+            self.player.jumps += 1
+
+            self.blockmation_time = pygame.time.get_ticks()
+            self.direction = 1
+        elif held[pygame.K_d] and self.choose_id < len(self.level_data) - 1 and \
+                self.player.jump_ability and \
+                not self.player.enable_gravity and \
+                (405 / self.speed_jump) < pygame.time.get_ticks() - self.blockmation_time:
+            self.player.jump_boost = self.player.max_jump
+            self.player.jump_sound_1.play()
+            self.player.jumps += 1
+ 
+            self.blockmation_time = pygame.time.get_ticks()
+            self.direction = -1
+
+        if not held[pygame.K_a] and not held[pygame.K_d]:
+            self.repjump_time = pygame.time.get_ticks()
+
     def update(self):
         LevelScene.update(self)
         self.player.alive = True
         self.player.xpos = self.x_spawn
+        self.player.diff_factor = self.speed_jump
         if self.y_spawn <= self.player.ypos:
             self.player.ypos = self.y_spawn
             self.player.enable_gravity = False
             self.player.gravity_counter = self.player.max_gravity
             self.player.jump_ability = True
+
+        print(self.repjump_time)
+        if 3000 <= pygame.time.get_ticks() - self.repjump_time:
+            self.speed_jump = 2
+            print("boost")
+        else:
+            self.speed_jump = 1
 
     def render(self, screen):
         LevelScene.render(self, screen)
@@ -559,7 +602,7 @@ class LevelSelect(LevelScene):
                                                      texts.text_rect.width + 40,
                                                      texts.text_rect.height + 10], 4)
 
-        if pygame.time.get_ticks() - self.blockmation_time < 400:
+        if pygame.time.get_ticks() - self.blockmation_time < 400 / self.speed_jump:
             if self.direction == 1:
                 self.text_x += 4.4
 
@@ -590,9 +633,9 @@ class PlayLevel(LevelSelect):
         self.element_names = list(self.level_elements[self.level_id].keys())
         self.collision_objects = {"self.platforms": self.platforms,
                                   "self.death_zones": self.death_zones,
-                                  "self.win_zones": self.win_zones}
+                                  "self.win_zones": self.win_zones,
+                                  "self.respawn_zones": self.respawn_zones}
         self.render_objects = []
-
         for name in self.element_names:
             if name != "Text" and name in self.level_elements[self.level_id]:
                 for element in self.level_elements[self.level_id][name]:
