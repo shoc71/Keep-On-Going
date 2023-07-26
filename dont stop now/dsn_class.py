@@ -383,7 +383,7 @@ class SquareMe: #lil purple dude
             if lcollide_id != -1 and self.square_render.colliderect(object_list[lcollide_id]) and \
                     collide_y < self.ypos + self.height and \
                     self.ypos < collide_y + collide_height and \
-                object_list[lcollide_id].x + object_list[lcollide_id].width <= self.xpos + 4:
+                object_list[lcollide_id].x + object_list[lcollide_id].width <= round(self.xpos + 4):
                 self.enable_gravity = True
                 self.direction = 1
 
@@ -396,7 +396,7 @@ class SquareMe: #lil purple dude
             if rcollide_id != -1 and self.square_render.colliderect(object_list[rcollide_id]) and \
                     collide_y < self.ypos + self.height and \
                     self.ypos < collide_y + collide_height and \
-                self.xpos + self.width - 4 <= object_list[rcollide_id].x:
+                round(self.xpos + self.width - 4) <= object_list[rcollide_id].x:
                 self.enable_gravity = True
                 self.direction = -1
 
