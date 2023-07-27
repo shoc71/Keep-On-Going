@@ -15,6 +15,13 @@ LIGHT_PINK = (255, 182, 193)
 EDIT_DARK_GREEN = (1, 100, 32)
 PURPLE = (181, 60, 177)
 
+dont_image_text = pygame.image.load("dont (custom).png") # ratio is 15:8
+stop_image_text = pygame.image.load("stop (custom).png")
+now_image_text = pygame.image.load("now (custom).png")
+# print (dont_image_text.get_rect())
+# Image_text_size = (375,200) 
+# dont_text = pygame.transform.scale(dont_image_text, Image_text_size)
+# dont_text_rect = dont_text.get_rect()
 
 class LevelScene(dsnclass.Scene):
     def __init__(self, x_spawn, y_spawn, level_memory):
@@ -251,7 +258,9 @@ class MenuScene(LevelScene):
         LevelScene.render(self, screen)  # Background Colors or Back-most
         self.render_level(screen)  # Level Elements or Middle
         # Text or Front-most
-        screen.blit(self.title_splash.text_img, self.title_splash.text_rect)
+        screen.blit(dont_image_text, (90, 10))
+        screen.blit(stop_image_text, (410, 10))
+        screen.blit(now_image_text, (720, 10)) 
         screen.blit(self.title_text.text_img, self.title_text.text_rect)
         screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)
         screen.blit(self.title_text_s1.text_img, self.title_text_s1.text_rect)
@@ -677,7 +686,6 @@ class PlayLevel(LevelSelect):
                                  [element.shape[0], element.shape[1]],
                                  [element.shape[2], element.shape[3]],
                                  element.shape[4])
-
 
 
 
