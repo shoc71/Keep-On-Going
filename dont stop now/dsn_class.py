@@ -174,7 +174,8 @@ class Memory:
                     identifier = re.search("self\..* = ", line).group()[:-3]
                 elif re.search(r"Text", line):   # Distinguish text
                     identifier = "Text"
-                elif re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line): # Finding level titles
+                elif re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line) and \
+                        "pygame" not in line: # Finding level titles
                     line_search = re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line).group()
                     format_search = line_search[1:-1].split(", ")
                     self.level_set[level_id] = [int(format_search[0]),
@@ -243,7 +244,7 @@ class Memory:
     def print_levels(self):
         print(self.level_set)
         print()
-        print(self.ls_elements)
+        #print(self.ls_elements)
 
 
 class DSNElement:
@@ -477,7 +478,7 @@ def add_time(old_times, new_times):
     seconds = old_times[2] + new_times[2]
     minutes_to_s = (old_times[1] + new_times[1]) * 60
     hours_to_s = (old_times[0] + new_times[0]) * (60 ** 2)
-    print(old_times, new_times)
-    print(seconds, minutes_to_s, hours_to_s)
+    #print(old_times, new_times)
+    #print(seconds, minutes_to_s, hours_to_s)
 
     return convert_time((seconds + minutes_to_s + hours_to_s) * 1000)
