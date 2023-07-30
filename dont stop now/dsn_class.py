@@ -164,7 +164,9 @@ class Memory:
             "GREY": GREY,
             "LIGHT_PINK": LIGHT_PINK,
             "EDIT_DARK_GREEN": EDIT_DARK_GREEN,
-            "PURPLE": PURPLE
+            "PURPLE": PURPLE,
+            "BLUE": BLUE,
+            "ORANGE": ORANGE
         }
 
         with open(in_file, "r") as open_file:
