@@ -4,6 +4,8 @@ import re
 DARK_RED = (139, 0, 0)
 YELLOW = (235, 195, 65)
 BLACK = (0, 0, 0)
+ORANGE = (255, 165, 0)
+BLUE = (30, 144, 255)
 CYAN = (47, 237, 237)
 RED = (194, 57, 33)
 LIME_GREEN = (50, 205, 50)
