@@ -201,7 +201,7 @@ class Memory:
                                                  int(rect_properties[2]),
                                                  int(rect_properties[3])), "rect")
                     else:
-                        rect_color = re.search("([A-Z]+_[A-Z]+|[A-Z]+)", rect_line).group()
+                        rect_color = re.search("([A-Z]+_[A-Z]+_[A-Z]+|[A-Z]+_[A-Z]+|[A-Z]+)", rect_line).group()
                         in_rect = DSNElement(color_lookup[rect_color],
                                              pygame.Rect(int(rect_properties[0]),
                                                          int(rect_properties[1]),
@@ -248,7 +248,7 @@ class Memory:
     def print_levels(self):
         print(self.level_set)
         print()
-        #print(self.ls_elements)
+        print(self.ls_elements)
 
 
 class DSNElement:
