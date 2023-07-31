@@ -16,6 +16,7 @@ GREY = (125, 125, 125)
 LIGHT_PINK = (255, 182, 193)
 EDIT_DARK_GREEN = (1, 100, 32)
 PURPLE = (181, 60, 177)
+BROWN = (150, 75, 0)
 
 dont_image_text = pygame.image.load("dont (custom).png")  # ratio is 15:8
 stop_image_text = pygame.image.load("stop (custom).png")
