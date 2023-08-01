@@ -106,8 +106,8 @@ class LevelScene(dsnclass.Scene):
         if self.player.alive and not self.player.freeze and \
                 not self.level_condition:
             self.deaths += self.player.death(self.death_zones)
-            self.player.collision_plat(self.platforms)
-            self.player.collision_wall(self.platforms)
+            self.player.collision_plat(self.platforms) # up and down
+            self.player.collision_wall(self.platforms) # left and right
             self.player.move()
             # Respawn for square players
         if not self.player.alive and not self.player.freeze and \
@@ -120,6 +120,7 @@ class LevelScene(dsnclass.Scene):
             self.player.alive = False
             self.deaths += 1
 
+        # This is when you win
         if self.player.alive and \
                 self.player.square_render.collidelist(self.win_zones) != -1:
             self.level_condition = True
@@ -586,7 +587,7 @@ class LevelSelect(LevelScene):
             self.player.jump_ability = True
 
         if 3000 <= pygame.time.get_ticks() - self.repjump_time:
-            self.speed_jump = 2
+            self.speed_jump = 5
         else:
             self.speed_jump = 1
 
@@ -701,4 +702,128 @@ class PlayLevel(LevelSelect):
                                  [element.shape[2], element.shape[3]],
                                  element.shape[4])
 
+class LevelZero(LevelScene):
+    def __init__(self, x_spawn, y_spawn, music_value,
+                 level_memory, play_id):
+        LevelScene.__init__(self, x_spawn, y_spawn, level_memory)
+        self.music = dsnclass.Music(music_value)
+        self.level_id = play_id
+        self.element_names = list(self.level_elements[self.level_id].keys())
 
+        self.choose_level = None
+
+        self.morse_check = "" 
+        self.input_block = []
+        self.delete_block = []
+        self.check_block = [] # visual indicator - you're on the right track
+        self.display_letter_block_1 = []
+        self.display_letter_block_2 = []
+        self.display_letter_block_3 = []
+        self.display_letter_block_4 = []
+        self.display_letter_block_5 = []
+        self.display_check_block = []
+        self.short_dot = []
+        self.long_dot = []
+
+        self.collision_objects = {
+            "self.platforms": self.platforms,
+            "self.delete_block": self.delete_block,
+            "self.input_block": self.input_block,
+            "self.check_block": self.check_block,
+            "self.display_letter_block_1": self.display_letter_block_1,
+            "self.display_letter_block_2": self.display_letter_block_2,
+            "self.display_letter_block_3": self.display_letter_block_3,
+            "self.display_letter_block_4": self.display_letter_block_4,
+            "self.display_letter_block_5": self.display_letter_block_5,
+            "self.self.display_check_block": self.display_check_block,
+            "self.short_dot" : self.short_dot,
+            "self.long_dot" : self.long_dot
+            }
+        
+        self.render_objects = []
+        for name in self.element_names:
+            if name != "Text" and name in self.level_elements[self.level_id]:
+                for element in self.level_elements[self.level_id][name]:
+                    if name in self.collision_objects:
+                        self.collision_objects[name] += [element.shape]
+                    self.render_objects += [element]
+
+    
+    def input(self, pressed, held):
+        LevelScene.input(self, pressed, held)
+
+
+    def update(self):
+        LevelScene.update(self)
+
+        # This is when you win
+        if self.player.alive and \
+                self.player.square_render.collidelist(self.short_dot) != -1:
+            self.morse_check = self.morse_check + "s"
+        elif self.player.alive and \
+                self.player.square_render.collidelist(self.long_dot) != -1:
+            self.morse_check = self.morse_check + "l"
+            # self.level_condition = True
+            # self.player.alive = False
+        
+        # for p in pressed:
+
+            # if 
+        
+        # checking morse code in levels
+        self.dict1 = {
+            ["short","short","short"] : PlayLevel(48, 53, 1, self.memory, 11)
+            }
+        if self.morse_check in self.dict1:
+            self.choose_level = self.dict1["short","short","short"]
+
+        # checking for morse list exceeding character limit
+        if len(self.morse_check) > 5:
+            print("limit reached")
+            self.display_check_block_1 = []
+            self.display_check_block_2 = []
+            self.display_check_block_3 = []
+            self.display_check_block_4 = []
+            self.display_check_block_5 = []
+
+
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+        self.render_level(screen)
+        self.platforms =  [
+            pygame.draw.rect(screen, (0, 0, 0), [1064, 0, 16, 576]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 16, 576]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 23]),
+            pygame.draw.rect(screen, (0, 0, 0), [0, 553, 1080, 23])
+        ]
+        self.input_block = [pygame.draw.rect(screen, (50, 205, 50), [415, 415, 72, 71])]
+        self.delete_block = [pygame.draw.rect(screen, (255, 0, 0), [192, 415, 72, 71])]
+        self.check_block = [pygame.draw.rect(screen, (30, 144, 255), [642, 415, 72, 71])]
+        self.display_check_block = [pygame.draw.rect(screen, (50, 205, 50), [946, 162, 48, 46])]
+        self.display_letter_block = [
+            pygame.draw.rect(screen, (1, 100, 32), [136, 117, 67, 90]),
+            pygame.draw.rect(screen, (1, 100, 32), [275, 117, 67, 90]),
+            pygame.draw.rect(screen, (1, 100, 32), [443, 117, 67, 90]),
+            pygame.draw.rect(screen, (1, 100, 32), [616, 117, 67, 90]),
+            pygame.draw.rect(screen, (1, 100, 32), [797, 117, 67, 90])
+        ]
+        
+        self.long_dot = [
+            pygame.draw.rect(screen, (47, 237, 237), [1031, 434, 33, 85])
+        ]
+
+        self.short_dot = [
+            pygame.draw.rect(screen, (47, 237, 237), [16, 478, 36, 39])
+        ]
+        
+        # Text Rendering
+        # if "Text" in self.level_elements[self.level_id]:
+        #     for text in self.level_elements[self.level_id]["Text"]:
+        #         screen.blit(text.text_img, text.text_rect)
+
+        LevelScene.render_text(self, screen)
+
+    def render_level(self, screen):
+        # No death zones in this level!
+        pass
