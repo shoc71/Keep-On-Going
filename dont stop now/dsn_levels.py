@@ -544,7 +544,7 @@ class LevelSelect(LevelScene):
                     self.blockmation_time = pygame.time.get_ticks()
                     self.direction = 1
                 if every_key == pygame.K_d and self.choose_id < len(
-                        self.level_data) - 1:
+                        self.level_data):
                     self.blockmation_time = pygame.time.get_ticks()
                     self.direction = -1
 
@@ -559,7 +559,7 @@ class LevelSelect(LevelScene):
 
             self.blockmation_time = pygame.time.get_ticks()
             self.direction = 1
-        elif held[pygame.K_d] and self.choose_id < len(self.level_data) - 1 and \
+        elif held[pygame.K_d] and self.choose_id < len(self.level_data) and \
                 self.player.jump_ability and \
                 not self.player.enable_gravity and \
                 (
@@ -617,7 +617,7 @@ class LevelSelect(LevelScene):
 
         for texts in scroll_text:
             if (1080 / 2) - 225 < texts.text_rect.x < (1080 / 2) + 195 and \
-                    0 < int(texts.text) < len(self.level_data):
+                    0 < int(texts.text) <= len(self.level_data):
                 screen.blit(texts.text_img, texts.text_rect)
                 pygame.draw.rect(screen, (0, 0, 0), [texts.text_rect.x - 20,
                                                      texts.text_rect.y - 5,
