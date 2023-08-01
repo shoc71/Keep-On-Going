@@ -194,8 +194,8 @@ class Memory:
                     rect_line = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, [0-9]+, [0-9]+]\)", line).group()
                     rect_properties = re.search(r"\[[0-9]+, [0-9]+, [0-9]+, [0-9]+]", rect_line).group()[1:-1].split(", ")
                     if re.search("\([0-9]+, [0-9]+, [0-9]+\)", rect_line):
-                        rect_color = re.search("\([0-9]+, [0-9]+, [0-9]+\)", rect_line).group()
-                        in_rect = DSNElement(rect_color,
+                        rect_color = re.search("\([0-9]+, [0-9]+, [0-9]+\)", rect_line).group().split(",")
+                        in_rect = DSNElement((int(rect_color[0][1:]), int(rect_color[1][1:]), int(rect_color[2][1:-1])),
                                              pygame.Rect(
                                                  int(rect_properties[0]),
                                                  int(rect_properties[1]),
@@ -229,13 +229,21 @@ class Memory:
                     else:
                         self.ls_elements[level_id][identifier] += [in_line]
 
-                if re.search(r"\(\".*\", \([0-9]+, [0-9]+\), [0-9]+, \"[a-zA-Z]+\", [A-Z]+, None\)", line):
-                    format_search = re.search(r"\(\".*\", \([0-9]+, [0-9]+\), [0-9]+, \"[a-zA-Z]+\", [A-Z]+, None\)", line).group()[1:-1].split(", ")
+                if re.search(r"\(\".*\", \([0-9]+, [0-9]+\), [0-9]+, \"[a-zA-Z]+\", ([A-Z]+_[A-Z]+_[A-Z]+|[A-Z]+_[A-Z]+|[A-Z]+|\([0-9]+, [0-9]+, [0-9]+\)), None\)", line):
+                    format_search = re.search(r"\(\".*\", \([0-9]+, [0-9]+\), [0-9]+, \"[a-zA-Z]+\", ([A-Z]+_[A-Z]+_[A-Z]+|[A-Z]+_[A-Z]+|[A-Z]+|\([0-9]+, [0-9]+, [0-9]+\)), None\)", line).group()[1:-1].split(", ")
+                    text_color = ""
+                    if 7 < len(format_search):
+                        text_color = (int(format_search[5][1:]),
+                                      int(format_search[6]),
+                                      int(format_search[7][:-1]))
+                    else:
+                        text_color = color_lookup[format_search[5]]
+
                     add_text = Text(format_search[0][1:-1], (int(format_search[1][1:]),
                                                              int(format_search[2][0:-1])),
                                     int(format_search[3]),
                                     format_search[4][1:],
-                                    color_lookup[format_search[5]],
+                                    text_color,
                                     None)
 
                     if identifier not in self.ls_elements[level_id]:
