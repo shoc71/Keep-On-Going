@@ -304,8 +304,8 @@ class SquareMe: #lil purple dude
         # Update collision logic position
         self.left_col = pygame.Rect(self.xpos - 20, self.ypos + 3, 20 + 1, self.height - 4)
         self.right_col = pygame.Rect(self.xpos + self.width - 1, self.ypos + 3, 20 + 1, self.height - 4)
-        self.top_col = pygame.Rect(self.xpos + 1, self.ypos - 20, self.width - 2, 20 + 1)
-        self.bot_col = pygame.Rect(self.xpos + 1, self.ypos + self.height - 1, self.width - 2, 20 + 1)
+        self.top_col = pygame.Rect(self.xpos - 1, self.ypos - 20, self.width + 2, 20 + 1)
+        self.bot_col = pygame.Rect(self.xpos - 1, self.ypos + self.height - 1, self.width + 2, 20 + 1)
 
     def move(self):
         # Move horizontally depending on the direction
