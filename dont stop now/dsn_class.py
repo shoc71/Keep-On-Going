@@ -305,7 +305,7 @@ class SquareMe: #lil purple dude
         self.left_col = pygame.Rect(self.xpos - 20, self.ypos + 3, 20 + 1, self.height - 4)
         self.right_col = pygame.Rect(self.xpos + self.width - 1, self.ypos + 3, 20 + 1, self.height - 4)
         self.top_col = pygame.Rect(self.xpos - 1, self.ypos - 20, self.width + 2, 20 + 1)
-        self.bot_col = pygame.Rect(self.xpos - 1, self.ypos + self.height - 1, self.width + 2, 20 + 1)
+        self.bot_col = pygame.Rect(self.xpos - 5, self.ypos + self.height - 1, self.width + 6, 20 + 1)
 
     def move(self):
         # Move horizontally depending on the direction
@@ -354,8 +354,8 @@ class SquareMe: #lil purple dude
             collide_width = object_list[bcollide_id].width
             collide_height = object_list[bcollide_id].height
 
-            if bcollide_id != -1 and object_list[bcollide_id].y <= self.ypos + self.height and \
-                    collide_x + 4 < self.xpos + self.width and self.xpos < collide_x + collide_width - 4:
+            if bcollide_id != -1 and collide_y <= self.ypos + self.height <= collide_y + self.height and \
+                    collide_x < self.xpos + self.width and self.xpos < collide_x + collide_width:
                 self.enable_gravity = False
                 self.jump_ability = True
                 self.gravity_counter = self.max_gravity
@@ -364,7 +364,7 @@ class SquareMe: #lil purple dude
             the player isn't inside the platform"""
             if 0 < len(bot_collisions) and object_list[bot_collisions[0]].y < self.ypos + self.height < \
                 object_list[bot_collisions[0]].y + self.height and \
-                    collide_x + 6 < self.xpos + self.width and self.xpos < collide_x + collide_width - 6:
+                    collide_x + 6 <= self.xpos + self.width and self.xpos <= collide_x + collide_width - 6:
                 self.ypos = object_list[bcollide_id].y - self.height
 
         # Top ceiling collision
@@ -395,9 +395,11 @@ class SquareMe: #lil purple dude
             collide_width = object_list[lcollide_id].width
             collide_height = object_list[lcollide_id].height
             if lcollide_id != -1 and self.square_render.colliderect(object_list[lcollide_id]) and \
-                    collide_y < self.ypos + self.height and \
-                    self.ypos < collide_y + collide_height and \
-                object_list[lcollide_id].x + object_list[lcollide_id].width <= round(self.xpos + 4):
+                    collide_y < round(self.ypos + self.height) and \
+                    round(self.ypos) < collide_y + collide_height and \
+                object_list[lcollide_id].x + \
+                    object_list[lcollide_id].width - 4 <= round(self.xpos) <= \
+                    object_list[lcollide_id].x + object_list[lcollide_id].width:
                 self.enable_gravity = True
                 self.direction = 1
 
@@ -408,9 +410,10 @@ class SquareMe: #lil purple dude
             collide_width = object_list[rcollide_id].width
             collide_height = object_list[rcollide_id].height
             if rcollide_id != -1 and self.square_render.colliderect(object_list[rcollide_id]) and \
-                    collide_y < self.ypos + self.height and \
-                    self.ypos < collide_y + collide_height and \
-                round(self.xpos + self.width - 4) <= object_list[rcollide_id].x:
+                    collide_y < round(self.ypos + self.height) and \
+                    round(self.ypos) < collide_y + collide_height and \
+                object_list[rcollide_id].x <= round(self.xpos + self.width) <= \
+                    object_list[rcollide_id].x + 4:
                 self.enable_gravity = True
                 self.direction = -1
 
