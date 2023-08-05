@@ -56,8 +56,11 @@ class LevelScene(dsnclass.Scene):
                                           30, "impact", DARK_RED, None)
         self.pause_text_3 = dsnclass.Text("Press q to quit", (540, 315),
                                           30, "impact", DARK_RED, None)
-        self.pause_text_4 = dsnclass.Text("Press r to return to menu",
+        self.pause_text_4 = dsnclass.Text("Press b to return to menu",
                                           (540, 350), 30,
+                                          "impact", DARK_RED, None)
+        self.pause_text_5 = dsnclass.Text("Press r to restart the level",
+                                          (540, 385), 30,
                                           "impact", DARK_RED, None)
 
         self.memory = level_memory
@@ -89,7 +92,11 @@ class LevelScene(dsnclass.Scene):
             if every_key == pygame.K_q and self.player.freeze:
                 self.run_scene = False
             if self.player.freeze and every_key == pygame.K_r:
-                self.change_scene(MenuScene(40, 360, 0, self.memory))
+                self.player.alive = False
+                self.player.freeze = False
+                self.deaths += 1
+            if self.player.freeze and every_key == pygame.K_b:
+                self.change_scene(MenuScene(40, 360, self.memory))
 
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
                 and not self.player.enable_gravity and self.player.alive and \
@@ -165,8 +172,11 @@ class LevelScene(dsnclass.Scene):
             screen.blit(self.pause_text_3.text_img,
                         self.pause_text_3.text_rect)  # drawing quitting text
             # adding quitting thing draw here as well
-            screen.blit(self.pause_text_4.text_img, self.pause_text_4.text_rect)
+            screen.blit(self.pause_text_4.text_img,
+                        self.pause_text_4.text_rect)
             # added a way to formally return to the main menu
+            screen.blit(self.pause_text_5.text_img,
+                        self.pause_text_5.text_rect)
 
         if self.level_condition:
             self.victory(screen)
@@ -176,7 +186,7 @@ class LevelScene(dsnclass.Scene):
 
 
 class MenuScene(LevelScene):
-    def __init__(self, xspawn, yspawn, music_value, level_memory):
+    def __init__(self, xspawn, yspawn, level_memory):
         LevelScene.__init__(self, xspawn, yspawn, level_memory)
         self.level_id = 0
         self.option_count = 0
@@ -222,8 +232,6 @@ class MenuScene(LevelScene):
              self.title_text_s4.text_rect.height + 10]
         ]
 
-        self.music = dsnclass.Music(music_value)
-
         """self.title_guy = dsnclass.SquareMe(xspawn, yspawn,
                                         10, 10, (181, 60, 177))"""
 
@@ -232,6 +240,8 @@ class MenuScene(LevelScene):
         the character on the menu"""
         for every_key in pressed:
             if every_key in [pygame.K_SPACE, pygame.K_w]:
+                self.memory.update_mem(self.level_id, self.deaths,
+                                       self.player.jumps, self.start_time)
                 self.change_scene(self.options[self.option_count])
             if every_key is pygame.K_d:
                 self.option_count += 1
@@ -310,7 +320,7 @@ class Filler(dsnclass.Scene):
     def input(self, pressed, held):
         for every_key in pressed:
             if every_key == pygame.K_r:
-                self.change_scene(MenuScene(40, 360, 0, self.memory))
+                self.change_scene(MenuScene(40, 360, self.memory))
 
     def render(self, screen):
         screen.fill(WHITE)
@@ -358,7 +368,7 @@ class OptionsPage(LevelScene):
                 self.change_setting += 1
 
             if action is pygame.K_r:
-                self.change_scene(MenuScene(40, 360, 0, self.memory))
+                self.change_scene(MenuScene(40, 360, self.memory))
 
     def update(self):
         if self.choose_setting < 0:
@@ -442,7 +452,7 @@ class StatsPage(LevelScene):
 
         for action in pressed:
             if action == pygame.K_r:
-                self.change_scene(MenuScene(40, 360, 0, self.memory))
+                self.change_scene(MenuScene(40, 360, self.memory))
 
     def update(self):
         if self.select_level is not None:
@@ -525,12 +535,11 @@ class LevelSelect(LevelScene):
     def input(self, pressed, held):
         for every_key in pressed:
             if every_key == pygame.K_r:
-                self.change_scene(MenuScene(40, 360, 0, self.memory))
+                self.change_scene(MenuScene(40, 360,self.memory))
             if every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
                     405 < pygame.time.get_ticks() - self.blockmation_time:
                 self.change_scene(PlayLevel(self.level_data[self.choose_id][0],
                                             self.level_data[self.choose_id][1],
-                                            self.level_data[self.choose_id][2],
                                             self.memory, self.choose_id))
             if every_key in [pygame.K_a, pygame.K_d] and \
                     self.player.jump_ability and \
@@ -648,10 +657,9 @@ class LevelSelect(LevelScene):
 
 
 class PlayLevel(LevelSelect):
-    def __init__(self, x_spawn, y_spawn, music_value,
+    def __init__(self, x_spawn, y_spawn,
                  level_memory, play_id):
         LevelScene.__init__(self, x_spawn, y_spawn, level_memory)
-        self.music = dsnclass.Music(music_value)
         self.level_id = play_id
         self.element_names = list(self.level_elements[self.level_id].keys())
         self.collision_objects = {"self.platforms": self.platforms,
@@ -673,9 +681,12 @@ class PlayLevel(LevelSelect):
         LevelScene.update(self)
         if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                 self.victory_time:
+            self.memory.update_mem(self.level_id, self.deaths,
+                                   self.player.jumps, self.start_time)
+            self.level_id += 1
+
             self.change_scene(PlayLevel(self.level_data[self.level_id][0],
                                         self.level_data[self.level_id][1],
-                                        self.level_data[self.level_id][2],
                                         self.memory,
                                         self.level_id))  # spawn for next level
 
