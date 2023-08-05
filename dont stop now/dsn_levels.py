@@ -17,6 +17,7 @@ LIGHT_PINK = (255, 182, 193)
 EDIT_DARK_GREEN = (1, 100, 32)
 PURPLE = (181, 60, 177)
 BROWN = (150, 75, 0)
+LICORICE_BLACK = (52, 52, 52)
 
 dont_image_text = pygame.image.load("dont (custom).png")  # ratio is 15:8
 stop_image_text = pygame.image.load("stop (custom).png")
@@ -711,5 +712,4 @@ class PlayLevel(LevelSelect):
                                  [element.shape[0], element.shape[1]],
                                  [element.shape[2], element.shape[3]],
                                  element.shape[4])
-
 
