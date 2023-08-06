@@ -16,6 +16,7 @@ LIGHT_PINK = (255, 182, 193)
 EDIT_DARK_GREEN = (1, 100, 32)
 PURPLE = (181, 60, 177)
 BROWN = (150, 75, 0)
+LICORICE_BLACK = (52, 52, 52)
 
 class Text:
     def __init__(self, text, text_pos, font_size, font_type,
