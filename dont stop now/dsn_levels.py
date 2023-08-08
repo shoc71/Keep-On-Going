@@ -78,7 +78,7 @@ class LevelScene(dsnclass.Scene):
             """
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
                     self.player.enable_gravity and self.player.alive and not \
-                    self.player.freeze and 100 <= pygame.time.get_ticks() - self.jump_timer:
+                    self.player.freeze and 200 <= pygame.time.get_ticks() - self.jump_timer:
                 self.player.jump_ability = True
                 self.player.jump_boost = self.player.max_jump
                 self.player.jump_sound_1.play()
