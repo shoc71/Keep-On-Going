@@ -71,10 +71,16 @@ class Music:
     """
     def __init__(self, set_track):
         self.music_tracks = [
-            "main-menu.wav",
-            "level-loop1.wav",
+            "main_menu.wav",
+            "level_loop1.wav",
             "work_around_lead_edited.wav",
-            "credits.wav"
+            "good_vibes_4.mp3",
+            "maybe_sad_broken_ideas.mp3",
+            "song_1.mp3",
+            "tension_idea_4.mp3",
+            'tension_idea_5.mp3',
+            'waves_idea_2.mp3',
+            "credits.wav",
         ]
         self.current_track_index = set_track
 
