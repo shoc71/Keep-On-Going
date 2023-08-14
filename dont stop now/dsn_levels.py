@@ -20,9 +20,10 @@ BROWN = (150, 75, 0)
 LICORICE_BLACK = (52, 52, 52)
 
 # todo: move to main loop
-dont_image_text = pygame.image.load("dont (custom).png")  # ratio is 15:8
-stop_image_text = pygame.image.load("stop (custom).png")
-now_image_text = pygame.image.load("now (custom).png")
+file_path = "assets/images/"
+dont_image_text = pygame.image.load(file_path + "dont (Custom).png")  # ratio is 15:8
+stop_image_text = pygame.image.load(file_path + "stop (Custom).png")
+now_image_text = pygame.image.load(file_path + "now (Custom).png")
 
 
 class LevelScene(dsnclass.Scene):
@@ -103,7 +104,7 @@ class LevelScene(dsnclass.Scene):
             # Pressing/tapping and not holding jump key to jump
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
                     self.player.enable_gravity and self.player.alive and not \
-                    self.player.freeze and 200 <= pygame.time.get_ticks() - self.jump_timer:
+                    self.player.freeze and 150 <= pygame.time.get_ticks() - self.jump_timer:
                 self.player.jump_ability = True # Allow player to jump
                 self.player.jump_boost = self.player.max_jump   # Setup jump
                 self.player.jump_sound_1.play()     # Play jump sound
@@ -132,6 +133,7 @@ class LevelScene(dsnclass.Scene):
 
             # Press b to go back to main menu
             if self.player.freeze and every_key == pygame.K_b:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(MenuScene(40, 360, self.memory))
 
         # Held controls for jumping
@@ -235,6 +237,12 @@ class LevelScene(dsnclass.Scene):
             self.play_time = pygame.time.get_ticks()
             self.victory_time = pygame.time.get_ticks()
 
+        if pygame.time.get_ticks() - self.memory.music.text_timer < 3000:
+            pygame.draw.rect(screen, YELLOW,
+                             self.memory.music.music_text.text_rect)
+            screen.blit(self.memory.music.music_text.text_img,
+                        self.memory.music.music_text.text_rect)
+
 
 class MenuScene(LevelScene):
     """
@@ -300,6 +308,7 @@ class MenuScene(LevelScene):
         for every_key in pressed:
             # If player chooses option, update menu statistics and change scene
             if every_key in [pygame.K_SPACE, pygame.K_w]:
+                self.memory.music.switch_music()
                 self.memory.update_mem(self.level_id, self.deaths,
                                        self.player.jumps, self.start_time)
                 self.change_scene(self.options[self.option_count])
@@ -387,6 +396,7 @@ class Filler(dsnclass.Scene):
         for every_key in pressed:
             # Pressing R allows you to go back
             if every_key == pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(MenuScene(40, 360, self.memory))
 
     def render(self, screen):
@@ -438,6 +448,7 @@ class OptionsPage(LevelScene):
 
             # If press "R", return to main menu
             if action is pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(MenuScene(40, 360, self.memory))
 
     def update(self):
@@ -541,6 +552,7 @@ class StatsPage(LevelScene):
         for action in pressed:
             # Always display the return message
             if action == pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(MenuScene(40, 360, self.memory))
 
     def update(self):
@@ -645,6 +657,7 @@ class LevelSelect(LevelScene):
         for every_key in pressed:
             # Return player to menu if pressing "R"
             if every_key == pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(MenuScene(40, 360,self.memory))
 
             # Allow player to choose a level (based on ID) after 0.405 seconds
