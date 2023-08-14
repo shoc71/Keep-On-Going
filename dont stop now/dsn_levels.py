@@ -252,10 +252,10 @@ class MenuScene(LevelScene):
         # Main menu text
         self.title_splash = dsnclass.Text("DON'T STOP NOW", (540, 100), 100,
                                           "impact", YELLOW, None)
-        self.title_text = dsnclass.Text("Press Space or W To Start", (530, 170),
+        self.title_text = dsnclass.Text("Press Space or W To Start", (530, 200),
                                         50, "impact",
                                         YELLOW, None)
-        self.title_text_2 = dsnclass.Text("Press esc to pause", (530, 220), 30,
+        self.title_text_2 = dsnclass.Text("Press esc to pause", (530, 250), 30,
                                           "impact",
                                           YELLOW, None)
         self.title_text_s1 = dsnclass.Text("Level Select", (216, 490), 30,
@@ -898,4 +898,3 @@ class PlayLevel(LevelSelect):
                                  [element.shape[0], element.shape[1]],
                                  [element.shape[2], element.shape[3]],
                                  element.shape[4])
-
