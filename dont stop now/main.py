@@ -2,6 +2,7 @@ import pygame
 import dsn_levels as dsnlevel
 import dsn_class as dsnclass
 
+
 class Program:
     """
     Class responsible for how the game runs
@@ -41,16 +42,23 @@ class Program:
                 # Quit condition if you press the X on the top right
                 if event.type == pygame.QUIT:
                     self.running = False    # Stop running this loop
+                    pygame.mixer.music.stop()   # Stop the music
                     scene.run_scene = False     # Tell scene to stop running
                 # If player does a keypress, append to our list for key presses
                 if event.type == pygame.KEYDOWN:
                     keys_pressed.append(event.key)
 
+                if event.type == self.memory.music.end:
+                    self.memory.music.switch_music()
+
             # Stop the game using other conditions (running, but scene says off)
             if self.running and not scene.run_scene:
                 self.running = False    # Stop running this loop
+                pygame.mixer.music.stop()   # Stop the music
                 scene.close_game()      # Tell scene to shut off
             else:
+                # Functional game loop
+
                 scene.input(keys_pressed, keys_held)    # Call to use keys in
                 scene.update()  # Call to dynamically use/update/check changes
                 scene.render(screen)    # Visually render desired graphics
@@ -61,16 +69,20 @@ class Program:
                 changed and will continue being this scene (same memory
                 address, no change)."""
 
+                if 0 != scene.level_id:
+                    self.memory.music.transition_music()
+
             fps.tick(120)   # 120 frames per second
             pygame.display.update()     # Update the visual output dynamically
 
 
 if __name__ == "__main__":
     pygame.init()   # Initialize pygame
-    pygame.mixer.init() # Initialize pygame's sound
+    pygame.mixer.init()  # Initialize pygame's sound
     fps = pygame.time.Clock()   # Initialize the frame rate
-    pygame.display.set_caption("Dont Stop Now") # game window caption
-    icon = pygame.image.load("rect10.png") # loading image
+    file_path = "assets/images/"
+    pygame.display.set_caption(file_path + "Dont Stop Now") # game window caption
+    icon = pygame.image.load(file_path + "rect10.png") # loading image
     default_icon_image_size = (32, 32) # reducing size of image
     icon = pygame.transform.scale(icon, default_icon_image_size) # scaling image correctly
     pygame.display.set_icon(icon) # game window icon
