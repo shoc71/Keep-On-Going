@@ -69,6 +69,9 @@ class Program:
 if __name__ == "__main__":
     pygame.init()   # Initialize pygame
     pygame.mixer.init() # Initialize pygame's sound
+    pygame.display.set_caption("Dont Stop Now")
+    # for image import - commented out cuz image doesn't exist yet
+    # pygame.display.set_icon("player.png")
     fps = pygame.time.Clock()   # Initialize the frame rate
     start_game = Program()      # Initialize running the game with Program
     start_scene = dsnlevel.MenuScene(40, 360, start_game.memory)
