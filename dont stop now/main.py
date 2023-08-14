@@ -2,7 +2,6 @@ import pygame
 import dsn_levels as dsnlevel
 import dsn_class as dsnclass
 
-
 class Program:
     """
     Class responsible for how the game runs
@@ -70,6 +69,8 @@ if __name__ == "__main__":
     pygame.init()   # Initialize pygame
     pygame.mixer.init() # Initialize pygame's sound
     fps = pygame.time.Clock()   # Initialize the frame rate
+    pygame.display.set_caption("Dont Stop Now") # game window caption
+    pygame.display.set_icon(pygame.image.load("rect13.png")) # game window icon
     start_game = Program()      # Initialize running the game with Program
     start_scene = dsnlevel.MenuScene(40, 360, start_game.memory)
     # Initialize the first scene/starting scene shown to the player
