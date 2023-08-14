@@ -695,7 +695,7 @@ class SquareMe:  # lil purple dude
 
     def gravity(self):
         if self.enable_gravity and not self.jump_ability:
-            gravity_y = ((self.gravity_counter ** 2) * 0.00015) / self.diff_factor
+            gravity_y = ((self.gravity_counter ** 2) * 0.00015)
             self.ypos += gravity_y * self.diff_factor
 
         if self.gravity_counter < 1100:
