@@ -117,7 +117,7 @@ class LevelScene(dsnclass.Scene):
                 self.player.alive = True
                 self.jump_timer = pygame.time.get_ticks()
 
-            # Pausing the game and stoppin gplayer movement/action
+            # Pausing the game and stopping player movement/action
             if every_key == pygame.K_ESCAPE and not self.level_condition:
                 self.player.freeze = not self.player.freeze
 
@@ -139,10 +139,10 @@ class LevelScene(dsnclass.Scene):
         # Held controls for jumping
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
                 and not self.player.enable_gravity and self.player.alive and \
-                not self.player.freeze and 200 <= pygame.time.get_ticks() - self.jump_timer:
+                not self.player.freeze and 150 <= pygame.time.get_ticks() - self.jump_timer:
             self.player.jump_ability = True # Allow player to jump
             self.player.jump_boost = self.player.max_jump   # Setup jump
-            self.player.jump_sound_1.play() # Play jump sound
+            self.player.jump_sound_1.play()     # Play jump sound
             self.player.jumps += 1  # Add to a jump counter
             self.jump_timer = pygame.time.get_ticks()   # Reset jump timer
 
@@ -164,6 +164,9 @@ class LevelScene(dsnclass.Scene):
         to right by default, reset gravity"""
         if not self.player.alive and not self.player.freeze and \
                 not self.level_condition:
+            self.jump_timer = pygame.time.get_ticks()   # Reset jump timer
+            self.player.jump_boost = -1 * (self.player.max_jump - 1)
+            self.player.jump_ability = False
             self.player.xpos = self.x_spawn
             self.player.ypos = self.y_spawn
             self.player.direction = 1
