@@ -81,7 +81,7 @@ if __name__ == "__main__":
     pygame.mixer.init()  # Initialize pygame's sound
     fps = pygame.time.Clock()   # Initialize the frame rate
     file_path = "assets/images/"
-    pygame.display.set_caption(file_path + "Dont Stop Now") # game window caption
+    pygame.display.set_caption("Dont Stop Now") # game window caption
     icon = pygame.image.load(file_path + "rect10.png") # loading image
     default_icon_image_size = (32, 32) # reducing size of image
     icon = pygame.transform.scale(icon, default_icon_image_size) # scaling image correctly
