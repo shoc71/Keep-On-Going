@@ -288,7 +288,8 @@ class Memory:
             "EDIT_DARK_GREEN": EDIT_DARK_GREEN,
             "PURPLE": PURPLE,
             "BLUE": BLUE,
-            "ORANGE": ORANGE
+            "ORANGE": ORANGE,
+            "LICORICE_BLACK": LICORICE_BLACK
         }
         # Used to convert text file color names to static constant colors
 
