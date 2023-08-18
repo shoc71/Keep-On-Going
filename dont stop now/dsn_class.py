@@ -199,9 +199,9 @@ class Memory:
         While their respective values are multipliers for player physics
         """
 
-        self.music = Music()    # Initialize music
-
         self.diff_value = 1  # Normal/Default difficulty value
+
+        self.music = Music()  # Initialize music
 
         self.musi_lookup = {
             0: 1,
@@ -214,6 +214,18 @@ class Memory:
         # todo: Remove in the future and rework music
         self.musi_value = 4
         # Default music value
+
+        """Variables related to write and read replay class functions
+        """
+        self.replay_imp = {}    # Imported replays from an external source
+        self.imp_diff = {}  # Imported difficulties
+        self.replay_exp = {}    # Replays from the player ready to export
+
+        self.hold_replay = ReplayChain()   # Altered Queue for holding jump/unfreeze timings
+        # hr_indexes is used to keep indexes for respawns/the latest 5 deaths
+
+        # Toggle if replay mode is on or not (only accessed in Replays)
+        self.enable_replay = False
 
     def update_mem(self, level_id, death_count, jump_count, level_time):
         """
@@ -468,13 +480,115 @@ class Memory:
         print()
         print(self.ls_elements)
 
+    def write_replays(self):
+        with open("assets/replays_out.txt", "w") as write_file:
+            for level_id in self.replay_exp:
+                write_file.write(str(self.replay_exp[level_id]) + "\n" +
+                                 "===" + "\n")
+
+    def read_replays(self):
+        level_counter = 1
+        process_dict = {}
+        with open("assets/replays_in.txt", "r") as read_file:
+            for each_line in read_file.readlines():
+                if each_line == "===\n":
+                    level_counter += 1
+                elif 0 < len(each_line) and each_line != "===\n" and \
+                        each_line != "[]\n":
+                    self.replay_imp[level_counter] = each_line[1:-2].split(", ")[2:]
+                    self.imp_diff[level_counter] = int(each_line[1:-1].split(", ")[1])
+
+    def init_replays(self):
+        level_counter = 1
+        while level_counter < len(self.level_set):
+            self.replay_exp[level_counter] = []
+            self.replay_imp[level_counter] = []
+            self.imp_diff[level_counter] = -1
+            level_counter += 1
+
+    def update_replays(self, level_id, replay_info):
+        self.replay_exp[level_id] = replay_info
+
+    def update_temp(self, replay_info, counter):
+        self.hold_replay.append(replay_info, counter)    # replay_info must be a list
+
+    def replays_on(self):
+        self.enable_replay = True
+
+    def replays_off(self):
+        self.enable_replay = False
+
+
+class ReplayBlock:
+    """A more convenient way to hold replay info, the info in each node"""
+    def __init__(self, times, in_type):
+        self.times = times        # Time for that action
+        self.type = in_type     # Type of action
+
+
+class ReplayNode:
+    """Acts as a node for the chain, only to be used with ReplayChain"""
+    def __init__(self, item):
+        self.item = item
+        self.next = None
+
+
+class ReplayChain:
+    """
+    This is similar to dsn_editor's linked list, except we have pointers
+    on both ends now. Similarly, it's crucial that we are able to move
+    elements from the beginning and end of the chain. That's why, this linked
+    list adapts the structure of a queue adapting pointers to the head and tail
+    of a chain
+    This linked list is only usable with the replay idea in mind, as it only
+    holds up to 5 items. Furthermore, it also uses a count when adding which
+    corresponds with amount of deaths in the DSN game.
+    """
+
+    def __init__(self):
+        self.head = None
+        self.tail = None
+
+    def append(self, item, count):
+        if self.head is None and self.tail is None and count == 0:     # Empty, get first node
+            self.head = ReplayNode(item)
+            self.tail = self.head
+        elif 0 < count < 5 and self.tail is not None:    # More than one node, not at limit of 5 yet
+            new_node = ReplayNode(item)
+            self.tail.next = new_node
+            self.tail = self.tail.next
+        else:   # Chain going to go past the length limit
+            self.head = self.head.next
+            new_node = ReplayNode(item)
+            self.tail.next = new_node
+            self.tail = self.tail.next
+
+    def check_len(self):
+        focus_node = self.head
+        counter = 0
+        while focus_node.next is not None:
+            counter += 1
+            focus_node = focus_node.next
+
+        return counter
+
+    def chain_to_list(self):
+        focus_node = self.head
+        out_list = []
+        while focus_node is not None:
+            out_list += focus_node.item
+            focus_node = focus_node.next
+            print(out_list)
+
+        return out_list
+
 
 class DSNElement:
-
-    def __init__(self, color, shape, type):
-        self.color = color
-        self.shape = shape
-        self.type = type
+    """A more convenient way to hold level element info"""
+    def __init__(self, color, shape, in_type):
+        self.color = color  # Block color
+        self.shape = shape  # Block shape
+        self.type = in_type     # Distinguish line vs rect
 
 
 class SquareMe:  # lil purple dude
