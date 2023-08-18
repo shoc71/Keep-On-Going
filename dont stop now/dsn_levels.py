@@ -98,6 +98,11 @@ class LevelScene(dsnclass.Scene):
         # Timer used to delay player jump
         self.jump_timer = pygame.time.get_ticks()
 
+        # List holding when respawns are performed
+        self.resp_jumps = []
+        # List holding when jumps are performed
+        self.hold_jumps = []
+
     def input(self, pressed, held):
         for every_key in pressed:
 
@@ -110,12 +115,20 @@ class LevelScene(dsnclass.Scene):
                 self.player.jump_sound_1.play()     # Play jump sound
                 self.player.jumps += 1  # Add to a jump counter
                 self.jump_timer = pygame.time.get_ticks()   # Reset jump timer
+                self.hold_jumps += ["J" + str(pygame.time.get_ticks() - self.start_time)]
 
             # Pressing the jump key to stop player freezing and start level
+            # This also updates the replay linked list
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] \
                     and not self.player.alive:
+                if 0 < len(self.resp_jumps):
+                    self.memory.update_temp(self.resp_jumps + self.hold_jumps,
+                                            self.deaths - 1)
+                    self.hold_jumps = []
+                    self.resp_jumps = []
                 self.player.alive = True
                 self.jump_timer = pygame.time.get_ticks()
+                self.resp_jumps += ["R" + str(pygame.time.get_ticks() - self.start_time)]
 
             # Pausing the game and stopping player movement/action
             if every_key == pygame.K_ESCAPE and not self.level_condition:
@@ -145,6 +158,7 @@ class LevelScene(dsnclass.Scene):
             self.player.jump_sound_1.play()     # Play jump sound
             self.player.jumps += 1  # Add to a jump counter
             self.jump_timer = pygame.time.get_ticks()   # Reset jump timer
+            self.hold_jumps += ["J" + str(pygame.time.get_ticks() - self.start_time)]
 
     def update(self):
         # Failsafe if player isn't rendered but level starts
@@ -233,12 +247,13 @@ class LevelScene(dsnclass.Scene):
                         self.pause_text_5.text_rect)
 
         # If player won, show the render of victory text
-        if self.level_condition:
-            self.victory(screen)
-        # Otherwise, update amount of time total and in level
-        else:
-            self.play_time = pygame.time.get_ticks()
-            self.victory_time = pygame.time.get_ticks()
+        if not self.memory.enable_replay:
+            if self.level_condition:
+                self.victory(screen)
+            # Otherwise, update amount of time total and in level
+            else:
+                self.play_time = pygame.time.get_ticks()
+                self.victory_time = pygame.time.get_ticks()
 
         if pygame.time.get_ticks() - self.memory.music.text_timer < 3000:
             pygame.draw.rect(screen, YELLOW,
@@ -257,7 +272,7 @@ class MenuScene(LevelScene):
         self.level_id = 0   # Has a level id of 0 (defined to record jumps)
         self.option_count = 0   # Index counter to choose level
         self.options = [LevelSelect(level_memory), OptionsPage(level_memory),
-                        StatsPage(level_memory), Filler(level_memory)]
+                        StatsPage(level_memory), ReplayIO(level_memory)]
         # Main menu options
 
         # Main menu text
@@ -278,7 +293,7 @@ class MenuScene(LevelScene):
         self.title_text_s3 = dsnclass.Text("Stats", (648, 490), 30,
                                            "impact",
                                            YELLOW, None)
-        self.title_text_s4 = dsnclass.Text("Filler 2", (864, 490), 30,
+        self.title_text_s4 = dsnclass.Text("Replay", (864, 490), 30,
                                            "impact",
                                            YELLOW, None)
 
@@ -339,6 +354,12 @@ class MenuScene(LevelScene):
             self.player.jumps += 1  # Add to jump counter
             self.player.jump_ability = True # Allow player to jump
             self.player.jump_boost = self.player.max_jump   # Setup jump
+
+        # Change if replays/second replay player should appear
+        if self.option_count == 0:
+            self.memory.replays_off()
+        elif self.option_count == 3:
+            self.memory.replays_on()  # Is a replay mode
 
     def render(self, screen):
         LevelScene.render(self, screen)  # Background Colors or Back-most
@@ -512,6 +533,90 @@ class OptionsPage(LevelScene):
         ]
 
 
+class ReplayIO(LevelScene):
+    """Class used to display UI for file/text input and output"""
+    def __init__(self, level_memory):
+        LevelScene.__init__(self, -50, -50, level_memory)
+        self.file_in = dsnclass.Text("File Input", (1080 / 3, 376 / 3),
+                                     50, "impact", PURPLE, None)
+        self.file_out = dsnclass.Text("File Output", (1080 / 3, 376 / 3 * 2),
+                                      50, "impact", PURPLE, None)
+
+        self.text_in = dsnclass.Text("Text Input", (1080 / 3 * 2, 376 / 3),
+                                     50, "impact", PURPLE, None)
+        self.text_out = dsnclass.Text("Text Output", (1080 / 3 * 2,
+                                                      376 / 3 * 2),
+                                      50, "impact", PURPLE, None)
+        self.return_text = dsnclass.Text(
+            "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
+            "impact", YELLOW, None)
+
+        self.icon_list = [self.file_in, self.text_in,
+                          self.file_out, self.text_out]
+        """
+        file/text layout:
+        
+                 file_in                    text_in
+                 
+                 
+                 file_out                   text_out
+        
+        """
+
+        self.choose_counter = 0
+
+    def input(self, pressed, held):
+        for action in pressed:
+            if action is pygame.K_w:
+                self.choose_counter -= 2
+            elif action is pygame.K_a:
+                self.choose_counter -= 1
+            elif action is pygame.K_s:
+                self.choose_counter += 2
+            elif action is pygame.K_d:
+                self.choose_counter += 1
+
+            if action is pygame.K_r:
+                self.change_scene(MenuScene(40, 360, self.memory))
+
+            if action is pygame.K_SPACE:
+                # File in
+                if self.choose_counter == 0:
+                    self.memory.read_replays()
+                    self.change_scene(ReplaySelect(self.memory))
+                # Text in
+                elif self.choose_counter == 1:
+                    print("nothing")
+                # File out
+                elif self.choose_counter == 2:
+                    self.memory.write_replays()
+                # Text out
+                elif self.choose_counter == 3:
+                    print("nothing")
+            # Add space bar to select option (once to select)
+
+    def update(self):
+        if self.choose_counter < 0:
+            self.choose_counter = self.choose_counter + 4
+        elif 3 < self.choose_counter:
+            self.choose_counter = self.choose_counter - 4
+
+    def render(self, screen):
+        LevelScene.render(self, screen)
+
+        screen.blit(self.file_in.text_img, self.file_in.text_rect)
+        screen.blit(self.file_out.text_img, self.file_out.text_rect)
+        screen.blit(self.text_in.text_img, self.text_in.text_rect)
+        screen.blit(self.text_out.text_img, self.text_out.text_rect)
+        screen.blit(self.return_text.text_img, self.return_text.text_rect)
+
+        pygame.draw.rect(screen, YELLOW,
+                         [self.icon_list[self.choose_counter].text_rect.x - 6,
+                          self.icon_list[self.choose_counter].text_rect.y - 6,
+                          self.icon_list[self.choose_counter].text_rect.width + 12,
+                          self.icon_list[self.choose_counter].text_rect.height + 12], 2)
+
+
 class StatsPage(LevelScene):
     """ Class used to display the statistics for that game instance depending
     on the amount of levels that the player has completed
@@ -639,12 +744,6 @@ class LevelSelect(LevelScene):
         """
         self.filler_text = dsnclass.Text("Choose A Level",
                                          (540, 153), 50, "impact", YELLOW, None)
-        self.disclaimer_text2 = dsnclass.Text("ONLY A PROOF OF CONCEPT",
-                                              (540, 60), 50, "impact", RED,
-                                              None)
-        self.disclaimer_text = dsnclass.Text(
-            "ALL LEVELS LEAD TO LEVEL 1, PRESS JUMP TO START",
-            (540, 110), 50, "impact", RED, None)
 
         self.blockmation_time = 0   # Time variable for moving level boxes
         self.text_x = 0 # Used to define the x position of level number text
@@ -655,6 +754,7 @@ class LevelSelect(LevelScene):
 
         self.repjump_time = 0   # "Repeat jump" time, time until speed increases
         self.speed_jump = 1     # Determines selection speed
+        self.allow_select = True    # If levels can be freely chosen
 
     def input(self, pressed, held):
         for every_key in pressed:
@@ -664,7 +764,8 @@ class LevelSelect(LevelScene):
                 self.change_scene(MenuScene(40, 360,self.memory))
 
             # Allow player to choose a level (based on ID) after 0.405 seconds
-            if every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
+            if self.allow_select and \
+                    every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
                     405 < pygame.time.get_ticks() - self.blockmation_time:
                 self.change_scene(PlayLevel(self.level_data[self.choose_id][0],
                                             self.level_data[self.choose_id][1],
@@ -753,10 +854,6 @@ class LevelSelect(LevelScene):
 
         # todo: remove since we want to keep
         screen.blit(self.filler_text.text_img, self.filler_text.text_rect)
-        screen.blit(self.disclaimer_text2.text_img,
-                    self.disclaimer_text2.text_rect)
-        screen.blit(self.disclaimer_text.text_img,
-                    self.disclaimer_text.text_rect)
 
         LevelScene.render_text(self, screen)    # LevelScene text (useless)
 
@@ -809,10 +906,10 @@ class LevelSelect(LevelScene):
         if pygame.time.get_ticks() - self.blockmation_time < \
                 400 / self.speed_jump:
             if self.direction == 1:
-                self.text_x += 4.4
+                self.text_x += 4.4 * self.speed_jump
 
             if self.direction == -1:
-                self.text_x -= 4.4
+                self.text_x -= 4.4 * self.speed_jump
         # Otherwise, center the text position in the middle and make it the
         # current level selected
         else:
@@ -830,6 +927,34 @@ class LevelSelect(LevelScene):
                          [(1080 / 2) - 250, (576 / 2) - 100, 70, 200])
         pygame.draw.rect(screen, (0, 0, 0),
                          [(1080 / 2) + 250 - 70, (576 / 2) - 100, 70, 200])
+
+
+class ReplaySelect(LevelSelect):
+    """Class that's similar to Level Select but has an extra filter
+    for selecting levels with only valid replays"""
+    def __init__(self, level_memory):
+        LevelSelect.__init__(self, level_memory)
+        self.allow_select = False   # Toggle off, cannot freely choose
+        self.no_data = dsnclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
+                                     "impact", RED, None)
+
+    def input(self, pressed, held):
+        if self.choose_id in self.memory.replay_imp and \
+                0 < len(self.memory.replay_imp[self.choose_id]):
+            self.allow_select = True
+        else:
+            self.allow_select = False
+
+        LevelSelect.input(self, pressed, held)
+
+    def update(self):
+        LevelSelect.update(self)
+
+    def render(self, screen):
+        LevelSelect.render(self, screen)
+        if self.choose_id in self.memory.replay_imp and \
+                0 == len(self.memory.replay_imp[self.choose_id]):
+            screen.blit(self.no_data.text_img, self.no_data.text_rect)
 
 
 class PlayLevel(LevelSelect):
@@ -854,6 +979,9 @@ class PlayLevel(LevelSelect):
         # Combine collision objects into a dict of lists
 
         self.render_objects = []    # Initialize render objects
+        self.end_time = pygame.time.get_ticks()
+
+        self.start_toggle = True    # By default, allow player to start anytime
 
         for name in self.element_names:
             # Get DSNElement objects that aren't under Text
@@ -866,43 +994,208 @@ class PlayLevel(LevelSelect):
                     self.render_objects += [element]
                     # Load up render objects (only rendering, no collision)
 
+        # Replay Option if enabled
+        if self.memory.enable_replay:
+            print(self.memory.diff_lookup[level_memory.imp_diff[self.level_id]])
+            self.player.diff_factor = self.memory.diff_lookup[level_memory.imp_diff[self.level_id]]
+            self.replayer_xspawn = self.x_spawn
+            self.replayer_yspawn = self.y_spawn
+            self.replayer = dsnclass.SquareMe(self.replayer_xspawn, self.replayer_yspawn,
+                                                   10, 10, GREY,
+                                                   self.memory.diff_lookup[level_memory.imp_diff[self.level_id]])
+            self.replay_counter = 0
+            self.replay_time = int(self.memory.replay_imp[self.level_id][0][2:-1])
+            self.action_time = pygame.time.get_ticks()
+            self.lose_condition = False
+            self.win_text = dsnclass.Text("WIN", [1080 / 2, 576 / 2], 250,
+                                          "impact", YELLOW, None)
+            self.lose_text = dsnclass.Text("LOSE", [1080 / 2, 576 / 2], 250,
+                                           "impact", YELLOW, None)
+            self.count_down = 3
+            self.count_change = pygame.time.get_ticks()
+            self.count_time = pygame.time.get_ticks()   # Time spent counting
+            self.start_toggle = False
+
+            self.count_text = dsnclass.Text(str(self.count_down), [1080 / 2,
+                                                              576 / 2], 250,
+                                            "impact", YELLOW, None)
+
     def input(self, pressed, held):
+        if not self.start_toggle:
+            return None
+
         # Use the default player inputs in LevelScene.input (controls/options)
-        LevelScene.input(self, pressed, held)
+        if self.level_id in self.level_data:
+            LevelScene.input(self, pressed, held)
 
     def update(self):
+        if not self.start_toggle:
+            if 1000 < pygame.time.get_ticks() - self.count_change and \
+                    1 < self.count_down:
+                self.count_down -= 1
+                self.count_text = dsnclass.Text(str(self.count_down), [1080 / 2,
+                                                     576 / 2], 250,
+                              "impact", YELLOW, None)
+                self.count_change = pygame.time.get_ticks()
+
+            if 3000 < pygame.time.get_ticks() - self.count_time:
+                self.start_toggle = True
+                self.player.alive = True
+            else:
+                # Change the time at the start of the level
+                self.action_time = pygame.time.get_ticks() - self.count_time
+                self.start_toggle = False
+            return None
         # Use the default update features (collision, pausing, victory, etc.)
-        LevelScene.update(self)
+        if self.level_id in self.level_data:
+            LevelScene.update(self)
+
+        # If enabled replay, have the other player function
+        if self.memory.enable_replay:
+
+            if self.replay_counter < len(self.memory.replay_imp[self.level_id]) and \
+                    int(self.memory.replay_imp[self.level_id]
+                        [self.replay_counter][2:-1]) - 20 <= \
+                    pygame.time.get_ticks() - self.action_time + self.replay_time - self.count_time and \
+                    not (self.lose_condition or self.level_condition):
+
+                if self.memory.replay_imp[self.level_id][self.replay_counter][1:2] == "J":
+                    self.replayer.jump_ability = True  # Allow player to jump
+                    self.replayer.jump_boost = self.player.max_jump  # Setup jump
+                    self.replay_counter += 1
+
+                elif self.memory.replay_imp[self.level_id][self.replay_counter][1:2] == "R":
+                    self.replayer.alive = True
+                    self.replayer.freeze = False
+
+                    self.replay_counter += 1
+
+            self.replay_update()
+
+            if self.level_condition or self.lose_condition:
+                self.player.alive = False
+                self.replayer.alive = False
 
         """After victory (and animations), update the memory with statistics
         for that level, change the level id, then pass it onto another
         PlayLevel class instance (next level)"""
+        # Not replay mode
+        if not self.memory.enable_replay:
+            if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
+                    self.victory_time:
+                # Update statistics with this level's data
+                self.memory.update_mem(self.level_id, self.deaths,
+                                       self.player.jumps, self.start_time)
+                # Add this level's timed jumps/unfreezes
+                self.memory.update_temp(self.resp_jumps + self.hold_jumps, self.deaths)
+                self.memory.update_replays(self.level_id,
+                                           [self.level_id] +
+                                           [self.memory.diff_value] +
+                                           self.memory.hold_replay.chain_to_list())
+                # Reset temporary hold on chain of level's timed events
+                self.memory.hold_replay = dsnclass.ReplayChain()
+                self.level_id += 1
 
-        if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
-                self.victory_time:
-            self.memory.update_mem(self.level_id, self.deaths,
-                                   self.player.jumps, self.start_time)
-            self.level_id += 1
+                if self.level_id in self.level_data:
+                    self.change_scene(PlayLevel(self.level_data[self.level_id][0],
+                                                self.level_data[self.level_id][1],
+                                                self.memory,
+                                                self.level_id))
+                else:
+                    self.change_scene(MenuScene(40, 360, self.memory))
+        # Replay Mode
+        else:
 
-            self.change_scene(PlayLevel(self.level_data[self.level_id][0],
-                                        self.level_data[self.level_id][1],
-                                        self.memory,
-                                        self.level_id))  # spawn for next level
-            # todo: Make it so that it doesn't abruptly crash on last level
+            if self.level_condition and \
+                    3000 < pygame.time.get_ticks() - self.end_time:
+                self.change_scene(MenuScene(40, 360, self.memory))
+            elif self.lose_condition and \
+                    3000 < pygame.time.get_ticks() - self.end_time:
+                self.change_scene(MenuScene(40, 360, self.memory))
+
+            if not (self.level_condition or self.lose_condition):
+                self.end_time = pygame.time.get_ticks()
+
+    def replay_update(self):
+        if not self.start_toggle:
+            return None
+
+        if self.replayer is None or \
+                self.replayer.square_render is None:
+            return None
+
+        # Replayer is alive, not paused and haven't run, then check collision
+        if self.replayer.alive and not self.replayer.freeze and \
+                not self.level_condition:
+            # Check if replayer collided with death zones (returns 1 or 0)
+            self.replayer.death(self.death_zones)
+            self.replayer.collision_plat(self.platforms)  # Top and bottom coll
+            self.replayer.collision_wall(self.platforms)  # Side collision
+            self.replayer.move()  # replayer movement
+
+        """Respawn for square players, reset spawn position, set direction
+        to right by default, reset gravity"""
+        if not self.replayer.alive and not self.replayer.freeze and \
+                not self.level_condition:
+            # No need for a jump timer
+            self.replayer.jump_boost = -1 * (self.player.max_jump - 1)
+            self.replayer.jump_ability = False
+            self.replayer.xpos = self.replayer_xspawn
+            self.replayer.ypos = self.replayer_yspawn
+            self.replayer.direction = 1
+            self.replayer.gravity_counter = self.replayer.max_gravity
+
+        # If player is below the level, count as a death (out of bounds)
+        if 580 + self.replayer.height < self.replayer.ypos:
+            self.replayer.alive = False
+
+        # Check for win collision
+        if self.replayer.alive and \
+                self.replayer.square_render.collidelist(self.win_zones) != -1:
+            self.lose_condition = True
+            self.replayer.alive = False
+
+        # Respawn block collision
+        if self.replayer.alive and \
+                self.replayer.square_render.collidelist(self.respawn_zones) != -1:
+            # Setup respawn block for readability
+            respawn_block = self.replayer.square_render.collidelist(
+                self.respawn_zones)
+            # Set new x and y default spawns
+            self.replayer_xspawn = self.respawn_zones[respawn_block].x + \
+                (self.respawn_zones[respawn_block].width / 2) - 5
+            self.replayer_yspawn = self.respawn_zones[respawn_block].y + \
+                (self.respawn_zones[respawn_block].height / 2) - 5
 
     def render(self, screen):
-        # Default LevelScene rendering (screen)
-        LevelScene.render(self, screen)
-        # Render level rects/lines/draw
-        self.render_level(screen)
+        if self.level_id in self.level_data:
+            # Default LevelScene rendering (screen)
+            LevelScene.render(self, screen)
 
-        # Text Rendering for that level
-        if "Text" in self.level_elements[self.level_id]:
-            for text in self.level_elements[self.level_id]["Text"]:
-                screen.blit(text.text_img, text.text_rect)
+            if self.memory.enable_replay:
+                # Render the replayer ghost first
+                self.replayer.render(screen)
 
-        # Lastly, render text
-        LevelScene.render_text(self, screen)
+            # Render level rects/lines/draw
+            self.render_level(screen)
+
+            # Text Rendering for that level
+            if "Text" in self.level_elements[self.level_id]:
+                for text in self.level_elements[self.level_id]["Text"]:
+                    screen.blit(text.text_img, text.text_rect)
+
+            # Lastly, render text
+            LevelScene.render_text(self, screen)
+            if self.memory.enable_replay:
+                if self.level_condition and \
+                        1000 < pygame.time.get_ticks() - self.end_time:
+                    screen.blit(self.win_text.text_img, self.win_text.text_rect)
+                elif self.lose_condition and \
+                        1000 < pygame.time.get_ticks() - self.end_time:
+                    screen.blit(self.lose_text.text_img, self.lose_text.text_rect)
+
+            if not self.start_toggle and self.memory.enable_replay:
+                screen.blit(self.count_text.text_img, self.count_text.text_rect)
 
     def render_level(self, screen):
         # Render all the rect/line objects for that level (visual)
