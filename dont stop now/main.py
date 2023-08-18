@@ -11,6 +11,7 @@ class Program:
         self.running = True     # Determines if the game is running
         self.memory = dsnclass.Memory()     # Initialize game memory
         self.memory.load_levels("levels.txt")   # Load levels into memory
+        self.memory.init_replays()
 
     def run(self, width, height, current_scene):
         """
@@ -34,6 +35,11 @@ class Program:
         Finally, this is where FPS is set and where the display is updated.
         """
         screen = pygame.display.set_mode([width, height])   # Set screen size
+
+        pygame.scrap.init()
+        if not pygame.scrap.get_init():
+            raise Exception("pygame.scrap is no longer supported :(")
+
         scene = current_scene   # Set scene currently shown through a parameter
         while self.running:
             keys_pressed = []   # Keys pressed/tapped (key press)
@@ -79,13 +85,16 @@ class Program:
 if __name__ == "__main__":
     pygame.init()   # Initialize pygame
     pygame.mixer.init()  # Initialize pygame's sound
+
     fps = pygame.time.Clock()   # Initialize the frame rate
+
     file_path = "assets/images/"
     pygame.display.set_caption("Dont Stop Now") # game window caption
     icon = pygame.image.load(file_path + "rect10.png") # loading image
     default_icon_image_size = (32, 32) # reducing size of image
     icon = pygame.transform.scale(icon, default_icon_image_size) # scaling image correctly
     pygame.display.set_icon(icon) # game window icon
+
     start_game = Program()      # Initialize running the game with Program
     start_scene = dsnlevel.MenuScene(40, 360, start_game.memory)
     # Initialize the first scene/starting scene shown to the player
