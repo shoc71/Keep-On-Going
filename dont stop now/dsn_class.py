@@ -563,7 +563,7 @@ class ReplayChain:
             self.tail.next = new_node
             self.tail = self.tail.next
         else:
-            print("ERROR: LINKED LIST TOO LONG, printing error")
+            print("ERROR: LINKED LIST TOO LONG, report this!")
 
     def check_len(self):
         focus_node = self.head
