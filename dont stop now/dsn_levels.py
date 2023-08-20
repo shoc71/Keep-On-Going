@@ -122,8 +122,7 @@ class LevelScene(dsnclass.Scene):
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] \
                     and not self.player.alive:
                 if 0 < len(self.resp_jumps):
-                    self.memory.update_temp(self.resp_jumps + self.hold_jumps,
-                                            self.deaths - 1)
+                    self.memory.update_temp(self.resp_jumps + self.hold_jumps)
                     self.hold_jumps = []
                     self.resp_jumps = []
                 self.player.alive = True
@@ -1087,7 +1086,7 @@ class PlayLevel(LevelSelect):
                 self.memory.update_mem(self.level_id, self.deaths,
                                        self.player.jumps, self.start_time)
                 # Add this level's timed jumps/unfreezes
-                self.memory.update_temp(self.resp_jumps + self.hold_jumps, self.deaths)
+                self.memory.update_temp(self.resp_jumps + self.hold_jumps)
                 self.memory.update_replays(self.level_id,
                                            [self.level_id] +
                                            [self.memory.diff_value] +
