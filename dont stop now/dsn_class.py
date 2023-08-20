@@ -509,8 +509,8 @@ class Memory:
     def update_replays(self, level_id, replay_info):
         self.replay_exp[level_id] = replay_info
 
-    def update_temp(self, replay_info, counter):
-        self.hold_replay.append(replay_info, counter)    # replay_info must be a list
+    def update_temp(self, replay_info):
+        self.hold_replay.append(replay_info)    # replay_info must be a list
 
     def replays_on(self):
         self.enable_replay = True
@@ -549,24 +549,26 @@ class ReplayChain:
         self.head = None
         self.tail = None
 
-    def append(self, item, count):
-        if self.head is None and self.tail is None and count == 0:     # Empty, get first node
+    def append(self, item):
+        if self.head is None and self.tail is None and self.check_len() == 0:     # Empty, get first node
             self.head = ReplayNode(item)
             self.tail = self.head
-        elif 0 < count < 5 and self.tail is not None:    # More than one node, not at limit of 5 yet
+        elif 0 < self.check_len() < 5 and self.tail is not None:    # More than one node, not at limit of 5 yet
             new_node = ReplayNode(item)
             self.tail.next = new_node
             self.tail = self.tail.next
-        else:   # Chain going to go past the length limit
+        elif 5 <= self.check_len() < 6:   # Chain going to go past the length limit
             self.head = self.head.next
             new_node = ReplayNode(item)
             self.tail.next = new_node
             self.tail = self.tail.next
+        else:
+            print("ERROR: LINKED LIST TOO LONG, report this!")
 
     def check_len(self):
         focus_node = self.head
         counter = 0
-        while focus_node.next is not None:
+        while focus_node is not None:
             counter += 1
             focus_node = focus_node.next
 
