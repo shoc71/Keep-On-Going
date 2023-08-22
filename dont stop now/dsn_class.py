@@ -642,9 +642,6 @@ class SquareMe:  # lil purple dude
                                     10, self.height + 10)
         self.bot_col = pygame.Rect(self.xpos, self.ypos + self.height,
                                    10, self.height * 4)
-        # Bot pad used to detect when jump and gravity should be enabled
-        self.bot_pad = pygame.Rect(self.xpos, self.ypos + self.height + 1,
-                                   self.width, self.height)
         """self.grav_rect = pygame.Rect(self.xpos, self.ypos + self.height - 1,
                                      self.width, 40)"""
         """One single larger rect for collision detection
@@ -708,7 +705,7 @@ class SquareMe:  # lil purple dude
 
     def render(self, screen):
         # Visualize collision rect, uncomment to see
-        pygame.draw.rect(screen, (55, 230, 50), self.collide_rect)  # big square
+        """pygame.draw.rect(screen, (55, 230, 50), self.collide_rect)  # big square
         pygame.draw.rect(screen, BLUE, self.left_col)  # left
         pygame.draw.rect(screen, BLUE, self.right_col)  # right
         pygame.draw.rect(screen, BLUE, self.top_col)  # top
