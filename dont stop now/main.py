@@ -10,7 +10,7 @@ class Program:
     def __init__(self) -> None:
         self.running = True     # Determines if the game is running
         self.memory = dsnclass.Memory()     # Initialize game memory
-        self.memory.load_levels("levels.txt")   # Load levels into memory
+        self.memory.load_levels("assets/levels.txt")   # Load levels into memory
         self.memory.init_replays()
 
     def run(self, width, height, current_scene):
