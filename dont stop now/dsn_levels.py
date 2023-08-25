@@ -14,10 +14,10 @@ ORANGE = (255, 165, 0)
 BLUE = (30, 144, 255)
 GREY = (125, 125, 125)
 LIGHT_PINK = (255, 182, 193)
-EDIT_DARK_GREEN = (1, 100, 32)
+DARK_GREEN = (1, 100, 32)
 PURPLE = (181, 60, 177)
 BROWN = (150, 75, 0)
-LICORICE_BLACK = (52, 52, 52)
+DARK_GREY = (52, 52, 52)
 
 # todo: move to main loop
 file_path = "assets/images/"
@@ -1206,3 +1206,6 @@ class PlayLevel(LevelSelect):
                                  [element.shape[0], element.shape[1]],
                                  [element.shape[2], element.shape[3]],
                                  element.shape[4])
+                
+
+                
