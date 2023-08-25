@@ -203,17 +203,11 @@ class Memory:
 
         self.music = Music()  # Initialize music
 
-        self.musi_lookup = {
-            0: 1,
-            1: 2,
-            2: 3,
-            3: 4,
-            4: 5,
-            5: 6
-        }
-        # todo: Remove in the future and rework music
-        self.musi_value = 4
-        # Default music value
+        """Background color and a slider to adjust it"""
+        self.bg_slider = 255
+        self.background = [self.bg_slider,
+                           self.bg_slider,
+                           self.bg_slider]
 
         """Variables related to write and read replay class functions
         """
@@ -379,7 +373,7 @@ class Memory:
                         """Otherwise the color is defined in words:
                             - X (BLUE)
                             - X_Y (DARK_RED)
-                            - X_Y_Z (EDIT_DARK_GREEN)
+                            - X_Y_Z (COOLER_DARK_GREEN for example)
                         """
                         # Get the color from the words
                         rect_color = re.search("([A-Z]+_[A-Z]+_[A-Z]+|"
@@ -439,7 +433,7 @@ class Memory:
                     Color is defined currently as:
                         - X (BLUE)
                         - X_Y (DARK_RED)
-                        - X_Y_Z (EDIT_DARK_GREEN)
+                        - X_Y_Z (COOLEST_DARK_GREEN for example)
                     or as a tuple of numbers in the form of a string
                     """
                     # Split the parameters into their own separate strings
@@ -580,7 +574,6 @@ class ReplayChain:
         while focus_node is not None:
             out_list += focus_node.item
             focus_node = focus_node.next
-            print(out_list)
 
         return out_list
 
@@ -630,7 +623,7 @@ class SquareMe:  # lil purple dude
         # Jump volume for the player, set at 0.1 out of 1, or 10%
 
         # Get location and info of surrounding blocks
-        self.collide_rect = pygame.Rect(self.xpos - 15, self.ypos - 30,
+        self.collide_rect = pygame.Rect(self.xpos - 30, self.ypos - 30,
                                         self.width + 60, self.height + 80)
         # Top, bottom, left and right collision
         # todo: lower left and right col to a proper position
@@ -642,6 +635,9 @@ class SquareMe:  # lil purple dude
                                     10, self.height + 10)
         self.bot_col = pygame.Rect(self.xpos, self.ypos + self.height,
                                    10, self.height * 4)
+        # Bot pad used to detect when jump and gravity should be enabled
+        self.bot_pad = pygame.Rect(self.xpos, self.ypos + self.height + 1,
+                                   self.width, self.height)
         """self.grav_rect = pygame.Rect(self.xpos, self.ypos + self.height - 1,
                                      self.width, 40)"""
         """One single larger rect for collision detection
@@ -659,10 +655,12 @@ class SquareMe:  # lil purple dude
         # Move horizontally depending on the direction
         move_factor = (4 * self.direction) * self.diff_factor
         if self.left_x is not None and \
-                self.xpos + move_factor < self.left_x:
+                self.xpos + move_factor <= self.left_x:
+            self.direction = 1
             self.xpos = self.left_x
         elif self.right_x is not None and \
-                self.right_x < self.xpos + move_factor + self.width:
+                self.right_x <= self.xpos + move_factor + self.width:
+            self.direction = -1
             self.xpos = self.right_x - self.width
         else:
             self.xpos += move_factor
@@ -691,6 +689,8 @@ class SquareMe:  # lil purple dude
                     self.ypos - self.jump_y < jump_factor:
                 self.ypos = self.jump_y
                 self.jump_ability = False
+                self.jump_boost = -1
+                self.enable_gravity = True
             else:
                 self.ypos -= jump_factor
                 """Change the y position based on the counter and difficulty. This
@@ -766,6 +766,7 @@ class SquareMe:  # lil purple dude
                 self.enable_gravity = False
                 self.jump_ability = True
                 self.gravity_counter = self.max_gravity
+
                 if collide_y < self.ypos + self.height:
                     self.ypos = collide_y - self.height
 
@@ -803,7 +804,11 @@ class SquareMe:  # lil purple dude
                 self.jump_ability = False
                 self.jump_boost = -1
                 self.enable_gravity = True
-                self.ypos = collide_y + collide_height
+
+                if self.ypos < collide_y + collide_height and \
+                        self.xpos < collide_x + collide_width and \
+                        collide_x < self.xpos + self.width:
+                    self.ypos = collide_y + collide_height
 
         if 0 < len(all_yheight):
             self.jump_y = max(all_yheight)
@@ -889,6 +894,8 @@ class SquareMe:  # lil purple dude
                     self.grav_y < gravity_y + self.ypos + self.height:
                 self.ypos = self.grav_y - self.height
                 self.enable_gravity = False
+                self.jump_ability = True
+                self.gravity_counter = self.max_gravity
             else:
                 self.ypos += gravity_y
 
