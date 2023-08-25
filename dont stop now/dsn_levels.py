@@ -14,10 +14,10 @@ ORANGE = (255, 165, 0)
 BLUE = (30, 144, 255)
 GREY = (125, 125, 125)
 LIGHT_PINK = (255, 182, 193)
-DARK_GREEN = (1, 100, 32)
+EDIT_DARK_GREEN = (1, 100, 32)
 PURPLE = (181, 60, 177)
 BROWN = (150, 75, 0)
-DARK_GREY = (52, 52, 52)
+LICORICE_BLACK = (52, 52, 52)
 
 # todo: move to main loop
 file_path = "assets/images/"
@@ -94,6 +94,7 @@ class LevelScene(dsnclass.Scene):
             self.level_data = level_memory.level_set
             self.level_elements = level_memory.ls_elements
             self.start_time = pygame.time.get_ticks()
+            self.action_time = pygame.time.get_ticks()
 
         # Timer used to delay player jump
         self.jump_timer = pygame.time.get_ticks()
@@ -102,6 +103,8 @@ class LevelScene(dsnclass.Scene):
         self.resp_jumps = []
         # List holding when jumps are performed
         self.hold_jumps = []
+
+        self.loop_counter = 0
 
     def input(self, pressed, held):
         for every_key in pressed:
@@ -115,7 +118,8 @@ class LevelScene(dsnclass.Scene):
                 self.player.jump_sound_1.play()     # Play jump sound
                 self.player.jumps += 1  # Add to a jump counter
                 self.jump_timer = pygame.time.get_ticks()   # Reset jump timer
-                self.hold_jumps += ["J" + str(pygame.time.get_ticks() - self.start_time)]
+
+                self.hold_jumps += ["J" + str(self.loop_counter)]
 
             # Pressing the jump key to stop player freezing and start level
             # This also updates the replay linked list
@@ -127,7 +131,8 @@ class LevelScene(dsnclass.Scene):
                     self.resp_jumps = []
                 self.player.alive = True
                 self.jump_timer = pygame.time.get_ticks()
-                self.resp_jumps += ["R" + str(pygame.time.get_ticks() - self.start_time)]
+
+                self.resp_jumps += ["R" + str(self.loop_counter)]
 
             # Pausing the game and stopping player movement/action
             if every_key == pygame.K_ESCAPE and not self.level_condition:
@@ -139,6 +144,14 @@ class LevelScene(dsnclass.Scene):
 
             # Restart the level from pause menu, which counts as a death
             if self.player.freeze and every_key == pygame.K_r:
+                if 0 < len(self.resp_jumps):
+                    self.memory.update_temp(self.resp_jumps + self.hold_jumps)
+                    self.hold_jumps = []
+                    self.resp_jumps = []
+
+                self.resp_jumps += [
+                    "R" + str(self.loop_counter)]
+
                 self.player.alive = False
                 self.player.freeze = False
                 self.deaths += 1
@@ -157,9 +170,11 @@ class LevelScene(dsnclass.Scene):
             self.player.jump_sound_1.play()     # Play jump sound
             self.player.jumps += 1  # Add to a jump counter
             self.jump_timer = pygame.time.get_ticks()   # Reset jump timer
-            self.hold_jumps += ["J" + str(pygame.time.get_ticks() - self.start_time)]
+
+            self.hold_jumps += ["J" + str(self.loop_counter)]
 
     def update(self):
+        self.loop_counter += 1
         # Failsafe if player isn't rendered but level starts
         if self.player.square_render is None:
             return None # Player is not rendered, skip function
@@ -221,7 +236,7 @@ class LevelScene(dsnclass.Scene):
 
     def render(self, screen):
         # Default rendering
-        screen.fill(WHITE)
+        screen.fill(self.memory.background)
 
     def render_level(self, screen):
         """ This function will be altered in the child class"""
@@ -428,21 +443,31 @@ class Filler(dsnclass.Scene):
         screen.blit(self.filler_text.text_img, self.filler_text.text_rect)
 
 
-# todo: Optimize OptionsPage option selecting
 class OptionsPage(LevelScene):
+    # todo: add music/sound volume, need a memory variable to control all instances.
     """Class used to allow player to change game options"""
     def __init__(self, level_memory):
         LevelScene.__init__(self, -50, -50, level_memory)
         # Initialize LevelScene class objects (mainly for memory/rendering)
-        self.setting_options = {
-            0: level_memory.diff_lookup,
-            1: level_memory.musi_lookup
+
+        # Used to define the bounds for certain settings
+        self.setting_range = {
+            0: [0, 2],
+            1: [255, 200]
         }
+
+        # Remember the last value for this setting
+        self.setting_mem = {
+            0: self.memory.diff_value,
+            1: self.memory.bg_slider
+        }
+
         # Setup select options (so far, difficulty and music)
 
         self.num_to_diff = {0.6: "Easy", 0.8: "Medium", 1.0: "Hard"}
         # Difficulties available
         self.setting_words = [] # Initialize list to hold current settings
+        self.setting_type = []  # What type of setting is it
         self.update_text()  # Add text to setting_words to render
 
         self.choose_setting = 0 # Index for which setting to change (diff/music)
@@ -455,6 +480,13 @@ class OptionsPage(LevelScene):
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", YELLOW, None)
 
+        self.change_speed = 1
+        # How fast holding the button will change the option
+        self.change_time = pygame.time.get_ticks()
+        # Time in between changing the selected option
+        self.speed_inc = 1
+        # How much time in changing the selected option has passed
+
     def input(self, pressed, held):
         for action in pressed:
             # Go through the list of settings the player can change
@@ -464,36 +496,63 @@ class OptionsPage(LevelScene):
                 self.choose_setting -= 1
 
             # Change that selected setting
-            if action in [pygame.K_a, pygame.K_LEFT]:
-                self.change_setting -= 1
-            elif action in [pygame.K_d, pygame.K_RIGHT]:
-                self.change_setting += 1
+            if action in [pygame.K_a, pygame.K_LEFT] and \
+                    (50 / self.change_speed) < \
+                    pygame.time.get_ticks() - self.change_time:
+                self.setting_mem[self.choose_setting] -= 1
+                self.change_time = pygame.time.get_ticks()
+            elif action in [pygame.K_d, pygame.K_RIGHT] and \
+                    (50 / self.change_speed) < \
+                    pygame.time.get_ticks() - self.change_time:
+                self.setting_mem[self.choose_setting] += 1
+                self.change_time = pygame.time.get_ticks()
 
             # If press "R", return to main menu
             if action is pygame.K_r:
                 self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(MenuScene(40, 360, self.memory))
 
+        if held[pygame.K_a] and (1000 / self.change_speed) < \
+                pygame.time.get_ticks() - self.change_time:
+            self.setting_mem[self.choose_setting] -= 1
+            self.change_time = pygame.time.get_ticks()
+
+        elif held[pygame.K_d] and (1000 / self.change_speed) < \
+                pygame.time.get_ticks() - self.change_time:
+            self.setting_mem[self.choose_setting] += 1
+            self.change_time = pygame.time.get_ticks()
+
+        if not (held[pygame.K_a] or held[pygame.K_d]):
+            self.speed_inc = pygame.time.get_ticks()
+            self.change_speed = 1
+
     def update(self):
         # Ensure bounds of choosing which select option is within bounds
         if self.choose_setting < 0:
-            self.choose_setting = len(self.setting_options) - 1
-        elif len(self.setting_options) - 1 < self.choose_setting:
+            self.choose_setting = len(self.setting_mem) - 1
+        elif len(self.setting_mem) - 1 < self.choose_setting:
             self.choose_setting = 0
 
         # Ensure bounds of how you want to change that setting is in bounds
-        if self.change_setting < 0:
-            self.change_setting = len(
-                self.setting_options[self.choose_setting]) - 1
-        elif len(self.setting_options[
-                     self.choose_setting]) - 1 < self.change_setting:
-            self.change_setting = 0
+        if self.setting_mem[self.choose_setting] < min(self.setting_range[self.choose_setting]):
+            self.setting_mem[self.choose_setting] = max(self.setting_range[self.choose_setting])
+        elif max(self.setting_range[self.choose_setting]) < self.setting_mem[self.choose_setting]:
+            self.setting_mem[self.choose_setting] = min(self.setting_range[self.choose_setting])
 
-        # Apply those changes in the settings depending on the index
-        if self.choose_setting == 0:
-            self.memory.diff_value = self.change_setting
-        elif self.choose_setting == 1:
-            self.memory.musi_value = self.change_setting
+        # Apply those changes
+        self.memory.diff_value = self.setting_mem[0]
+        self.memory.bg_slider = self.setting_mem[1]
+        self.memory.background = [
+            self.memory.bg_slider,
+            self.memory.bg_slider,
+            self.memory.bg_slider
+        ]
+
+        # Increment how quick changing the settings go
+        if 250 * self.change_speed < \
+                pygame.time.get_ticks() - self.speed_inc and \
+                self.change_speed < 21:
+            self.change_speed += 1
 
         # Update the text with the respective changes
         self.update_text()
@@ -502,18 +561,28 @@ class OptionsPage(LevelScene):
         LevelScene.render(self, screen)  # Background Colors or Back-most
         self.render_level(screen)  # Level Elements or Middle
 
+        # Highlight the current option
+        if self.setting_type[self.choose_setting] == "Text":
+            hl_rect = self.setting_words[self.choose_setting].text_rect
+        else:
+            hl_rect = self.setting_words[self.choose_setting]
+
+        pygame.draw.rect(screen, DARK_RED,
+                         [hl_rect.x - 4, hl_rect.y - 1,
+                          hl_rect.width + 8, hl_rect.height + 2], 2)
+
         # Write the current settings available on the screen
-        for text_index in range(len(self.setting_words)):
-            screen.blit(self.setting_words[text_index].text_img,
-                        self.setting_words[text_index].text_rect)
+        screen.blit(self.setting_words[0].text_img,
+                    self.setting_words[0].text_rect)    # Difficulty
+
+        pygame.draw.rect(screen, BLACK, self.setting_words[1])
+        pygame.draw.rect(screen, PURPLE,
+                         [430 - 5 + (4 * (self.memory.bg_slider - 200)),
+                          375, 10, 10])     # Background slider
 
         # Render option_titles and highlight selected option
         screen.blit(self.option_title.text_img, self.option_title.text_rect)
         screen.blit(self.return_text.text_img, self.return_text.text_rect)
-        hl_rect = self.setting_words[self.choose_setting].text_rect
-        pygame.draw.rect(screen, DARK_RED,
-                         [hl_rect.x - 4, hl_rect.y - 1,
-                          hl_rect.width + 8, hl_rect.height + 2], 2)
 
         LevelScene.render_text(self, screen)
 
@@ -521,15 +590,16 @@ class OptionsPage(LevelScene):
 
         # Update or initialize self.setting_words with text
         self.setting_words = [
-            dsnclass.Text("Difficulty: " + str(self.num_to_diff[
-                                                   self.memory.diff_lookup[
-                                                       self.memory.diff_value]]),
+            dsnclass.Text("Difficulty: " +
+                          str(self.num_to_diff[
+                               self.memory.diff_lookup[
+                                   self.memory.diff_value]]),
                           ((1080 / 2), 300), 50, "impact",
                           YELLOW, None),
-            dsnclass.Text("Music: " + str(self.memory.musi_value),
-                          ((1080 / 2), 375), 50, "impact",
-                          YELLOW, None)
+            pygame.Rect([430, 385, 220, 3])
         ]
+
+        self.setting_type = ["Text", "Rect"]
 
 
 class ReplayIO(LevelScene):
@@ -564,6 +634,39 @@ class ReplayIO(LevelScene):
 
         self.choose_counter = 0
 
+        self.help_text = [
+            dsnclass.Text("Press Space to Import Replays!",
+                          (1080 / 2, 576 - 150), 50,
+                          "impact", YELLOW, None),
+            dsnclass.Text("Press Space to Paste a Level!",
+                          (1080 / 2, 576 - 150), 50,
+                          "impact", YELLOW, None),
+            dsnclass.Text("Press Space to Export Replays!",
+                          (1080 / 2, 576 - 150), 50,
+                          "impact", YELLOW, None),
+            dsnclass.Text("Press Space to Select a Level to Copy!",
+                          (1080 / 2, 576 - 150), 50,
+                          "impact", YELLOW, None)
+        ]
+
+        self.extra_help = [
+            dsnclass.Text("Remember to paste replays_out into replays_in!",
+                          (1080 / 2, 576 - 100), 50,
+                          "impact", YELLOW, None),
+            dsnclass.Text("", (1080 / 2, 576 - 100), 50,
+                          "impact", YELLOW, None),
+            dsnclass.Text("Go check and copy from replays_out!",
+                          (1080 / 2, 576 - 100), 50,
+                          "impact", YELLOW, None),
+            dsnclass.Text("", (1080 / 2, 576 - 100), 50,
+                          "impact", YELLOW, None)
+        ]
+
+        self.invalid_text = dsnclass.Text("INVALID Copy and Paste, Try Again!",
+                                          (1080 / 2, 576 / 3), 75,
+                                          "impact", RED, None)
+        self.invalid_timer = pygame.time.get_ticks() - 3100
+
     def input(self, pressed, held):
         for action in pressed:
             if action is pygame.K_w:
@@ -583,15 +686,54 @@ class ReplayIO(LevelScene):
                 if self.choose_counter == 0:
                     self.memory.read_replays()
                     self.change_scene(ReplaySelect(self.memory))
+
                 # Text in
                 elif self.choose_counter == 1:
-                    print("nothing")
+                    in_str = str(pygame.scrap.get(pygame.SCRAP_TEXT), "utf-8")
+                    if 9 < len(in_str) and ", " in in_str and \
+                            "[" in in_str and "]" in in_str:
+                        in_list = in_str[1:-1].split(", ")
+                        if in_list[0].isnumeric() and \
+                                in_list[1].isnumeric():
+                            valid_input = True
+                        else:
+                            valid_input = False
+                            self.invalid_timer = pygame.time.get_ticks()
+                    else:
+                        in_list = []
+                        valid_input = False
+                        self.invalid_timer = pygame.time.get_ticks()
+
+                    if valid_input:
+                        ind_count = 2
+                        out_list = []
+                        while ind_count < len(in_list) and valid_input:
+                            if in_list[ind_count][1].isalpha() and \
+                                    in_list[ind_count][2:-2].isnumeric():
+                                out_list += [in_list[ind_count]]
+                                ind_count += 1
+                            else:
+                                valid_input = False
+                        if valid_input:
+                            self.memory.imp_diff[int(in_list[0])] = int(
+                                in_list[1])
+                            self.memory.replay_imp[int(in_list[0])] = out_list
+                            self.change_scene(ReplaySelect(self.memory))
+                        else:
+                            self.invalid_timer = pygame.time.get_ticks()
+                            # invalid here too
+                    else:
+                        self.invalid_timer = pygame.time.get_ticks()
+                        # text invalid stuff
+
+
                 # File out
                 elif self.choose_counter == 2:
                     self.memory.write_replays()
+
                 # Text out
                 elif self.choose_counter == 3:
-                    print("nothing")
+                    self.change_scene(ReplayOut(self.memory))
             # Add space bar to select option (once to select)
 
     def update(self):
@@ -608,12 +750,20 @@ class ReplayIO(LevelScene):
         screen.blit(self.text_in.text_img, self.text_in.text_rect)
         screen.blit(self.text_out.text_img, self.text_out.text_rect)
         screen.blit(self.return_text.text_img, self.return_text.text_rect)
+        screen.blit(self.help_text[self.choose_counter].text_img,
+                    self.help_text[self.choose_counter].text_rect)
+        screen.blit(self.extra_help[self.choose_counter].text_img,
+                    self.extra_help[self.choose_counter].text_rect)
 
         pygame.draw.rect(screen, YELLOW,
                          [self.icon_list[self.choose_counter].text_rect.x - 6,
                           self.icon_list[self.choose_counter].text_rect.y - 6,
                           self.icon_list[self.choose_counter].text_rect.width + 12,
                           self.icon_list[self.choose_counter].text_rect.height + 12], 2)
+
+        if pygame.time.get_ticks() - self.invalid_timer < 3000:
+            screen.blit(self.invalid_text.text_img,
+                        self.invalid_text.text_rect)
 
 
 class StatsPage(LevelScene):
@@ -851,9 +1001,6 @@ class LevelSelect(LevelScene):
     def render(self, screen):
         LevelScene.render(self, screen)  # Basic rendering (screen.fill, etc.)
 
-        # todo: remove since we want to keep
-        screen.blit(self.filler_text.text_img, self.filler_text.text_rect)
-
         LevelScene.render_text(self, screen)    # LevelScene text (useless)
 
         # Text seen to the left side (current selection, -1)
@@ -936,6 +1083,9 @@ class ReplaySelect(LevelSelect):
         self.allow_select = False   # Toggle off, cannot freely choose
         self.no_data = dsnclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
                                      "impact", RED, None)
+        self.replay_title = dsnclass.Text("Choose A Replay Level",
+                                          (1080 / 2, 100), 50, "impact",
+                                          YELLOW, None)
 
     def input(self, pressed, held):
         if self.choose_id in self.memory.replay_imp and \
@@ -954,6 +1104,54 @@ class ReplaySelect(LevelSelect):
         if self.choose_id in self.memory.replay_imp and \
                 0 == len(self.memory.replay_imp[self.choose_id]):
             screen.blit(self.no_data.text_img, self.no_data.text_rect)
+
+        screen.blit(self.replay_title.text_img,
+                    self.replay_title.text_rect)
+
+
+class ReplayOut(ReplaySelect):
+    def __init__(self, level_memory):
+        ReplaySelect.__init__(self, level_memory)
+        self.allow_select = False
+        self.copy_text = dsnclass.Text("Copied Level " + str(self.choose_id),
+                                       (1080 / 2, 3 * 576 / 4),
+                                       50, "impact", YELLOW, None)
+        self.copy_time = pygame.time.get_ticks() - 3100
+        self.replayo_title = dsnclass.Text("Choose a Level to Copy!",
+                                           (1080 / 2, 100), 50, "impact",
+                                           YELLOW, None)
+
+    def input(self, pressed, held):
+        LevelSelect.input(self, pressed, held)
+        for action in pressed:
+            if self.choose_id in self.memory.replay_exp and \
+                    self.memory.replay_exp[self.choose_id] != [] and \
+                    action == pygame.K_SPACE:
+                self.copy_time = pygame.time.get_ticks()
+                self.copy_text = dsnclass.Text("Copied Level " + str(self.choose_id),
+                                       (1080 / 2, 3 * 576 / 4),
+                                       50, "impact", YELLOW, None)
+                pygame.scrap.put(pygame.SCRAP_TEXT,
+                                 bytes(str(
+                                     self.memory.replay_exp[self.choose_id]),
+                                       "utf-8"))
+
+    def update(self):
+        LevelSelect.update(self)
+        self.allow_select = False
+
+    def render(self, screen):
+        LevelSelect.render(self, screen)
+        if self.choose_id in self.memory.replay_exp and \
+                0 == len(self.memory.replay_exp[self.choose_id]):
+            screen.blit(self.no_data.text_img, self.no_data.text_rect)
+
+        if pygame.time.get_ticks() - self.copy_time <= 3000:
+            screen.blit(self.copy_text.text_img,
+                        self.copy_text.text_rect)
+
+        screen.blit(self.replayo_title.text_img,
+                    self.replayo_title.text_rect)
 
 
 class PlayLevel(LevelSelect):
@@ -995,7 +1193,6 @@ class PlayLevel(LevelSelect):
 
         # Replay Option if enabled
         if self.memory.enable_replay:
-            print(self.memory.diff_lookup[level_memory.imp_diff[self.level_id]])
             self.player.diff_factor = self.memory.diff_lookup[level_memory.imp_diff[self.level_id]]
             self.replayer_xspawn = self.x_spawn
             self.replayer_yspawn = self.y_spawn
@@ -1004,7 +1201,6 @@ class PlayLevel(LevelSelect):
                                                    self.memory.diff_lookup[level_memory.imp_diff[self.level_id]])
             self.replay_counter = 0
             self.replay_time = int(self.memory.replay_imp[self.level_id][0][2:-1])
-            self.action_time = pygame.time.get_ticks()
             self.lose_condition = False
             self.win_text = dsnclass.Text("WIN", [1080 / 2, 576 / 2], 250,
                                           "impact", YELLOW, None)
@@ -1042,7 +1238,6 @@ class PlayLevel(LevelSelect):
                 self.player.alive = True
             else:
                 # Change the time at the start of the level
-                self.action_time = pygame.time.get_ticks() - self.count_time
                 self.start_toggle = False
             return None
         # Use the default update features (collision, pausing, victory, etc.)
@@ -1054,20 +1249,22 @@ class PlayLevel(LevelSelect):
 
             if self.replay_counter < len(self.memory.replay_imp[self.level_id]) and \
                     int(self.memory.replay_imp[self.level_id]
-                        [self.replay_counter][2:-1]) - 20 <= \
-                    pygame.time.get_ticks() - self.action_time + self.replay_time - self.count_time and \
+                        [self.replay_counter][2:-1]) - self.replay_time <= \
+                    self.loop_counter and \
                     not (self.lose_condition or self.level_condition):
-
                 if self.memory.replay_imp[self.level_id][self.replay_counter][1:2] == "J":
+                    self.replayer.gravity_counter = self.replayer.max_gravity
                     self.replayer.jump_ability = True  # Allow player to jump
                     self.replayer.jump_boost = self.player.max_jump  # Setup jump
-                    self.replay_counter += 1
 
                 elif self.memory.replay_imp[self.level_id][self.replay_counter][1:2] == "R":
+                    self.replayer.xpos = self.replayer_xspawn
+                    self.replayer.ypos = self.replayer_yspawn
                     self.replayer.alive = True
                     self.replayer.freeze = False
+                    self.replayer.direction = 1
 
-                    self.replay_counter += 1
+                self.replay_counter += 1
 
             self.replay_update()
 
@@ -1107,10 +1304,10 @@ class PlayLevel(LevelSelect):
 
             if self.level_condition and \
                     3000 < pygame.time.get_ticks() - self.end_time:
-                self.change_scene(MenuScene(40, 360, self.memory))
+                self.change_scene(ReplaySelect(self.memory))
             elif self.lose_condition and \
                     3000 < pygame.time.get_ticks() - self.end_time:
-                self.change_scene(MenuScene(40, 360, self.memory))
+                self.change_scene(ReplaySelect(self.memory))
 
             if not (self.level_condition or self.lose_condition):
                 self.end_time = pygame.time.get_ticks()
@@ -1206,6 +1403,3 @@ class PlayLevel(LevelSelect):
                                  [element.shape[0], element.shape[1]],
                                  [element.shape[2], element.shape[3]],
                                  element.shape[4])
-                
-
-                
