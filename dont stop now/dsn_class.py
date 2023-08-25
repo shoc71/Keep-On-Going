@@ -15,10 +15,10 @@ LIGHT_RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (125, 125, 125)
 LIGHT_PINK = (255, 182, 193)
-EDIT_DARK_GREEN = (1, 100, 32)
+DARK_GREEN = (1, 100, 32)
 PURPLE = (181, 60, 177)
 BROWN = (150, 75, 0)
-LICORICE_BLACK = (52, 52, 52)
+DARK_GREY = (52, 52, 52)
 
 
 class Text:
@@ -297,11 +297,11 @@ class Memory:
             "WHITE": WHITE,
             "GREY": GREY,
             "LIGHT_PINK": LIGHT_PINK,
-            "EDIT_DARK_GREEN": EDIT_DARK_GREEN,
+            "DARK_GREEN": DARK_GREEN,
             "PURPLE": PURPLE,
             "BLUE": BLUE,
             "ORANGE": ORANGE,
-            "LICORICE_BLACK": LICORICE_BLACK
+            "DARK_GREY": DARK_GREY
         }
         # Used to convert text file color names to static constant colors
 
