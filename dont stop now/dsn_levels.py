@@ -689,7 +689,11 @@ class ReplayIO(LevelScene):
 
                 # Text in
                 elif self.choose_counter == 1:
-                    in_str = str(pygame.scrap.get(pygame.SCRAP_TEXT), "utf-8")
+                    if 0 < len(str(pygame.scrap.get(pygame.SCRAP_TEXT), "utf-8")) or \
+                            str(pygame.scrap.get(pygame.SCRAP_TEXT), "utf-8") is not None:
+                        in_str = str(pygame.scrap.get(pygame.SCRAP_TEXT), "utf-8")
+                    else:
+                        in_str = ""
                     if 9 < len(in_str) and ", " in in_str and \
                             "[" in in_str and "]" in in_str:
                         in_list = in_str[1:-1].split(", ")
