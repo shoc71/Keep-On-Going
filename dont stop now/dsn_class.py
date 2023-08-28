@@ -1,4 +1,5 @@
 import random
+import os
 
 import pygame
 import re
@@ -72,7 +73,7 @@ class Music:
     Also responsible for music volume and music switching.
     """
 
-    def __init__(self):
+    def __init__(self, perc_vol):
         self.music_tracks = [
             "main_menu.wav",
             "level_loop1.wav",
@@ -93,9 +94,10 @@ class Music:
 
         self.current_track_index = 0    # Everything but the main menu theme
 
+        self.perc_vol = perc_vol   # Volume set by the player as a percentage
         self.music_vol = 0              # Adjustable music volume
         self.vol_time = pygame.time.get_ticks()     # Increment music with time
-        self.max_vol = 0.7              # Max volume possible for music
+        self.max_vol = 0.7 * self.perc_vol / 100   # Max volume possible for music
 
         pygame.mixer.music.load(self.file_path + self.music_tracks[0])
         # Load the menu music
@@ -134,6 +136,9 @@ class Music:
         pygame.mixer.music.play(0, 0, 0)  # Play the music once
 
     def set_music(self, track_num, vol, loops, start, fade_in):
+        # Set the max volume
+        self.max_vol = 0.7 * self.perc_vol / 100
+
         # Reset music display timer
         self.text_timer = pygame.time.get_ticks()
 
@@ -150,7 +155,7 @@ class Music:
                                 (self.music_tracks[self.current_track_index]))
 
         # Set the volume
-        self.music_vol = vol
+        self.music_vol = vol * self.perc_vol / 100
         pygame.mixer.music.set_volume(self.music_vol)
 
         pygame.mixer.music.play(loops, start, fade_in)  # Play the music
@@ -158,6 +163,8 @@ class Music:
     def transition_music(self):
         # Slowly increase volume of music (0.01 every 0.075 seconds)
         # until volume reaches the max (0.7 or self.max_vol)
+        # set the new self.max_vol if changed
+        self.max_vol = 0.7 * self.perc_vol / 100
         while self.music_vol < self.max_vol and \
                 75 < pygame.time.get_ticks() - self.vol_time:
             self.music_vol += 0.01  # Increase volume
@@ -201,8 +208,6 @@ class Memory:
 
         self.diff_value = 1  # Normal/Default difficulty value
 
-        self.music = Music()  # Initialize music
-
         """Background color and a slider to adjust it"""
         self.bg_slider = 255
         self.background = [self.bg_slider,
@@ -220,6 +225,16 @@ class Memory:
 
         # Toggle if replay mode is on or not (only accessed in Replays)
         self.enable_replay = False
+
+        # Amount of times pressing R to have quick restart
+        self.quick_restart = 1  # By default, it's 1 time
+        self.qr_counter = 0
+
+        # Volume setting for music
+        self.total_music_per = 100
+
+        # Lastly, initialize music
+        self.music = None
 
     def update_mem(self, level_id, death_count, jump_count, level_time):
         """
@@ -511,6 +526,80 @@ class Memory:
 
     def replays_off(self):
         self.enable_replay = False
+
+    def write_save(self):
+        file_path = "assets/saves/save_file1.txt"
+        with open(file_path, "w") as open_file:
+            open_file.write(str(self.total_deaths) + "\n")
+            open_file.write(str(self.total_jumps) + "\n")
+            open_file.write(str(self.total_time +
+                                pygame.time.get_ticks()) + "\n")
+            open_file.write(str(self.level_deaths) + "\n")
+            open_file.write(str(self.level_jumps) + "\n")
+            open_file.write(str(self.level_times) + "\n")
+            open_file.write(str(self.level_progress) + "\n")
+
+            open_file.write(str(self.diff_value) + "\n")
+            open_file.write(str(self.bg_slider) + "\n")
+            open_file.write(str(self.quick_restart) + "\n")
+            open_file.write(str(self.music.perc_vol))
+
+    def load_save(self):
+        file_path = "assets/saves/save_file1.txt"
+        with open(file_path, "r") as test_file:
+            file_len = len(test_file.readlines())
+
+        if os.path.isfile(file_path) and file_len == 11:
+            get_save = open(file_path, "r")
+            self.total_deaths = int(get_save.readline())
+            self.total_jumps = int(get_save.readline())
+            self.total_time = int(get_save.readline())
+
+            get_death = get_save.readline()[1:-2].split(", ")
+            print(len(get_death))
+            if 1 < len(get_death):
+                for each_stat in get_death:
+                    split_stat = each_stat.split(": ")
+                    self.level_deaths[int(split_stat[0])] = int(split_stat[1])
+
+            get_jumps = get_save.readline()[1:-2].split(", ")
+            if 1 < len(get_jumps):
+                for each_stat in get_jumps:
+                    split_stat = each_stat.split(": ")
+                    self.level_jumps[int(split_stat[0])] = int(split_stat[1])
+
+            get_times = get_save.readline()[1:-2].split(", ")
+            if 1 < len(get_times):
+                for stat_ind in range(0, len(get_times), 3):
+                    self.level_times[int(get_times[stat_ind].split(":")[0])] = [
+                        int(get_times[stat_ind].split(": ")[1][1:]),
+                        int(get_times[stat_ind + 1]),
+                        int(get_times[stat_ind + 2][:-1])
+                    ]
+
+            get_prog = get_save.readline()[1:-2].split(", ")
+            if 1 < len(get_prog):
+                for each_stat in get_prog:
+                    self.level_progress += [int(each_stat)]
+
+            self.diff_value = int(get_save.readline())
+            self.bg_slider = int(get_save.readline())
+            self.background = [
+                self.bg_slider,
+                self.bg_slider,
+                self.bg_slider
+            ]
+            self.quick_restart = int(get_save.readline())
+            self.total_music_per = int(get_save.readline())
+            pygame.mixer.music.set_volume(self.total_music_per)
+
+        elif os.path.isfile(file_path) and file_len != 11:
+            get_save = open(file_path, "w")
+        else:
+            # No previous save made
+            get_save = open(file_path, "x")
+
+        get_save.close()
 
 
 class ReplayBlock:
