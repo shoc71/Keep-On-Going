@@ -556,7 +556,6 @@ class Memory:
             self.total_time = int(get_save.readline())
 
             get_death = get_save.readline()[1:-2].split(", ")
-            print(len(get_death))
             if 1 < len(get_death):
                 for each_stat in get_death:
                     split_stat = each_stat.split(": ")
