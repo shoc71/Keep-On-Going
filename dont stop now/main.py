@@ -12,6 +12,8 @@ class Program:
         self.memory = dsnclass.Memory()     # Initialize game memory
         self.memory.load_levels("assets/levels.txt")   # Load levels into memory
         self.memory.init_replays()
+        self.memory.load_save()
+        self.memory.music = dsnclass.Music(self.memory.total_music_per)
 
     def run(self, width, height, current_scene):
         """
@@ -47,6 +49,7 @@ class Program:
             for event in pygame.event.get():    # Collect all key presses
                 # Quit condition if you press the X on the top right
                 if event.type == pygame.QUIT:
+                    self.memory.write_save()
                     self.running = False    # Stop running this loop
                     pygame.mixer.music.stop()   # Stop the music
                     scene.run_scene = False     # Tell scene to stop running
@@ -59,6 +62,7 @@ class Program:
 
             # Stop the game using other conditions (running, but scene says off)
             if self.running and not scene.run_scene:
+                self.memory.write_save()
                 self.running = False    # Stop running this loop
                 pygame.mixer.music.stop()   # Stop the music
                 scene.close_game()      # Tell scene to shut off
