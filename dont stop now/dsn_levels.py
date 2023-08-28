@@ -478,7 +478,7 @@ class OptionsPage(LevelScene):
                                           "impact", DARK_RED, None)
         self.return_text = dsnclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
-            "impact", YELLOW, None)
+            "impact", DARK_GREY, None)
 
         self.change_speed = 1
         # How fast holding the button will change the option
@@ -618,7 +618,7 @@ class ReplayIO(LevelScene):
                                       50, "impact", PURPLE, None)
         self.return_text = dsnclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
-            "impact", YELLOW, None)
+            "impact", DARK_GREY, None)
 
         self.icon_list = [self.file_in, self.text_in,
                           self.file_out, self.text_out]
@@ -797,7 +797,7 @@ class StatsPage(LevelScene):
 
         self.return_text = dsnclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
-            "impact", YELLOW, None)
+            "impact", DARK_GREY, None)
 
     def input(self, pressed, held):
         # Check if there are level's completed
@@ -897,6 +897,19 @@ class LevelSelect(LevelScene):
         """
         self.filler_text = dsnclass.Text("Choose A Level",
                                          (540, 153), 50, "impact", YELLOW, None)
+        
+        self.level_selector_text_0 = dsnclass.Text("Choose a Level", (535, 100), 65,
+                          "impact", YELLOW, None)
+            
+        self.level_selector_text_1 = dsnclass.Text("Tap/Hold A or D to navigate through the levels", 
+                                                   (535, 450), 30, "impact", YELLOW, None)
+        
+        self.level_selector_text_2 = dsnclass.Text("Tap R to return to Main Menu", (545, 530), 25,
+                          "impact", DARK_GREY, None)
+        
+        self.level_selector_text_3 = dsnclass.Text("Press W or Space to start the level", 
+                                                   (535, 490), 28, "impact", YELLOW, None)
+        
 
         self.blockmation_time = 0   # Time variable for moving level boxes
         self.text_x = 0 # Used to define the x position of level number text
@@ -1007,6 +1020,13 @@ class LevelSelect(LevelScene):
 
         LevelScene.render_text(self, screen)    # LevelScene text (useless)
 
+        # Rendering the instructions of using the level-selector
+        if self.memory.enable_replay == False:
+            screen.blit(self.level_selector_text_0.text_img, self.level_selector_text_0.text_rect)
+        screen.blit(self.level_selector_text_1.text_img, self.level_selector_text_1.text_rect)
+        screen.blit(self.level_selector_text_2.text_img, self.level_selector_text_2.text_rect)
+        screen.blit(self.level_selector_text_3.text_img, self.level_selector_text_3.text_rect)
+
         # Text seen to the left side (current selection, -1)
         left_text = dsnclass.Text(str(self.choose_id - 1),
                                   [(1080 / 2) - 200 + self.text_x,
@@ -1088,7 +1108,7 @@ class ReplaySelect(LevelSelect):
         self.no_data = dsnclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
                                      "impact", RED, None)
         self.replay_title = dsnclass.Text("Choose A Replay Level",
-                                          (1080 / 2, 100), 50, "impact",
+                                          (1080 / 2, 160), 50, "impact",
                                           YELLOW, None)
 
     def input(self, pressed, held):
@@ -1122,7 +1142,7 @@ class ReplayOut(ReplaySelect):
                                        50, "impact", YELLOW, None)
         self.copy_time = pygame.time.get_ticks() - 3100
         self.replayo_title = dsnclass.Text("Choose a Level to Copy!",
-                                           (1080 / 2, 100), 50, "impact",
+                                           (1080 / 2, 160), 50, "impact",
                                            YELLOW, None)
 
     def input(self, pressed, held):
