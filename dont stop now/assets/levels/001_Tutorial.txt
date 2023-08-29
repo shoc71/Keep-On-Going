@@ -1,0 +1,126 @@
+Start_the_Game(360, 360, 1)
+
+dsnclass.Text("This is the tutorial", (545, 130), 45, "impact", WHITE, None)
+dsnclass.Text("Press W or Space to Start the game", (545, 190), 45, "impact", WHITE, None)
+dsnclass.Text("W or Space", (439, 190), 45, "impact", BLUE, None)
+dsnclass.Text("Start", (640, 190), 45, "impact", BLUE, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 353, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [727, 0, 353, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [320, 0, 419, 240]),
+        pygame.draw.rect(screen, (0, 0, 0), [320, 386, 419, 190])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [714, 240, 13, 146])
+]
+
+=====
+
+Win_the_Game(360, 360, 1)
+
+dsnclass.Text("Make Contact with the Blue Zones to WIN", (545, 190), 45, "impact", WHITE, None)
+dsnclass.Text("Contact", (352, 190), 45, "impact", CYAN, None)
+dsnclass.Text("Blue Zones", (690, 190), 45, "impact", CYAN, None)
+dsnclass.Text("WIN", (881, 190), 45, "impact", CYAN, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 326, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [764, 0, 316, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [320, 0, 513, 240]),
+        pygame.draw.rect(screen, (0, 0, 0), [320, 386, 490, 190])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [751, 240, 13, 146])
+]
+
+====
+
+Jump_the_Game(300, 360, 1)
+
+dsnclass.Text("Press W or Space to Jump", (545, 190), 45, "impact", WHITE, None)
+dsnclass.Text("W or Space", (526, 190), 45, "impact", ORANGE, None)
+dsnclass.Text("Jump", (730, 190), 45, "impact", ORANGE, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [868, 0, 212, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [847, 236, 22, 32]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 291, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [248, 0, 652, 240]),
+        pygame.draw.rect(screen, (0, 0, 0), [249, 386, 669, 190]),
+        pygame.draw.rect(screen, (0, 0, 0), [542, 363, 22, 32])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [855, 268, 13, 118])
+]
+
+====
+
+Pause_the_Game(80, 360, 1)
+
+dsnclass.Text("Hit Esc key to Pause the game", (545, 190), 45, "impact", WHITE, None)
+dsnclass.Text("Esc", (364, 190), 45, "impact", RED, None)
+dsnclass.Text("Pause", (578, 190), 45, "impact", RED, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 74, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [931, 0, 149, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 988, 240]),
+        pygame.draw.rect(screen, (0, 0, 0), [83, 386, 838, 190]),
+        pygame.draw.rect(screen, (0, 0, 0), [73, 386, 861, 190]),
+        pygame.draw.rect(screen, (0, 0, 0), [905, 234, 28, 72]),
+        pygame.draw.rect(screen, (0, 0, 0), [308, 369, 16, 27]),
+        pygame.draw.rect(screen, (0, 0, 0), [701, 369, 16, 27])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [918, 306, 13, 80])
+]
+
+====
+
+Restart_the_Game(80, 360, 1)
+
+dsnclass.Text("Press R to Restart the Game", (545, 190), 45, "impact", WHITE, None)
+dsnclass.Text("R", (415, 190), 45, "impact", LIME_GREEN, None)
+dsnclass.Text("Restart", (548, 190), 45, "impact", LIME_GREEN, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 65, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [1046, 0, 34, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 240]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 386, 1080, 190]),
+        pygame.draw.rect(screen, (0, 0, 0), [1019, 346, 29, 50]),
+        pygame.draw.rect(screen, (0, 0, 0), [1021, 226, 29, 59]),
+        pygame.draw.rect(screen, (0, 0, 0), [351, 341, 408, 59]),
+        pygame.draw.rect(screen, (0, 0, 0), [224, 365, 799, 59])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [1033, 285, 13, 61])
+]
+
+====
+
+End_the_Game(825, 360, 1)
+
+dsnclass.Text("Good Luck and Have Fun", (545, 190), 45, "impact", YELLOW, None)
+dsnclass.Text("*you can bounce on walls", (995, 380), 15, "impact", WHITE, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 240]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 386, 1080, 190]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 23, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [1064, 0, 16, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [17, 373, 1053, 36]),
+        pygame.draw.rect(screen, (0, 0, 0), [23, 226, 34, 103])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [23, 329, 13, 44])
+]
+
+====
