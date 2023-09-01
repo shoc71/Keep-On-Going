@@ -460,16 +460,20 @@ class Memory:
                                               r"\([0-9]+, [0-9]+, [0-9]+\)), "
                                               r"None\)",
                                               line).group()[1:-1].split(", ")
-
                     # Get color
-                    text_color = color_lookup[format_search[5]]
+                    if format_search[5] in color_lookup:
+                        text_color = color_lookup[format_search[5]]
+                    else:
+                        text_color = (int(format_search[5][1:]),
+                                      int(format_search[6]),
+                                      int(format_search[7][:-1]))
 
                     # Create Text class
                     add_text = Text(format_search[0][1:-1],
                                     (int(format_search[1][1:]),
                                      int(format_search[2][0:-1])),
                                     int(format_search[3]),
-                                    format_search[4][1:],
+                                    format_search[4][1:-1],
                                     text_color,
                                     None)
 
@@ -556,6 +560,7 @@ class Memory:
             self.total_time = int(get_save.readline())
 
             get_death = get_save.readline()[1:-2].split(", ")
+            print(len(get_death))
             if 1 < len(get_death):
                 for each_stat in get_death:
                     split_stat = each_stat.split(": ")
@@ -639,7 +644,8 @@ class ReplayChain:
             new_node = ReplayNode(item)
             self.tail.next = new_node
             self.tail = self.tail.next
-        elif 5 <= self.check_len() < 6:   # Chain going to go past the length limit
+        elif 5 <= self.check_len() < 6 and self.head is not None and \
+                self.tail is not None:   # Chain going to go past the length limit
             self.head = self.head.next
             new_node = ReplayNode(item)
             self.tail.next = new_node
