@@ -5343,3 +5343,4 @@ self.death_zones =  [
         pygame.draw.rect(screen, (194, 57, 33), [144, 539, 231, 21]),
         pygame.draw.rect(screen, (255, 0, 0), [461, 539, 123, 21])
 ]
+=======
