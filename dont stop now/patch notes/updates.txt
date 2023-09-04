@@ -1,3 +1,541 @@
+August 28 - September 3
+
+dsn_class (v.0.3.5)
+- *incorrectly labelled as dsn_class (v.0.3.4)
+- creating txt files and made the autosave function for level progress
+- loading save file so player continues like nothing happened before
+- do not upload your own save file
+
+- *incorrectly labelled as dsn_class (v.0.3.4)
+- FIX_1
+    - Added some required conditionals for better stability.
+
+dsn_levels (v.0.4.2)
+- Added an additional way to restart the level by pressing R. A safe restart setting was added to the settings (to prevent accidental restarts). 
+    - This lets the player choose from 1 or 2 R taps to restart the level.
+- Put in a timer to not have pressing left or right on the menu interfere with changing settings in the settings page
+- Music volume is now controllable with a A/D slider in the settings page.
+- Some instructions/guidelines were put into the settings page as well
+- Levels are now locked behind level progress
+
+Main (v.0.2.5)
+- *incorrectly labelled as main (v.0.2.6)
+- added lines for autosave and new settings in levels
+
+levels.txt (v.0.5.1 - v.0.5.4)
+- *incorrectly labelled as levels.txt (v.0.4.0)
+- added new levels
+- small corrections to art
+
+- *incorrectly labelled as levels.txt (v.0.4.1)
+- added tutorial levels for new players as context to play
+- minor correction to levels work and art
+- a few new levels have been added
+
+- *incorrectly labelled as levels.txt (v.0.4.2)
+- a few new levels have been added
+
+- *incorrectly labelled as levels.txt (v.0.4.3)
+- a few new levels have been added
+- updated a few levels
+
+Files
+- 8 new txt files have been made to store levels (50 is too many to navigate through)
+
+Images
+- added lock.pngs with transition images for animation
+
+Additional Notes
+- putting main into a patch as a backup for levels.txt
+- Second Great Split for txt files into different branches for players to unlock
+
+========
+
+August 21 - August 27
+
+dsn_class (v.0.3.2 - v.0.3.4)
+- *incorrectly labelled as dsn_class (v.0.3.1)
+- Collision rework
+    - Collision detection:
+        -  4 collision boxes (up, down, left and right of the player) have been resized. 
+            - These are used to help decide what type of collision occurs (wall, ceiling, or platform)
+        -  larger box surrounding the player and these smaller collision boxes.
+    - Collision logic:
+        - there are self.jump_y and self.grav_y (jumpy gravy) and self.left_x and self.right_x. 
+            - These are the first line of defense in ensuring the player stays within bounds.
+        - For each type of collision (wall, ceiling, and platform), there is an additional line of code that will put the player back in bounds (or outside the collided object).
+
+- *incorrectly labelled as dsn_class (v.0.3.2)
+- Changing color names to be accurate and consistent in levels.txt (v.0.4.9)
+
+- *incorrectly labelled as dsn_class (v.0.3.3)
+- slider for background color is added
+- enhancements to the replay function
+- Fixed player going into and below or above small blocks when colliding on the side. 
+
+
+dsn_levels (v.0.3.9 - v.0.4.1)
+- Editing Level Zero 
+- Changing color names to be accurate and consistent in levels.txt (v.0.4.9)
+
+- Changed it so Replays now take in forced respawns
+- The Replays page now has help text to assist the player in using the Replays feature.
+- Replays now have text in/text out options (copy/paste)
+- Replays is fully functioning
+- Reworked Settings/Options to be a bit more clean and smart
+- Music selection was removed from settings/options.
+- Settings/Options now have a slider to change the background between WHITE and LIGHT_GREY
+- Settings/Options also have a held function that will speed up the selection the longer the player holds A/D.
+
+- added new text in level_selector for more clear instructions
+
+Main (v.0.2.4)
+- *incorrectly labelled as main (v.0.2.5)
+- adding filepath to levels.txt for consistent
+
+levels.txt (v.0.4.7 - v.0.5.1)
+- *incorrectly labelled as levels.txt (v.0.3.5)
+- 2 added new levels
+
+- *incorrectly labelled as levels.txt (v.0.3.6)
+- edited levels and fixed art
+
+- *incorrectly labelled as levels.txt (v.0.3.7)
+- edited levels and fixed art
+- added a few levels as well
+
+- *incorrectly labelled as levels.txt (v.0.3.8)
+- minor corrections to art and levels
+- 2 new levels added
+
+- *incorrectly labelled as levels.txt (v.0.3.9)
+- adjusting and testing levels
+- 2 new levels added
+
+Music
+- 1 new music file
+
+Additional Notes
+
+=============
+
+August 14 - August 20
+
+dsn_class (v.0.2.8 - v.0.3.1)
+- added licorice_black color_constant
+
+- *incorrectly labelled as dsn_class (v.0.2.8)
+- song track list got updated including all the new songs available
+
+- *incorrectly labelled as dsn_class (v.0.2.9)
+- Added Music to the game:
+    - Moved Music to be used in the scope of the main loop.
+    - swich_music which will randomly choose a track (that's not menu and not credits)
+    - set_music which will allow a specific music track to be chosen along with specific volume settings, how many times it'll loop, start time, and how much miliseconds it takes to fade in (optional)
+    - transition_music which uses time to eventually increase the volume
+
+- *incorrectly labelled as dsn_class(v.0.2.9)
+- FIX_1
+    - Added Licorice_Black to the color lookup for load_levels
+
+- *incorrectly labelled as dsn_class (v.0.3.0)
+- replays files are created and read in the replay class
+- created DSNelement
+
+- *incorrectly labelled as dsn_class (v.0.3.0) fix 1
+- Changed ReplayChain to detect length from self.check_len (own counter) rather than relying on death counter. 
+    - This sacrifices some time (O(n) now instead of O(1))
+
+dsn_levels (v.0.3.6 - v.0.3.8)
+- slightly adjusted the menuscene text "hit space..." to go down a little not to overlap with the pngs
+
+- music is being added and used in levels with transitions
+- moved fancy title into image class for code
+- altering the jump to be less delayed (200 --> 150 milliseconds)
+- removing a redundant self.diff_factor in gravity
+
+- FIX_1
+    - Fixed a spelling mistake in a comment and fully fixed jumping. 
+    - change the timing for held jumps from 200 to 150 milliseconds.
+    - The fix was that the jump boost wasn't reset to it's default value on death, causing the jump to continue when the player respawned.
+
+- dsn_levels no longer crashes when completing the last level. Now it'll just take you back to the main menu.
+- LevelSelect now doesn't display any disclaimer text
+- Added the speed jump modifier to the player jump in LevelSelect
+- There's a new Replays option on the menu
+    - For level select, the speed modifier moves too fast for the text boxes to load in/out.
+    - File out will write the data of all completed levels to replays_out.txt.
+    - File in will read the data from replays_in.
+    - Selecting the file in option will bring the player to a level select screen. 
+        - If there's no data on that level, it'll say "NO DATA". 
+        - Otherwise, the level will be able to be selected if there's data.
+    - Selecting a replay level will put both you (purple) and a replay ghost (grey). 
+        - A countdown will start and once done, both players will start moving.
+        - Whoever reaches the end first, wins
+
+- FIX_1
+    - removed self.deaths as its unreliable
+
+Main (v.0.2.2 - v.0.2.3)
+- added caption and icon functions (icon isn't working so a separate issue shall be opened for that)
+
+- added music calling functions and added filepathing to title
+
+- FIX_1
+    - Fixed the window caption removing file_path name from the window caption
+
+levels.txt (v.0.4.2 - v.0.4.6)
+- *incorrectly labelled as levels.txt (v.0.3.0)
+- edited level candles to be beatable
+
+- *incorrectly labelled as levels.txt (v.0.3.0)
+- edited all the levels to be beatable and tested
+    - texts have been formatted in the correct spots (fonts can be changed whenever)
+    - all platforms have been fixed and properly placed (mouse is fine, two pillars is not)
+    - art has been refined to a clear quality and everything looks good and is in a valid game
+
+- *incorrectly labelled as levels.txt (v.0.3.2)
+- added new hard level
+
+- *incorrectly labelled as levels.txt (v.0.3.3)
+- rearranged the order of levels based on difficulty
+
+- *incorrectly labelled as levels.txt (v.0.3.4)
+- added a few extra easy transition levels 
+
+images
+- 5 images of the purple player icon have been uploaded in folder
+- deleted 4 other images that couldn't be used as a game_icon
+
+LICENSE
+- changing license
+
+README
+- tiny edit for further clarity
+
+Music
+- renaming the music files to have an underscore ("_") and have them under the assets/music folder
+
+Additional Notes
+- the naming is finally correct - NOOOOOOOOOO II GOT MESSED UP AGAIN
+- more txt files have been made for replays
+    - replay is not accurate to gameplay, this needs to be fixed
+- I plan on making more difficult levels as most of them, currently, feel too easy to beat
+- 5 text boxes should be used instead of 3 for the replays files texts here
+
+===================
+
+August 7 - August 13
+
+dsn_class (v.0.2.7)
+- comments added to the code for better readability
+
+dsn_levels (v.0.3.4 - v.0.3.5)
+- FIX_1
+    - Changed jump to be more slightly delayed
+
+- comments added to the code for better readability
+
+Main (v.0.2.1)
+- comments added to the code for better readability
+
+levels.txt (v.0.4.0 - v.0.4.1)
+- *incorrectly labelled as levels.txt
+- 2 new levels added
+
+Music
+- added 2 new music files
+
+Additional Notes
+
+========
+
+July 31 - August 6
+
+dsn_class (v.0.2.4 - v.0.2.5)
+- *incorrectly labelled as dsn_class.txt (v.0.2.3) v1
+- FIX_4
+    - Added compatibility for color names with two underscores (ex: EDIT_DARK_GREEN)
+
+- *incorrectly labelled as dsn_class.txt (v.0.2.3) v2
+- FIX_5
+    - brown color added
+
+- Added compatibility with colors containing underscores in their naming for text (at most 2)
+
+- FIX_1
+    - Top collision is now wider to have the block experience hitting the bottom of blocks in a wider area, meaning corners are now detected.
+    - Bottom collision is also wider to avoid clipping through the corner of blocks. This change also allows the player to jump later (feasibly), meaning jumps are more precise as well. 
+
+- FIX_2
+    - Changes to platform (bottom) and wall collision to be a range (more robust).
+
+- *incorrectly labelled as dsn_class.txt
+- FIX_3
+    - added color Licorice_black
+
+dsn_levels (v.0.3.3 - v.0.3.4)
+- *incorrectly labelled as dsn_levels.txt (v.0.3.3) v1
+- FIX_2
+    - brown color added
+
+- *incorrectly labelled as dsn_levels.txt (v.0.3.3) v2
+- FIX_3
+    - Changed level select to include the last level
+
+- Test
+    - additional comments
+    - new branch got created for testing level_0 called test
+
+- Moved statistics updating (update_mem) and level changing (self.level_id) to dsn_levels from main.
+    - drastically reduced chance for level repetition
+- Removed music value in preparation for having music play in a wider scope, or in the main loop in main.
+    - preventing music from repeating and restarting whenever the level is over or restarted
+- Changed the button for returning to the menu from "R" to "B", as in back (for now). "R" now is used to restart the level when paused
+
+- *incorrectly labelled as dsn_levels.txt
+- FIX_4
+    - added color Licorice_black
+
+Main (v.0.2.1)
+- removed song call line with dsn_levels v.0.3.4 patch and re-edited memory to prevent repetition
+
+levels.txt (v.0.3.4 - v.0.3.9)
+- *incorrectly labelled as levels.txt (v.0.3.0)
+- 2 new levels added
+
+- *incorrectly labelled as levels.txt (v.0.3.3+)
+- 2 new levels added
+
+- *incorrectly labelled as levels.txt
+- 1 new level added
+
+- *incorrectly labelled as levels.txt
+- 2 new level added
+
+- *incorrectly labelled as levels.txt
+- editing art and adjusting blocks for newer collision
+
+Music
+- added 2 new music files
+
+Additional Notes
+- themes for music in each levels or series of levels are needed
+
+==============
+
+July 24 - July 30
+
+dsn_class (v.0.2.4)
+- FIX_1
+    - Temporary collision fix
+
+- FIX_2
+    - Fixed loading levels (if colors were in a tuple of format (x, y, z)).
+    - Removed unnecessary print statements
+
+- *incorrectly labelled as dsn_class.txt (v.0.2.3)
+- FIX_3
+    - added two new colors for interpretations
+
+dsn_levels (v.0.3.2 - v.0.3.3)
+- Fixed jump immediately occurring when jump (or start) is pressed
+- Fixed self.respawn spawning not exactly being in the middle of the respawn block
+- Added a 'hold' option for selecting levels (no multiple pressing required)
+- Holding "A" or "D" for selecting levels will speed up after 3 seconds 
+
+- added pngs of custom png title
+
+- FIX_1
+    - Removed annoying print statements for jump
+    - Reduced delay on jump
+
+- *incorrectly labelled as dsn_levels.txt (v.0.3.3)
+- FIX_2
+    - added two new colors for interpretations
+
+levels.txt (v.0.2.9 - v.0.3.4)
+- *incorrectly labelled as update levels.txt
+- 1 new level added
+
+- *incorrectly labelled as update levels.txt
+- fixing labelling issues and correcting any mistakes in levels.txt
+- 2 new levels added
+
+- *incorrectly labelled as update levels.txt (v.0.2.6+)
+- replacing tuple of color with static_color 
+
+- *incorrectly labelled as update levels.txt (v.0.2.7+)
+- removed two levels (didn't work at all OR too dark)
+
+- *incorrectly labelled as update levels.txt (v.0.2.8+)
+- changed all class names to level names 
+- re-edited levels to work with new collision logic
+- re-drew levels to seem more consistent
+
+- *incorrectly labelled as update levels.txt (latest txt with keyerror)
+- edited levels and fixed crasahing error
+
+Images
+- added 8 pngs for the title to keep as a record
+- taking all the images and moving them into the images folder (this includes the previously mentioned pngs and any addditional images in the folder)
+- deleting all the "loose" images in the assets folder and re-organizing them as mentioned above (including 8 pngs mentioned above) - (over 15 PRs)
+- certain image ideas were removed from game as they were added to the game
+- added fancy title
+- added sketches for levels in assets/images/sketches
+
+README
+- for assets/images/sketches - created to hold future level ideas and sketches
+
+Additional Notes
+- dsn_levels animation for transitioning multiple levels quickly is very choopy (may cause nausea - it will be fixed later)
+
+===========
+
+July 17 - July 23
+
+dsn_class (v.0.2.3 - v.0.2.4)
+- removed redundant comments
+- static function of time of converting time was added
+- added static function of adding_time as to combine times and not overwrite them
+    - helpful for updating menu time
+- memory class had time added
+
+- FIX 1
+    - removed difficulty, a planned but not implemented feature.
+
+- Added difficulty and music options to dsn_class Memory.
+    - Difficulty is used in the SquareMe class to change it's movement speed. This includes jumps, horizontal sliding and gravity.
+    - Music isn't properly implemented yet and is there only for testing purposes.
+
+dsn_levels (v.0.3.0 - v.0.3.1)
+- LevelScene class had time added
+- Made update_stats function in the StatsPage class to update the text whenever needed (less messy)
+
+- FIX 1
+    - Removed difficulty (planned, but not implemented)
+    - fixed memory loading where it would try to get Memory class variables from a None type
+
+- Made an options page (OptionsPage) in dsn_levels. At present, only difficulty and music can be changed
+    - Only changing difficulty has a real effect on the game. Music doesn't do anything yet and is only there for testing
+    - Choosing which options to change by pressing UP/W and DOWN/S (difficulty or music). 
+    - Pressing LEFT/A and RIGHT/D will change the selected option (which difficulty or which music).
+
+Main (v.0.2.0)
+- total time of a session is tracked
+
+levels.txt (v.0.2.8)
+- *incorrectly labelled as update levels.txt
+- 4 levels were edited to be playable
+- formatting correction
+- tuple for colors converted to static_colors
+
+Images
+- added D_letter.png
+
+README (v.0.2.8)
+- updated to notify players about changing difficulty and speed
+
+Addtional Notes
+- time statistics will include miliseconds to consider memory updating in less than a second (which matters most in menuscene).
+- time functions will have total play time when saving is implemented
+- no way to save previous game instances yet, this will be owrked on later
+
+========
+
+July 10 - July 16
+
+dsn_class (v.0.2.1 - v.0.2.2)
+- Changed collision logic for the 120 FPS update.
+    - testing game speed
+- Cleaned up some unnecessary comments
+
+- Minor optimization to ceiling collision
+
+dsn_levels (v.0.2.7 - v.0.2.9)
+- removed self.walls completely
+- Removed unused variables like self.mid_jump
+- removed unnecessary comments in MenuScene's update function (player functionality) and init (spam about spawn)
+
+- Changed animation for level select to match with 120 FPS
+- fixed level select values to not include 0 (not a valid ID when loading levels.txt) and for it to be within the defined levels of levels.txt.
+
+- Added a statistics page that will display the death counter and jump counter for that level if completed successfully
+- LevelScene now takes memory as a parameter, rather than level data/elements contained in memory
+
+Main (v.0.1.8 - v.0.1.9)
+- 120 FPS change included here is necessary
+- Changed all LevelScene classes to need memory to be passed rather than it's level data/elements
+
+levels.txt (v.0.2.7)
+- *incorrectly characterized as levels.txt (v.0.2.6)
+- replaced all instance of self.walls to self.platfroms as it served the same purpose as self.platforms
+- 2 new levels added
+
+README (v.0.2.6 - v.0.2.7)
+- updated to have a link to better instructions
+
+- better despriction of the game and a re-write of instruction
+
+Addtional Notes
+- dsn_levels - will display total deaths, total jumps and other planned statistics
+- Needs more decoration to be visually appealing, as currently, it only has text with no decoration
+
+
+======
+
+July 3 - July 9
+
+dsn_class (v.0.1.9 - v.0.2.0)
+- color constants added
+- created DSNElement to hold information for drawing a pygame rect, including the color and dimensions
+    - necessary in loading information from a text file
+    - text file is being loaded in the Memory class with the "load_levels" method/function
+
+- Memory class updated
+    - Updated load_levels method in Memory class to read in rect and line properties from a text file. pygame.draw.line is now compatible with this method.
+    - load_levels is also now compatible with colors defined as a constant (ex: BLACK) or tuple (ex: (0, 0, 0). This is supplemented by color_lookup to get the constants (otherwise a tuple is fine)
+    - DSNElements changed self.rect into self.shape to compensate line being added and being different from a rect when defined. Additionally, it has a new self.type variable to distinguish a line from a rect
+
+dsn_levels (v.0.2.6)
+- tutorial and all other levels removed and options added such as filler_classes for now
+- From dsn_class - Memory
+    - Added load_levels function that read in a text file containing level data. This function is called in main.
+    - dsn_levels is revamped to only have PlayLevel, which is a child class that uses the read data from load_levels to draw and play the level
+    - removed all the level informaiton and transferred it into levels.txt
+    - Fixed level_select choose_id starting at level 0 in it's count (which is the menu option and isn't an option for any of the levels)
+    - Fixed players being able to select a level while in the jumping animation in level_select
+
+Main (v.0.1.7)
+- Added memory class load_levels when Program class is called (or when the game starts).
+- For both dsn_levels and main, LevelScene's now must be passed level data (level_title/data and level_elements)
+
+levels (v.0.2.6) - (split and taken from dsn_levels (reason for continuaitoin))
+- has all dsn_levels have been added now from (tut1 to easy19)
+- the extra equal sings are there for me to add more levels in the future
+- formatting fixed for three lines into one
+- fixing any lines that didn't work or had informaiton during the copy and paste from the data transfer
+
+Music
+- 4 tracks of good_vibes was added
+
+README (v.0.2.5)
+- updated to have better instructions
+
+Additional notes
+- dsn_class
+    - printing levels as they load to check their validitiy
+    - local element_lookup and color_lookup variables are defined but not used
+        - option for converting level element identifiers from strings into integers if loading levels in dsn_levels isn't compatible or as readable with strings.
+
+======
+
+***From this point onwards, everything will be as a weekly update basis as the code is  split into multiple different parts but some code gets more tested, updated, and revisied with more additions being made.
+
+- It will be broken into paragraphs and if there is a version change within the same week then there will be a noticable space seperating which version is where
+
+======
+
 v.0.2.1 - v.0.2.5
 
 --- Level Editor
@@ -15,7 +553,7 @@ v.0.2.1 - v.0.2.5
 - ~12 more levels are being added and spawn were saved in issues
 
 --- Additional Features
-- dns_levels will be transformed into analyzing levels from notepad to reduce size and space and faster rendering of the level
+- dsn_levels will be transformed into analyzing levels from notepad to reduce size and space and faster rendering of the level
 - most levels have been tested and added
 - dsn_lvl_editor has had a few changes in formatting and coloring (for now - more to come)
 
@@ -38,7 +576,7 @@ v.0.2.0
 
 =================
 
-v.0.1.7 - v.0.19
+v.0.1.7 - v.0.1.9
 
 --- Levels
 - 6 new levels have been added to the game
@@ -168,7 +706,7 @@ v.0.0.4
 
 =======
 
-v.0.0.3
+v 0.0.3
 ----- LevelScene
 - in the __init__ function:
   - Defined the scene, then the necessary level elements such as platforms/walls, death_zones and win_zones
@@ -199,7 +737,7 @@ v.0.0.3
 
 =======
 
-v0.0.2
+v 0.0.2
 ----- Changes to Main 
 - added a Scene class describing the basic functions required in each scene. These are input (key inputs that are pressed and/or held), update (used to dynamically rewrite any values during a certain condition) and render (for loading the graphics)
 - altered the Program class to incorporate the Scene class and it's functions (input, update and render)
@@ -221,10 +759,10 @@ v0.0.2
 
 =======
 
-v0.0.1
+v 0.0.1
 - if you see this make any update comments here above by creating a new version number by following the trend (yes it's stupid rn, cuz I have no idea how they do version update and trends - its on my to-do list)
 
 =======
 
-v0.0
+v 0.0
 - file and gaming code was just created
