@@ -1,14 +1,16 @@
 August 28 - September 3
 
-dsn_class (v.0.3.5)
-- *incorrectly labelled as dsn_class (v.0.3.4)
+dsn_class (v.0.3.4)
 - creating txt files and made the autosave function for level progress
 - loading save file so player continues like nothing happened before
 - do not upload your own save file
+- PR_numbers_(#289)
+- links_(https://github.com/shoc71/dont-stop-now/pull/289)
 
-- *incorrectly labelled as dsn_class (v.0.3.4)
 - FIX_1
     - Added some required conditionals for better stability.
+- PR_numbers_(#296)
+- links_(https://github.com/shoc71/dont-stop-now/pull/296)
 
 dsn_levels (v.0.4.2)
 - Added an additional way to restart the level by pressing R. A safe restart setting was added to the settings (to prevent accidental restarts). 
@@ -17,36 +19,69 @@ dsn_levels (v.0.4.2)
 - Music volume is now controllable with a A/D slider in the settings page.
 - Some instructions/guidelines were put into the settings page as well
 - Levels are now locked behind level progress
+- PR_numbers_(#289)
+- links_(https://github.com/shoc71/dont-stop-now/pull/289)
 
 Main (v.0.2.5)
 - *incorrectly labelled as main (v.0.2.6)
 - added lines for autosave and new settings in levels
+- PR_numbers_(#289)
+- links_(https://github.com/shoc71/dont-stop-now/pull/289)
 
 levels.txt (v.0.5.1 - v.0.5.4)
 - *incorrectly labelled as levels.txt (v.0.4.0)
 - added new levels
 - small corrections to art
+- PR_numbers_(#288)
+- links_(https://github.com/shoc71/dont-stop-now/pull/288)
 
 - *incorrectly labelled as levels.txt (v.0.4.1)
 - added tutorial levels for new players as context to play
 - minor correction to levels work and art
 - a few new levels have been added
+- PR_numbers_(#290)
+- links_(https://github.com/shoc71/dont-stop-now/pull/290/files)
 
 - *incorrectly labelled as levels.txt (v.0.4.2)
 - a few new levels have been added
+- PR_numbers_(#294)
+- links_(https://github.com/shoc71/dont-stop-now/pull/294)
 
 - *incorrectly labelled as levels.txt (v.0.4.3)
 - a few new levels have been added
 - updated a few levels
+- PR_numbers_(#295)
+- links_(https://github.com/shoc71/dont-stop-now/pull/295)
+
+- *incorrectly labelled as levels.txt (v.0.4.4)
+- a few new levels have been added
+- tested with new collision logic from fix
+- PR_numbers_(#297)
+- links_(https://github.com/shoc71/dont-stop-now/pull/297)
+
+- *incorrectly labelled as levels.txt (v.0.4.5)
+- added one new level
+- all levels have been play tested and passable on medium
+- PR_numbers_(#300)
+- links_(https://github.com/shoc71/dont-stop-now/pull/300)
+
 
 Files
+- labelled as dsn_patch_13
 - 8 new txt files have been made to store levels (50 is too many to navigate through)
+- PR_numbers_(#292)
+- links_(https://github.com/shoc71/dont-stop-now/pull/292)
 
 Images
 - added lock.pngs with transition images for animation
+- PR_numbers_()
+- links_()
 
 Additional Notes
 - putting main into a patch as a backup for levels.txt
+- PR_numbers_(#291)
+- links_(https://github.com/shoc71/dont-stop-now/pull/291/files)
+
 - Second Great Split for txt files into different branches for players to unlock
 
 ========
@@ -64,19 +99,29 @@ dsn_class (v.0.3.2 - v.0.3.4)
         - there are self.jump_y and self.grav_y (jumpy gravy) and self.left_x and self.right_x. 
             - These are the first line of defense in ensuring the player stays within bounds.
         - For each type of collision (wall, ceiling, and platform), there is an additional line of code that will put the player back in bounds (or outside the collided object).
+- PR_numbers_(#273)
+- links_(https://github.com/shoc71/dont-stop-now/pull/273)
 
 - *incorrectly labelled as dsn_class (v.0.3.2)
 - Changing color names to be accurate and consistent in levels.txt (v.0.4.9)
+- PR_numbers_(#280)
+- links_(https://github.com/shoc71/dont-stop-now/pull/280)
 
 - *incorrectly labelled as dsn_class (v.0.3.3)
 - slider for background color is added
 - enhancements to the replay function
 - Fixed player going into and below or above small blocks when colliding on the side. 
-
+- PR_numbers_(#282)
+- links_(https://github.com/shoc71/dont-stop-now/pull/282)
 
 dsn_levels (v.0.3.9 - v.0.4.1)
 - Editing Level Zero 
+- PR_numbers_(#280)
+- links_(https://github.com/shoc71/dont-stop-now/pull/280)
+
 - Changing color names to be accurate and consistent in levels.txt (v.0.4.9)
+- PR_numbers_(#275)
+- links_(https://github.com/shoc71/dont-stop-now/pull/275)
 
 - Changed it so Replays now take in forced respawns
 - The Replays page now has help text to assist the player in using the Replays feature.
@@ -86,36 +131,52 @@ dsn_levels (v.0.3.9 - v.0.4.1)
 - Music selection was removed from settings/options.
 - Settings/Options now have a slider to change the background between WHITE and LIGHT_GREY
 - Settings/Options also have a held function that will speed up the selection the longer the player holds A/D.
+- PR_numbers_(#282)
+- links_(https://github.com/shoc71/dont-stop-now/pull/282)
 
 - added new text in level_selector for more clear instructions
+- PR_numbers_(#286)
+- links_(https://github.com/shoc71/dont-stop-now/pull/286)
 
 Main (v.0.2.4)
 - *incorrectly labelled as main (v.0.2.5)
 - adding filepath to levels.txt for consistent
+- PR_numbers_(#273)
+- links_(https://github.com/shoc71/dont-stop-now/pull/273)
 
 levels.txt (v.0.4.7 - v.0.5.1)
 - *incorrectly labelled as levels.txt (v.0.3.5)
 - 2 added new levels
+- PR_numbers_(#272)
+- links_(https://github.com/shoc71/dont-stop-now/pull/272)
 
 - *incorrectly labelled as levels.txt (v.0.3.6)
 - edited levels and fixed art
+- PR_numbers_(#279)
+- links_(https://github.com/shoc71/dont-stop-now/pull/279)
 
 - *incorrectly labelled as levels.txt (v.0.3.7)
 - edited levels and fixed art
 - added a few levels as well
+- PR_numbers_(#280)
+- links_(https://github.com/shoc71/dont-stop-now/pull/280)
 
 - *incorrectly labelled as levels.txt (v.0.3.8)
 - minor corrections to art and levels
 - 2 new levels added
+- PR_numbers_(#284)
+- links_(https://github.com/shoc71/dont-stop-now/pull/284)
 
 - *incorrectly labelled as levels.txt (v.0.3.9)
 - adjusting and testing levels
 - 2 new levels added
+- PR_numbers_(#286)
+- links_(https://github.com/shoc71/dont-stop-now/pull/286)
 
 Music
 - 1 new music file
-
-Additional Notes
+- PR_numbers_(#283)
+- links_(https://github.com/shoc71/dont-stop-now/pull/283)
 
 =============
 
@@ -123,9 +184,13 @@ August 14 - August 20
 
 dsn_class (v.0.2.8 - v.0.3.1)
 - added licorice_black color_constant
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_class (v.0.2.8)
 - song track list got updated including all the new songs available
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_class (v.0.2.9)
 - Added Music to the game:
@@ -133,31 +198,45 @@ dsn_class (v.0.2.8 - v.0.3.1)
     - swich_music which will randomly choose a track (that's not menu and not credits)
     - set_music which will allow a specific music track to be chosen along with specific volume settings, how many times it'll loop, start time, and how much miliseconds it takes to fade in (optional)
     - transition_music which uses time to eventually increase the volume
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_class(v.0.2.9)
 - FIX_1
     - Added Licorice_Black to the color lookup for load_levels
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_class (v.0.3.0)
 - replays files are created and read in the replay class
 - created DSNelement
+- PR_numbers_(#263)
+- links_(https://github.com/shoc71/dont-stop-now/pull/263)
 
 - *incorrectly labelled as dsn_class (v.0.3.0) fix 1
 - Changed ReplayChain to detect length from self.check_len (own counter) rather than relying on death counter. 
     - This sacrifices some time (O(n) now instead of O(1))
+- PR_numbers_(#265)
+- links_(https://github.com/shoc71/dont-stop-now/pull/265)
 
 dsn_levels (v.0.3.6 - v.0.3.8)
 - slightly adjusted the menuscene text "hit space..." to go down a little not to overlap with the pngs
+- PR_numbers_()
+- links_()
 
 - music is being added and used in levels with transitions
 - moved fancy title into image class for code
 - altering the jump to be less delayed (200 --> 150 milliseconds)
 - removing a redundant self.diff_factor in gravity
+- PR_numbers_()
+- links_()
 
 - FIX_1
     - Fixed a spelling mistake in a comment and fully fixed jumping. 
     - change the timing for held jumps from 200 to 150 milliseconds.
     - The fix was that the jump boost wasn't reset to it's default value on death, causing the jump to continue when the player respawned.
+- PR_numbers_()
+- links_()
 
 - dsn_levels no longer crashes when completing the last level. Now it'll just take you back to the main menu.
 - LevelSelect now doesn't display any disclaimer text
@@ -172,49 +251,77 @@ dsn_levels (v.0.3.6 - v.0.3.8)
     - Selecting a replay level will put both you (purple) and a replay ghost (grey). 
         - A countdown will start and once done, both players will start moving.
         - Whoever reaches the end first, wins
+- PR_numbers_(#263)
+- links_(https://github.com/shoc71/dont-stop-now/pull/263)
 
 - FIX_1
     - removed self.deaths as its unreliable
+- PR_numbers_()
+- links_()
 
 Main (v.0.2.2 - v.0.2.3)
 - added caption and icon functions (icon isn't working so a separate issue shall be opened for that)
+- PR_numbers_()
+- links_()
 
 - added music calling functions and added filepathing to title
+- PR_numbers_()
+- links_()
 
 - FIX_1
     - Fixed the window caption removing file_path name from the window caption
+- PR_numbers_(#267)
+- links_(https://github.com/shoc71/dont-stop-now/pull/267)
 
 levels.txt (v.0.4.2 - v.0.4.6)
 - *incorrectly labelled as levels.txt (v.0.3.0)
 - edited level candles to be beatable
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as levels.txt (v.0.3.0)
 - edited all the levels to be beatable and tested
     - texts have been formatted in the correct spots (fonts can be changed whenever)
     - all platforms have been fixed and properly placed (mouse is fine, two pillars is not)
     - art has been refined to a clear quality and everything looks good and is in a valid game
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as levels.txt (v.0.3.2)
 - added new hard level
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as levels.txt (v.0.3.3)
 - rearranged the order of levels based on difficulty
+- PR_numbers_(#269)
+- links_(https://github.com/shoc71/dont-stop-now/pull/269)
 
 - *incorrectly labelled as levels.txt (v.0.3.4)
 - added a few extra easy transition levels 
+- PR_numbers_(#271)
+- links_(https://github.com/shoc71/dont-stop-now/pull/271)
 
 images
 - 5 images of the purple player icon have been uploaded in folder
 - deleted 4 other images that couldn't be used as a game_icon
+- PR_numbers_()
+- links_()
 
 LICENSE
 - changing license
+- PR_numbers_()
+- links_()
 
 README
 - tiny edit for further clarity
+- PR_numbers_()
+- links_()
 
 Music
 - renaming the music files to have an underscore ("_") and have them under the assets/music folder
+- PR_numbers_()
+- links_()
 
 Additional Notes
 - the naming is finally correct - NOOOOOOOOOO II GOT MESSED UP AGAIN
@@ -229,24 +336,34 @@ August 7 - August 13
 
 dsn_class (v.0.2.7)
 - comments added to the code for better readability
+- PR_numbers_()
+- links_()
 
 dsn_levels (v.0.3.4 - v.0.3.5)
 - FIX_1
     - Changed jump to be more slightly delayed
+- PR_numbers_()
+- links_()
 
 - comments added to the code for better readability
+- PR_numbers_()
+- links_()
 
 Main (v.0.2.1)
 - comments added to the code for better readability
+- PR_numbers_()
+- links_()
 
 levels.txt (v.0.4.0 - v.0.4.1)
 - *incorrectly labelled as levels.txt
 - 2 new levels added
+- PR_numbers_()
+- links_()
 
 Music
 - added 2 new music files
-
-Additional Notes
+- PR_numbers_()
+- links_()
 
 ========
 
@@ -256,68 +373,104 @@ dsn_class (v.0.2.4 - v.0.2.5)
 - *incorrectly labelled as dsn_class.txt (v.0.2.3) v1
 - FIX_4
     - Added compatibility for color names with two underscores (ex: EDIT_DARK_GREEN)
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_class.txt (v.0.2.3) v2
 - FIX_5
     - brown color added
+- PR_numbers_()
+- links_()
 
 - Added compatibility with colors containing underscores in their naming for text (at most 2)
+- PR_numbers_()
+- links_()
 
 - FIX_1
     - Top collision is now wider to have the block experience hitting the bottom of blocks in a wider area, meaning corners are now detected.
     - Bottom collision is also wider to avoid clipping through the corner of blocks. This change also allows the player to jump later (feasibly), meaning jumps are more precise as well. 
+- PR_numbers_()
+- links_()
 
 - FIX_2
     - Changes to platform (bottom) and wall collision to be a range (more robust).
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_class.txt
 - FIX_3
     - added color Licorice_black
+- PR_numbers_()
+- links_()
 
 dsn_levels (v.0.3.3 - v.0.3.4)
 - *incorrectly labelled as dsn_levels.txt (v.0.3.3) v1
 - FIX_2
     - brown color added
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_levels.txt (v.0.3.3) v2
 - FIX_3
     - Changed level select to include the last level
+- PR_numbers_()
+- links_()
 
 - Test
     - additional comments
     - new branch got created for testing level_0 called test
+- PR_numbers_()
+- links_()
 
 - Moved statistics updating (update_mem) and level changing (self.level_id) to dsn_levels from main.
     - drastically reduced chance for level repetition
 - Removed music value in preparation for having music play in a wider scope, or in the main loop in main.
     - preventing music from repeating and restarting whenever the level is over or restarted
 - Changed the button for returning to the menu from "R" to "B", as in back (for now). "R" now is used to restart the level when paused
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_levels.txt
 - FIX_4
     - added color Licorice_black
+- PR_numbers_()
+- links_()
 
 Main (v.0.2.1)
 - removed song call line with dsn_levels v.0.3.4 patch and re-edited memory to prevent repetition
+- PR_numbers_()
+- links_()
 
 levels.txt (v.0.3.4 - v.0.3.9)
 - *incorrectly labelled as levels.txt (v.0.3.0)
 - 2 new levels added
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as levels.txt (v.0.3.3+)
 - 2 new levels added
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as levels.txt
 - 1 new level added
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as levels.txt
 - 2 new level added
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as levels.txt
 - editing art and adjusting blocks for newer collision
+- PR_numbers_()
+- links_()
 
 Music
 - added 2 new music files
+- PR_numbers_()
+- links_()
 
 Additional Notes
 - themes for music in each levels or series of levels are needed
@@ -329,63 +482,108 @@ July 24 - July 30
 dsn_class (v.0.2.4)
 - FIX_1
     - Temporary collision fix
+- PR_numbers_()
+- links_()
 
 - FIX_2
     - Fixed loading levels (if colors were in a tuple of format (x, y, z)).
     - Removed unnecessary print statements
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_class.txt (v.0.2.3)
 - FIX_3
     - added two new colors for interpretations
+- PR_numbers_()
+- links_()
 
 dsn_levels (v.0.3.2 - v.0.3.3)
 - Fixed jump immediately occurring when jump (or start) is pressed
 - Fixed self.respawn spawning not exactly being in the middle of the respawn block
 - Added a 'hold' option for selecting levels (no multiple pressing required)
 - Holding "A" or "D" for selecting levels will speed up after 3 seconds 
+- PR_numbers_()
+- links_()
 
 - added pngs of custom png title
+- PR_numbers_()
+- links_()
 
 - FIX_1
     - Removed annoying print statements for jump
     - Reduced delay on jump
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as dsn_levels.txt (v.0.3.3)
 - FIX_2
     - added two new colors for interpretations
+- PR_numbers_()
+- links_()
 
 levels.txt (v.0.2.9 - v.0.3.4)
 - *incorrectly labelled as update levels.txt
 - 1 new level added
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as update levels.txt
 - fixing labelling issues and correcting any mistakes in levels.txt
 - 2 new levels added
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as update levels.txt (v.0.2.6+)
 - replacing tuple of color with static_color 
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as update levels.txt (v.0.2.7+)
 - removed two levels (didn't work at all OR too dark)
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as update levels.txt (v.0.2.8+)
 - changed all class names to level names 
 - re-edited levels to work with new collision logic
 - re-drew levels to seem more consistent
+- PR_numbers_()
+- links_()
 
 - *incorrectly labelled as update levels.txt (latest txt with keyerror)
 - edited levels and fixed crasahing error
+- PR_numbers_()
+- links_()
 
 Images
 - added 8 pngs for the title to keep as a record
+- PR_numbers_()
+- links_()
+
 - taking all the images and moving them into the images folder (this includes the previously mentioned pngs and any addditional images in the folder)
+- PR_numbers_()
+- links_()
+
 - deleting all the "loose" images in the assets folder and re-organizing them as mentioned above (including 8 pngs mentioned above) - (over 15 PRs)
+- PR_numbers_()
+- links_()
+
 - certain image ideas were removed from game as they were added to the game
+- PR_numbers_()
+- links_()
+
 - added fancy title
+- PR_numbers_()
+- links_()
+
 - added sketches for levels in assets/images/sketches
+- PR_numbers_()
+- links_()
 
 README
 - for assets/images/sketches - created to hold future level ideas and sketches
+- PR_numbers_()
+- links_()
 
 Additional Notes
 - dsn_levels animation for transitioning multiple levels quickly is very choopy (may cause nausea - it will be fixed later)
@@ -400,41 +598,61 @@ dsn_class (v.0.2.3 - v.0.2.4)
 - added static function of adding_time as to combine times and not overwrite them
     - helpful for updating menu time
 - memory class had time added
+- PR_numbers_()
+- links_()
 
 - FIX 1
     - removed difficulty, a planned but not implemented feature.
+- PR_numbers_()
+- links_()
 
 - Added difficulty and music options to dsn_class Memory.
     - Difficulty is used in the SquareMe class to change it's movement speed. This includes jumps, horizontal sliding and gravity.
     - Music isn't properly implemented yet and is there only for testing purposes.
+- PR_numbers_()
+- links_()
 
 dsn_levels (v.0.3.0 - v.0.3.1)
 - LevelScene class had time added
 - Made update_stats function in the StatsPage class to update the text whenever needed (less messy)
+- PR_numbers_()
+- links_()
 
 - FIX 1
     - Removed difficulty (planned, but not implemented)
     - fixed memory loading where it would try to get Memory class variables from a None type
+- PR_numbers_()
+- links_()
 
 - Made an options page (OptionsPage) in dsn_levels. At present, only difficulty and music can be changed
     - Only changing difficulty has a real effect on the game. Music doesn't do anything yet and is only there for testing
     - Choosing which options to change by pressing UP/W and DOWN/S (difficulty or music). 
     - Pressing LEFT/A and RIGHT/D will change the selected option (which difficulty or which music).
+- PR_numbers_()
+- links_()
 
 Main (v.0.2.0)
 - total time of a session is tracked
+- PR_numbers_()
+- links_()
 
 levels.txt (v.0.2.8)
 - *incorrectly labelled as update levels.txt
 - 4 levels were edited to be playable
 - formatting correction
 - tuple for colors converted to static_colors
+- PR_numbers_()
+- links_()
 
 Images
 - added D_letter.png
+- PR_numbers_()
+- links_()
 
 README (v.0.2.8)
 - updated to notify players about changing difficulty and speed
+- PR_numbers_()
+- links_()
 
 Addtional Notes
 - time statistics will include miliseconds to consider memory updating in less than a second (which matters most in menuscene).
@@ -449,38 +667,55 @@ dsn_class (v.0.2.1 - v.0.2.2)
 - Changed collision logic for the 120 FPS update.
     - testing game speed
 - Cleaned up some unnecessary comments
+- PR_numbers_()
+- links_()
 
 - Minor optimization to ceiling collision
+- PR_numbers_()
+- links_()
 
 dsn_levels (v.0.2.7 - v.0.2.9)
 - removed self.walls completely
 - Removed unused variables like self.mid_jump
 - removed unnecessary comments in MenuScene's update function (player functionality) and init (spam about spawn)
+- PR_numbers_()
+- links_()
 
 - Changed animation for level select to match with 120 FPS
 - fixed level select values to not include 0 (not a valid ID when loading levels.txt) and for it to be within the defined levels of levels.txt.
+- PR_numbers_()
+- links_()
 
 - Added a statistics page that will display the death counter and jump counter for that level if completed successfully
 - LevelScene now takes memory as a parameter, rather than level data/elements contained in memory
+- PR_numbers_()
+- links_()
 
 Main (v.0.1.8 - v.0.1.9)
 - 120 FPS change included here is necessary
 - Changed all LevelScene classes to need memory to be passed rather than it's level data/elements
+- PR_numbers_()
+- links_()
 
 levels.txt (v.0.2.7)
 - *incorrectly characterized as levels.txt (v.0.2.6)
 - replaced all instance of self.walls to self.platfroms as it served the same purpose as self.platforms
 - 2 new levels added
+- PR_numbers_()
+- links_()
 
 README (v.0.2.6 - v.0.2.7)
 - updated to have a link to better instructions
+- PR_numbers_()
+- links_()
 
 - better despriction of the game and a re-write of instruction
+- PR_numbers_()
+- links_()
 
 Addtional Notes
 - dsn_levels - will display total deaths, total jumps and other planned statistics
 - Needs more decoration to be visually appealing, as currently, it only has text with no decoration
-
 
 ======
 
@@ -491,11 +726,15 @@ dsn_class (v.0.1.9 - v.0.2.0)
 - created DSNElement to hold information for drawing a pygame rect, including the color and dimensions
     - necessary in loading information from a text file
     - text file is being loaded in the Memory class with the "load_levels" method/function
+- PR_numbers_()
+- links_()
 
 - Memory class updated
     - Updated load_levels method in Memory class to read in rect and line properties from a text file. pygame.draw.line is now compatible with this method.
     - load_levels is also now compatible with colors defined as a constant (ex: BLACK) or tuple (ex: (0, 0, 0). This is supplemented by color_lookup to get the constants (otherwise a tuple is fine)
     - DSNElements changed self.rect into self.shape to compensate line being added and being different from a rect when defined. Additionally, it has a new self.type variable to distinguish a line from a rect
+- PR_numbers_()
+- links_()
 
 dsn_levels (v.0.2.6)
 - tutorial and all other levels removed and options added such as filler_classes for now
@@ -505,28 +744,40 @@ dsn_levels (v.0.2.6)
     - removed all the level informaiton and transferred it into levels.txt
     - Fixed level_select choose_id starting at level 0 in it's count (which is the menu option and isn't an option for any of the levels)
     - Fixed players being able to select a level while in the jumping animation in level_select
+- PR_numbers_()
+- links_()
 
 Main (v.0.1.7)
 - Added memory class load_levels when Program class is called (or when the game starts).
 - For both dsn_levels and main, LevelScene's now must be passed level data (level_title/data and level_elements)
+- PR_numbers_()
+- links_()
 
 levels (v.0.2.6) - (split and taken from dsn_levels (reason for continuaitoin))
 - has all dsn_levels have been added now from (tut1 to easy19)
 - the extra equal sings are there for me to add more levels in the future
 - formatting fixed for three lines into one
 - fixing any lines that didn't work or had informaiton during the copy and paste from the data transfer
+- PR_numbers_()
+- links_()
 
 Music
 - 4 tracks of good_vibes was added
+- PR_numbers_()
+- links_()
 
 README (v.0.2.5)
 - updated to have better instructions
+- PR_numbers_()
+- links_()
 
 Additional notes
 - dsn_class
     - printing levels as they load to check their validitiy
     - local element_lookup and color_lookup variables are defined but not used
         - option for converting level element identifiers from strings into integers if loading levels in dsn_levels isn't compatible or as readable with strings.
+- PR_numbers_()
+- links_()
 
 ======
 
