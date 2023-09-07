@@ -1,5 +1,6 @@
 import random
 import os
+import math
 
 import pygame
 import re
@@ -31,7 +32,7 @@ class Text:
                  font_color, text_other):
         self.text = text  # Text as a string
         self.position = text_pos  # Text position as a tuple or list (x and y)
-        self.font_size = font_size  # Int determining how big the text is
+        self.font_size = int(font_size)  # Int determining how big the text is
         self.font_type = font_type  # String used to indicate what font
         """Font selection is determined by your computer and it's preset fonts
         """
@@ -65,6 +66,17 @@ class Text:
         self.text_img = self.font.render(self.text, True, self.color)
         self.text_rect = self.text_img.get_rect()
         self.text_rect.center = self.position
+
+    def scale(self, width, height):
+        self.position = list(self.position)
+        self.position[0] = int(self.position[0] * width)
+        self.position[1] = int(self.position[1] * height)
+        self.position = tuple(self.position)
+        self.font_size = int(self.font_size * max(width, height))
+
+        # Apply those changes
+        self.setup()
+        self.render()
 
 
 class Music:
@@ -178,7 +190,7 @@ class Memory:
     statistics
     """
 
-    def __init__(self):
+    def __init__(self, width, height):
         self.total_deaths = 0  # Total deaths in one session
         self.total_jumps = 0  # Total jumps in one session
         self.total_time = 0  # Total time passed in one session
@@ -235,6 +247,10 @@ class Memory:
 
         # Lastly, initialize music
         self.music = None
+
+        # Initialize Width and Height of Screen, useful for changing resolutions
+        self.res_width = width  # Ratio for width resolution, easily multiply
+        self.res_height = height    # Ratio for height res, easily multiply
 
     def update_mem(self, level_id, death_count, jump_count, level_time):
         """
@@ -379,16 +395,16 @@ class Memory:
                                               int(rect_color[1][1:]),
                                               int(rect_color[2][1:-1])),
                                              pygame.Rect(
-                                                 int(rect_properties[0]),
-                                                 int(rect_properties[1]),
-                                                 int(rect_properties[2]),
-                                                 int(rect_properties[3])),
+                                                 math.floor(int(rect_properties[0]) * self.res_width),
+                                                 math.floor(int(rect_properties[1]) * self.res_height),
+                                                 math.ceil(int(rect_properties[2]) * self.res_width),
+                                                 math.floor(int(rect_properties[3]) * self.res_height)),
                                              "rect")
                     else:
                         """Otherwise the color is defined in words:
                             - X (BLUE)
                             - X_Y (DARK_RED)
-                            - X_Y_Z (COOLER_DARK_GREEN for example)
+                            - X_Y_Z (EDIT_DARK_GREEN)
                         """
                         # Get the color from the words
                         rect_color = re.search("([A-Z]+_[A-Z]+_[A-Z]+|"
@@ -397,10 +413,10 @@ class Memory:
                         # Convert the rect into a DSNElement
                         in_rect = DSNElement(color_lookup[rect_color],
                                              pygame.Rect(
-                                                 int(rect_properties[0]),
-                                                 int(rect_properties[1]),
-                                                 int(rect_properties[2]),
-                                                 int(rect_properties[3])),
+                                                 math.floor(int(rect_properties[0]) * self.res_width),
+                                                 math.floor(int(rect_properties[1]) * self.res_height),
+                                                 math.ceil(int(rect_properties[2]) * self.res_width),
+                                                 math.floor(int(rect_properties[3]) * self.res_height)),
                                              "rect")
 
                     # add that rect to our element list for that level
@@ -425,9 +441,9 @@ class Memory:
                     # Convert the line into an DSNElement
                     in_line = DSNElement(line_info[1], [int(line_info[2][1:]),
                                                         int(line_info[3][:-1]),
-                                                        int(line_info[4][1:]),
-                                                        int(line_info[5][:-1]),
-                                                        int(line_info[6][:-1])],
+                                                        int(line_info[4][1:]) * self.res_width * self.res_height,
+                                                        int(line_info[5][:-1]) * self.res_width * self.res_height,
+                                                        int(line_info[6][:-1]) * max(self.res_width, self.res_height)],
                                          "line")
                     # add that line to our element list for that level
                     if identifier not in self.ls_elements[level_id]:
@@ -448,7 +464,7 @@ class Memory:
                     Color is defined currently as:
                         - X (BLUE)
                         - X_Y (DARK_RED)
-                        - X_Y_Z (COOLEST_DARK_GREEN for example)
+                        - X_Y_Z (EDIT_DARK_GREEN)
                     or as a tuple of numbers in the form of a string
                     """
                     # Split the parameters into their own separate strings
@@ -476,6 +492,7 @@ class Memory:
                                     format_search[4][1:-1],
                                     text_color,
                                     None)
+                    add_text.scale(self.res_width, self.res_height)
 
                     # Add that text into our level_elements
                     if identifier not in self.ls_elements[level_id]:
@@ -491,7 +508,7 @@ class Memory:
     def print_levels(self):
         print(self.level_set)
         print()
-        print(self.ls_elements)
+        # print(self.ls_elements)
 
     def write_replays(self):
         with open("assets/replays_out.txt", "w") as write_file:
@@ -682,7 +699,8 @@ class DSNElement:
 
 class SquareMe:  # lil purple dude
 
-    def __init__(self, x_spawn, y_spawn, width, height, rgb, diff):
+    def __init__(self, x_spawn, y_spawn, width, height, rgb, diff,
+                 res_width, res_height):
         """
         self.square parameters: [
         [x_spawn, y_spawn],
@@ -692,9 +710,9 @@ class SquareMe:  # lil purple dude
         ]
         """
         self.xpos = x_spawn  # Current x_position, initialized as spawn
-        self.ypos = y_spawn  # Current y_position, initialized as spawn
-        self.width = width  # Current width, always 10
-        self.height = height  # Current height, always 10
+        self.ypos = y_spawn # Current y_position, initialized as spawn
+        self.width = math.ceil(width * res_width)  # Current width, always 10
+        self.height = math.ceil(height * res_height)  # Current height, always 10
         self.color = rgb  # Color of player as static constant or tuple
         self.square_render = None  # Pygame.draw rect of the player
         self.alive = False  # If the player is alive (able to move)
@@ -708,7 +726,7 @@ class SquareMe:  # lil purple dude
         self.direction = 1  # Move direction: 1 for right, -1 for left
         self.max_gravity = 95  # Limit for the gravity loop to iterate
         self.gravity_counter = self.max_gravity  # Counter for gravity loop
-        self.diff_factor = diff  # Movement multiplier based on difficulty
+        self.diff_factor = diff * res_width # Movement multiplier based on difficulty and resolution sclaing
 
         file_path = "assets/audio/"
         self.jump_sound_1 = pygame.mixer.Sound(file_path + "jump_sfx.wav")
@@ -717,23 +735,26 @@ class SquareMe:  # lil purple dude
         # Jump volume for the player, set at 0.1 out of 1, or 10%
 
         # Get location and info of surrounding blocks
-        self.collide_rect = pygame.Rect(self.xpos - 30, self.ypos - 30,
-                                        self.width + 60, self.height + 80)
+        self.collide_rect = pygame.Rect(self.xpos - (30 * res_width),
+                                        self.ypos - (30 * res_height),
+                                        self.width + (60 * res_width),
+                                        self.height + (80 * res_height))
         # Top, bottom, left and right collision
         # todo: lower left and right col to a proper position
-        self.left_col = pygame.Rect(self.xpos - self.width - 10, self.ypos + 1,
-                                    self.width + 10, 8)
-        self.right_col = pygame.Rect(self.xpos + self.width, self.ypos + 1,
-                                    self.width + 10, 8)
-        self.top_col = pygame.Rect(self.xpos, self.ypos - self.height - 10,
-                                    10, self.height + 10)
+        self.left_col = pygame.Rect(self.xpos - self.width - (10 * res_width),
+                                    self.ypos + (res_height * 1),
+                                    self.width + (res_width * 10),
+                                    8 * res_height)
+        self.right_col = pygame.Rect(self.xpos + self.width, self.ypos + (res_height * 1),
+                                    self.width + (10 * res_width), 8 * res_height)
+        self.top_col = pygame.Rect(self.xpos, self.ypos - self.height - (10 * res_height),
+                                    10 * res_width, self.height + (10 * res_height))
         self.bot_col = pygame.Rect(self.xpos, self.ypos + self.height,
-                                   10, self.height * 4)
-        # Bot pad used to detect when jump and gravity should be enabled
-        self.bot_pad = pygame.Rect(self.xpos, self.ypos + self.height + 1,
-                                   self.width, self.height)
-        """self.grav_rect = pygame.Rect(self.xpos, self.ypos + self.height - 1,
-                                     self.width, 40)"""
+                                   10 * res_width, self.height * 4)
+
+        self.res_width = res_width
+        self.res_height = res_height
+
         """One single larger rect for collision detection
         """
         self.grav_y = None
@@ -764,14 +785,14 @@ class SquareMe:  # lil purple dude
         self.jump()
 
         # Update collision logic position in real time with the player position
-        self.collide_rect.x = self.xpos - 30
-        self.collide_rect.y = self.ypos - 30
-        self.left_col.x = self.xpos - self.width - 10
-        self.left_col.y = self.ypos + 1
+        self.collide_rect.x = self.xpos - (30 * self.res_width)
+        self.collide_rect.y = self.ypos - (30 * self.res_height)
+        self.left_col.x = self.xpos - self.width - (10 * self.res_width)
+        self.left_col.y = self.ypos + (self.res_height * 1)
         self.right_col.x = self.xpos + self.width
-        self.right_col.y = self.ypos + 1
+        self.right_col.y = self.ypos + (self.res_height * 1)
         self.top_col.x = self.xpos
-        self.top_col.y = self.ypos - self.height - 10
+        self.top_col.y = self.ypos - self.height - (10 * self.res_height)
         self.bot_col.x = self.xpos
         self.bot_col.y = self.ypos + self.height
 
@@ -786,7 +807,7 @@ class SquareMe:  # lil purple dude
                 self.jump_boost = -1
                 self.enable_gravity = True
             else:
-                self.ypos -= jump_factor
+                self.ypos -= jump_factor * self.res_height
                 """Change the y position based on the counter and difficulty. This
                 Creates a parabolic relationship from being squared."""
                 self.jump_boost -= 2 * self.diff_factor
@@ -979,7 +1000,7 @@ class SquareMe:  # lil purple dude
         # fix turning off gravity
         if self.enable_gravity and not self.jump_ability:
             gravity_y = ((self.gravity_counter ** 2) * 0.00015) * \
-                        self.diff_factor
+                        self.diff_factor * self.res_height
         else:
             gravity_y = 0
 
