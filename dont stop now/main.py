@@ -7,9 +7,9 @@ class Program:
     """
     Class responsible for how the game runs
     """
-    def __init__(self) -> None:
+    def __init__(self, width, height) -> None:
         self.running = True     # Determines if the game is running
-        self.memory = dsnclass.Memory()     # Initialize game memory
+        self.memory = dsnclass.Memory(width / 1080, height / 576)     # Initialize game memory
         self.memory.load_levels("assets/levels.txt")   # Load levels into memory
         self.memory.init_replays()
         self.memory.load_save()
@@ -42,7 +42,10 @@ class Program:
         if not pygame.scrap.get_init():
             raise Exception("pygame.scrap is no longer supported :(")
 
+        # Put the resolution ratio into memory, where 1080 and 576 are the min
+
         scene = current_scene   # Set scene currently shown through a parameter
+        # Start game loop
         while self.running:
             keys_pressed = []   # Keys pressed/tapped (key press)
             keys_held = pygame.key.get_pressed()    # Keys held collected
@@ -92,6 +95,10 @@ if __name__ == "__main__":
 
     fps = pygame.time.Clock()   # Initialize the frame rate
 
+    # Alter these values to change the resolution
+    game_width = 1080
+    game_height = 576
+
     file_path = "assets/images/"
     pygame.display.set_caption("Dont Stop Now") # game window caption
     icon = pygame.image.load(file_path + "rect10.png") # loading image
@@ -99,10 +106,10 @@ if __name__ == "__main__":
     icon = pygame.transform.scale(icon, default_icon_image_size) # scaling image correctly
     pygame.display.set_icon(icon) # game window icon
 
-    start_game = Program()      # Initialize running the game with Program
+    start_game = Program(game_width, game_height)      # Initialize running the game with Program
     start_scene = dsnlevel.MenuScene(40, 360, start_game.memory)
     # Initialize the first scene/starting scene shown to the player
-    start_game.run(1080, 576, start_scene)  # Run the game loop
+    start_game.run(game_width, game_height, start_scene)  # Run the game loop
     """The game loop will be stuck at this line (start_game.run) until the
     while loop (while self.running:) is no longer true. When self.running is
     False, the program will move onto the next line to quit"""

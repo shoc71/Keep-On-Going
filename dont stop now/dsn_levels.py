@@ -1,6 +1,7 @@
 import random
 import pygame
 import dsn_class as dsnclass
+import math
 
 DARK_RED = (139, 0, 0)
 YELLOW = (235, 195, 65)
@@ -46,12 +47,14 @@ class LevelScene(dsnclass.Scene):
         self.win_zones = []  # All win areas for that level (win condition)
         self.respawn_zones = []  # todo: add new respawn zones to levels
 
-        self.x_spawn = x_spawn  # x spawning location for player
-        self.y_spawn = y_spawn  # y spawning location for player
+        self.x_spawn = x_spawn * level_memory.res_width # x spawning location for player
+        self.y_spawn = y_spawn * level_memory.res_height  # y spawning location for player
         self.player = dsnclass.SquareMe(self.x_spawn, self.y_spawn,
                                         10, 10, PURPLE,
                                         level_memory.diff_lookup[
-                                            level_memory.diff_value])
+                                            level_memory.diff_value],
+                                        level_memory.res_width,
+                                        level_memory.res_height)
         """Initialize player variable in the level using the x and y spawn,
         constant widths and heights of 10, the color PURPLE, and the difficulty
         defined by level_memory (settings dependent)
@@ -66,20 +69,36 @@ class LevelScene(dsnclass.Scene):
             dsnclass.Text("STOP", (570, 100), 100, "impact", YELLOW, None),
             dsnclass.Text("NOW", (820, 100), 100, "impact", YELLOW, None)
         ]
+        self.victory_text[0].scale(level_memory.res_width,
+                                   level_memory.res_height)
+        self.victory_text[1].scale(level_memory.res_width,
+                                   level_memory.res_height)
+        self.victory_text[2].scale(level_memory.res_width,
+                                   level_memory.res_height)
         # Text displayed when winning (touch the win_zones), uses time/counter
 
         self.pause_text = dsnclass.Text("PAUSED", (540, 213),
                                         100, "impact", DARK_RED, None)
+        self.pause_text.scale(level_memory.res_width,
+                                   level_memory.res_height)
         self.pause_text_2 = dsnclass.Text("Press esc to unpause", (540, 280),
                                           30, "impact", DARK_RED, None)
+        self.pause_text_2.scale(level_memory.res_width,
+                                   level_memory.res_height)
         self.pause_text_3 = dsnclass.Text("Press q to quit", (540, 315),
                                           30, "impact", DARK_RED, None)
+        self.pause_text_3.scale(level_memory.res_width,
+                                   level_memory.res_height)
         self.pause_text_4 = dsnclass.Text("Press b to return to menu",
                                           (540, 350), 30,
                                           "impact", DARK_RED, None)
+        self.pause_text_4.scale(level_memory.res_width,
+                                   level_memory.res_height)
         self.pause_text_5 = dsnclass.Text("Press r to restart the level",
                                           (540, 385), 30,
                                           "impact", DARK_RED, None)
+        self.pause_text_5.scale(level_memory.res_width,
+                                   level_memory.res_height)
         # Text displayed when player pauses the game (ESC)
 
         self.memory = level_memory
@@ -203,7 +222,7 @@ class LevelScene(dsnclass.Scene):
             self.player.gravity_counter = self.player.max_gravity
 
         # If player is below the level, count as a death (out of bounds)
-        if 580 + self.player.height < self.player.ypos:
+        if (576 * self.memory.res_height) + self.player.height < self.player.ypos:
             self.player.alive = False
             self.deaths += 1
 
@@ -295,30 +314,47 @@ class MenuScene(LevelScene):
         # Main menu text
         self.title_splash = dsnclass.Text("DON'T STOP NOW", (540, 100), 100,
                                           "impact", YELLOW, None)
+        self.title_splash.scale(self.memory.res_width, self.memory.res_height)
         self.title_text = dsnclass.Text("Press Space or W To Start", (530, 200),
                                         50, "impact",
                                         YELLOW, None)
+        self.title_text.scale(self.memory.res_width, self.memory.res_height)
         self.title_text_2 = dsnclass.Text("Press esc to pause", (530, 250), 30,
                                           "impact",
                                           YELLOW, None)
+        self.title_text_2.scale(self.memory.res_width, self.memory.res_height)
         self.title_text_s1 = dsnclass.Text("Level Select", (216, 490), 30,
                                            "impact",
                                            YELLOW, None)
+        self.title_text_s1.scale(self.memory.res_width, self.memory.res_height)
         self.title_text_s2 = dsnclass.Text("Options", (432, 490), 30,
                                            "impact",
                                            YELLOW, None)
+        self.title_text_s2.scale(self.memory.res_width, self.memory.res_height)
         self.title_text_s3 = dsnclass.Text("Stats", (648, 490), 30,
                                            "impact",
                                            YELLOW, None)
+        self.title_text_s3.scale(self.memory.res_width, self.memory.res_height)
         self.title_text_s4 = dsnclass.Text("Replay", (864, 490), 30,
                                            "impact",
                                            YELLOW, None)
+        self.title_text_s4.scale(self.memory.res_width, self.memory.res_height)
 
         file_path = "assets/images/"
         self.dont_image_text = pygame.image.load(
             file_path + "dont (Custom).png")  # ratio is 15:8
         self.stop_image_text = pygame.image.load(file_path + "stop (Custom).png")
         self.now_image_text = pygame.image.load(file_path + "now (Custom).png")
+
+        self.dont_image_text = pygame.transform.scale(self.dont_image_text,
+                                                      (self.dont_image_text.get_rect().width * self.memory.res_width,
+                                                       self.dont_image_text.get_rect().height * self.memory.res_height))
+        self.stop_image_text = pygame.transform.scale(self.stop_image_text,
+                                                      (self.stop_image_text.get_rect().width * self.memory.res_width,
+                                                       self.stop_image_text.get_rect().height * self.memory.res_height))
+        self.now_image_text = pygame.transform.scale(self.now_image_text,
+                                                      (self.now_image_text.get_rect().width * self.memory.res_width,
+                                                       self.now_image_text.get_rect().height * self.memory.res_height))
 
         # Text for displaying title select options organized in a lists
         self.option_select = [
@@ -342,6 +378,27 @@ class MenuScene(LevelScene):
 
         """self.title_guy = dsnclass.SquareMe(xspawn, yspawn,
                                         10, 10, (181, 60, 177))"""
+
+        menu_plat = [pygame.Rect([0, 566, 1080, 10]),
+                          pygame.Rect([0, 400, 1080, 10]),
+                          pygame.Rect([200, 375, 200, 10]),
+                          pygame.Rect([400, 360, 200, 10]),
+                          pygame.Rect([600, 345, 200, 10]),
+                          pygame.Rect([800, 330, 200, 10]),
+                          pygame.Rect([200, 375, 810, 10]),
+                          pygame.Rect([0, 0, 10, 576]),
+                          pygame.Rect([1070, 0, 10, 576]),
+                          pygame.Rect([200, 365, 10, 10]),
+                          pygame.Rect([400, 350, 10, 10]),
+                          pygame.Rect([600, 335, 10, 10]),
+                          pygame.Rect([800, 320, 10, 10]),
+                          pygame.Rect([1000, 330, 10, 45])]
+
+        for plat in menu_plat:
+            self.platforms += [pygame.Rect(math.floor(plat.x * self.memory.res_width),
+                                           math.floor(plat.y * self.memory.res_height),
+                                           math.ceil(plat.width * self.memory.res_width),
+                                           math.ceil(plat.height * self.memory.res_height))]
 
     def input(self, pressed, held):
         """Do not use LevelScene for input since we don't want to control
@@ -389,9 +446,9 @@ class MenuScene(LevelScene):
         self.render_level(screen)  # Level Elements or Middle
 
         # Text or Front-most
-        screen.blit(self.dont_image_text, (90, 10))
-        screen.blit(self.stop_image_text, (410, 10))
-        screen.blit(self.now_image_text, (720, 10))
+        screen.blit(self.dont_image_text, (90 * self.memory.res_width, 10 * self.memory.res_height))
+        screen.blit(self.stop_image_text, (410 * self.memory.res_width, 10 * self.memory.res_height))
+        screen.blit(self.now_image_text, (720 * self.memory.res_width, 10 * self.memory.res_height))
         screen.blit(self.title_text.text_img, self.title_text.text_rect)
         screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)
         screen.blit(self.title_text_s1.text_img, self.title_text_s1.text_rect)
@@ -403,26 +460,8 @@ class MenuScene(LevelScene):
         # self.title_guy.render(screen)
 
     def render_level(self, screen):
-        # No death zones
-        self.death_zones = []
-
-        # No win zones
-        self.win_zones = []
-
-        self.platforms = [pygame.draw.rect(screen, BLACK, [0, 566, 1080, 10]),
-                          pygame.draw.rect(screen, BLACK, [0, 400, 1080, 10]),
-                          pygame.draw.rect(screen, BLACK, [200, 375, 200, 10]),
-                          pygame.draw.rect(screen, BLACK, [400, 360, 200, 10]),
-                          pygame.draw.rect(screen, BLACK, [600, 345, 200, 10]),
-                          pygame.draw.rect(screen, BLACK, [800, 330, 200, 10]),
-                          pygame.draw.rect(screen, BLACK, [200, 375, 810, 10]),
-                          pygame.draw.rect(screen, BLACK, [0, 0, 10, 576]),
-                          pygame.draw.rect(screen, BLACK, [1070, 0, 10, 576]),
-                          pygame.draw.rect(screen, BLACK, [200, 365, 10, 10]),
-                          pygame.draw.rect(screen, BLACK, [400, 350, 10, 10]),
-                          pygame.draw.rect(screen, BLACK, [600, 335, 10, 10]),
-                          pygame.draw.rect(screen, BLACK, [800, 320, 10, 10]),
-                          pygame.draw.rect(screen, BLACK, [1000, 330, 10, 45])]
+        for each_rect in self.platforms:
+            pygame.draw.rect(screen, BLACK, each_rect)
 
         # Menu selector box highlight
         pygame.draw.rect(screen, DARK_RED,
@@ -438,6 +477,8 @@ class Filler(dsnclass.Scene):
         self.filler_text = dsnclass.Text(
             "THERE'S NOTHING HERE, PRESS R TO GO BACK",
             (540, 213), 50, "impact", DARK_RED, None)
+        self.filler_text.scale(level_memory.res_width,
+                               level_memory.res_height)
         self.memory = level_memory
 
     def input(self, pressed, held):
@@ -492,9 +533,13 @@ class OptionsPage(LevelScene):
 
         self.option_title = dsnclass.Text("OPTIONS", ((1080 / 2), 50), 50,
                                           "impact", DARK_RED, None)
+        self.option_title.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.return_text = dsnclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", DARK_GREY, None)
+        self.return_text.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.change_speed = 1
         # How fast holding the button will change the option
@@ -509,9 +554,13 @@ class OptionsPage(LevelScene):
         self.help_text1 = dsnclass.Text(
             "Press W/S to move through the options", ((1080 / 2), 100), 25,
             "impact", DARK_GREEN, None)
+        self.help_text1.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.help_text2 = dsnclass.Text(
             "Press A/D to change the selected option", ((1080 / 2), 130), 25,
             "impact", DARK_GREEN, None)
+        self.help_text2.scale(self.memory.res_width,
+                                self.memory.res_height)
 
     def input(self, pressed, held):
         for action in pressed:
@@ -607,8 +656,12 @@ class OptionsPage(LevelScene):
             hl_rect = self.setting_words[self.choose_setting]
 
         pygame.draw.rect(screen, DARK_RED,
-                         [hl_rect.x - 4, hl_rect.y - 1,
-                          hl_rect.width + 8, hl_rect.height + 2], 2)
+                         [hl_rect.x - (4 * self.memory.res_width),
+                          hl_rect.y - (1 * self.memory.res_height),
+                          hl_rect.width + (8 * self.memory.res_width),
+                          hl_rect.height + (2 * self.memory.res_height)],
+                         math.ceil(
+                             2 * self.memory.res_height * self.memory.res_width))
 
         # Write the current settings available on the screen
         screen.blit(self.setting_words[0].text_img,
@@ -616,20 +669,32 @@ class OptionsPage(LevelScene):
 
         screen.blit(self.setting_words[1].text_img,
                     self.setting_words[1].text_rect)
-        pygame.draw.rect(screen, BLACK, [430, 265, 220, 3])
+        pygame.draw.rect(screen, BLACK, [430 * self.memory.res_width,
+                                         265 * self.memory.res_height,
+                                         220 * self.memory.res_width,
+                                         3 * self.memory.res_height])
         pygame.draw.rect(screen, PURPLE,
-                         [430 - 5 + (4 * (self.memory.bg_slider - 200)),
-                          255, 10, 10])  # Background slider
+                         [(430 - 5 + (4 * (
+                                     self.memory.bg_slider - 200))) * self.memory.res_width,
+                          255 * self.memory.res_height,
+                          10 * self.memory.res_height,
+                          10 * self.memory.res_width])  # Background slider
 
         screen.blit(self.setting_words[2].text_img,
-                    self.setting_words[2].text_rect)    # quick restart
+                    self.setting_words[2].text_rect)  # quick restart
 
         screen.blit(self.setting_words[3].text_img,
                     self.setting_words[3].text_rect)
-        pygame.draw.rect(screen, BLACK, [430, 435, 220, 3])
+        pygame.draw.rect(screen, BLACK, [430 * self.memory.res_width,
+                                         435 * self.memory.res_height,
+                                         220 * self.memory.res_width,
+                                         3 * self.memory.res_height])
         pygame.draw.rect(screen, PURPLE,
-                         [430 - 5 + (2.2 * self.memory.music.perc_vol),
-                          425, 10, 10])     # Music slider
+                         [(430 - 5 + (
+                                     2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
+                          425 * self.memory.res_height,
+                          10 * self.memory.res_width,
+                          10 * self.memory.res_height])  # Music slider
 
         # Render option_titles and highlight selected option
         screen.blit(self.option_title.text_img, self.option_title.text_rect)
@@ -660,6 +725,14 @@ class OptionsPage(LevelScene):
             dsnclass.Text("Set Music Volume", ((1080 / 2), 455), 50, "impact",
                           YELLOW, None)
         ]
+        self.setting_words[0].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.setting_words[1].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.setting_words[2].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.setting_words[3].scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.setting_type = ["Text", "Text", "Text", "Text"]
 
@@ -671,17 +744,27 @@ class ReplayIO(LevelScene):
         LevelScene.__init__(self, -50, -50, level_memory)
         self.file_in = dsnclass.Text("File Input", (1080 / 3, 376 / 3),
                                      50, "impact", PURPLE, None)
+        self.file_in.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.file_out = dsnclass.Text("File Output", (1080 / 3, 376 / 3 * 2),
                                       50, "impact", PURPLE, None)
+        self.file_out.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.text_in = dsnclass.Text("Text Input", (1080 / 3 * 2, 376 / 3),
                                      50, "impact", PURPLE, None)
+        self.text_in.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.text_out = dsnclass.Text("Text Output", (1080 / 3 * 2,
                                                       376 / 3 * 2),
                                       50, "impact", PURPLE, None)
+        self.text_out.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.return_text = dsnclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", DARK_GREY, None)
+        self.return_text.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.icon_list = [self.file_in, self.text_in,
                           self.file_out, self.text_out]
@@ -711,6 +794,14 @@ class ReplayIO(LevelScene):
                           (1080 / 2, 576 - 150), 50,
                           "impact", YELLOW, None)
         ]
+        self.help_text[0].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.help_text[1].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.help_text[2].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.help_text[3].scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.extra_help = [
             dsnclass.Text("Remember to paste replays_out into replays_in!",
@@ -724,10 +815,20 @@ class ReplayIO(LevelScene):
             dsnclass.Text("", (1080 / 2, 576 - 100), 50,
                           "impact", YELLOW, None)
         ]
+        self.extra_help[0].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.extra_help[1].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.extra_help[2].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.extra_help[3].scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.invalid_text = dsnclass.Text("INVALID Copy and Paste, Try Again!",
                                           (1080 / 2, 576 / 3), 75,
                                           "impact", RED, None)
+        self.invalid_text.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.invalid_timer = pygame.time.get_ticks() - 3100
 
     def input(self, pressed, held):
@@ -858,6 +959,8 @@ class StatsPage(LevelScene):
             self.nothing_text = dsnclass.Text(
                 "GO COMPLETE SOME LEVELS FIRST!", (1080 / 2, (576 / 2)), 50,
                 "impact", DARK_RED, None)
+            self.nothing_text.scale(self.memory.res_width,
+                                self.memory.res_height)
         # Otherwise, set the counter to 0 (first displayed level) and display
         # the statistics
         else:
@@ -867,6 +970,8 @@ class StatsPage(LevelScene):
         self.return_text = dsnclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", DARK_GREY, None)
+        self.return_text.scale(self.memory.res_width,
+                                self.memory.res_height)
 
     def input(self, pressed, held):
         # Check if there are level's completed
@@ -935,6 +1040,22 @@ class StatsPage(LevelScene):
                           ((1080 / 4 * 2), (576 / 2) + 50), 25, "impact",
                           YELLOW, None)
         ]
+        self.render_stats[0].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.render_stats[1].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.render_stats[2].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.render_stats[3].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.render_stats[4].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.render_stats[5].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.render_stats[6].scale(self.memory.res_width,
+                                self.memory.res_height)
+        self.render_stats[7].scale(self.memory.res_width,
+                                self.memory.res_height)
 
     def render(self, screen):
         LevelScene.render(self, screen)  # Background Colors or Back-most
@@ -969,26 +1090,38 @@ class LevelSelect(LevelScene):
         """
         self.filler_text = dsnclass.Text("Choose A Level",
                                          (540, 153), 50, "impact", YELLOW, None)
+        self.filler_text.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.level_selector_text_0 = dsnclass.Text("Choose a Level", (535, 100),
                                                    65,
                                                    "impact", YELLOW, None)
+        self.level_selector_text_0.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.level_selector_text_1 = dsnclass.Text(
             "Tap/Hold A or D to navigate through the levels",
             (535, 450), 30, "impact", YELLOW, None)
+        self.level_selector_text_1.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.level_selector_text_2 = dsnclass.Text(
             "Tap R to return to Main Menu", (545, 530), 25,
             "impact", DARK_GREY, None)
+        self.level_selector_text_2.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.level_selector_text_3 = dsnclass.Text(
             "Press W or Space to start the level",
             (535, 490), 28, "impact", YELLOW, None)
+        self.level_selector_text_3.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.confirm_text = dsnclass.Text("UNLOCKED ALL LEVELS",
                                           (1080 / 2, 576 / 2), 100, "impact",
                                           RED, None)
+        self.confirm_text.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         self.blockmation_time = 0  # Time variable for moving level boxes
         self.text_x = 0  # Used to define the x position of level number text
@@ -1126,16 +1259,22 @@ class LevelSelect(LevelScene):
                                   [(1080 / 2) - 200 + self.text_x,
                                    (576 / 2) + 39], 40, "impact", YELLOW,
                                   None)
+        left_text.scale(self.memory.res_width,
+                                self.memory.res_height)
         # Text seen in the middle/what the player is standing on (current sel)
         middle_text = dsnclass.Text(str(self.choose_id),
                                     [(1080 / 2) + self.text_x,
                                      (576 / 2) + 39],
                                     40, "impact", YELLOW, None)
+        middle_text.scale(self.memory.res_width,
+                                self.memory.res_height)
         # Text seen to the right side (current selection, +1)
         right_text = dsnclass.Text(str(self.choose_id + 1),
                                    [(1080 / 2) + 200 + self.text_x,
                                     (576 / 2) + 39], 40, "impact", YELLOW,
                                    None)
+        right_text.scale(self.memory.res_width,
+                                self.memory.res_height)
 
         scroll_text = [left_text, middle_text, right_text]
         # Make a list to render it in a for loop
@@ -1147,7 +1286,9 @@ class LevelSelect(LevelScene):
             but really we're loading/unloading them using these boundaries
             (between x of (1080 / 2) - 225 and (1080 / 2) + 195)
             """
-            if (1080 / 2) - 225 < texts.text_rect.x < (1080 / 2) + 195 and \
+            if ((1080 / 2) - 225) * self.memory.res_width < \
+                    texts.text_rect.x < (
+                    (1080 / 2) + 195) * self.memory.res_height and \
                     0 < int(texts.text) <= len(self.level_data):
                 screen.blit(texts.text_img, texts.text_rect)
                 pygame.draw.rect(screen,
@@ -1184,13 +1325,25 @@ class LevelSelect(LevelScene):
 
         # 4 Sides surrounding level select to make a box
         pygame.draw.rect(screen, (0, 0, 0),
-                         [(1080 / 2) - 250, (576 / 2) - 100, 500, 10])
+                         [int(((1080 / 2) - 250) * self.memory.res_width),
+                          int(((576 / 2) - 100) * self.memory.res_height),
+                          math.ceil(500 * self.memory.res_width),
+                          math.ceil(10 * self.memory.res_height)])
         pygame.draw.rect(screen, (0, 0, 0),
-                         [(1080 / 2) - 250, (576 / 2) + 100, 500, 10])
+                         [int(((1080 / 2) - 250) * self.memory.res_width),
+                          int(((576 / 2) + 100) * self.memory.res_height),
+                          math.ceil(500 * self.memory.res_width),
+                          math.ceil(10 * self.memory.res_height)])
         pygame.draw.rect(screen, (0, 0, 0),
-                         [(1080 / 2) - 250, (576 / 2) - 100, 70, 200])
+                         [int(((1080 / 2) - 250) * self.memory.res_width),
+                          int(((576 / 2) - 100) * self.memory.res_height),
+                          math.ceil(70 * self.memory.res_width),
+                          math.ceil(200 * self.memory.res_height)])
         pygame.draw.rect(screen, (0, 0, 0),
-                         [(1080 / 2) + 250 - 70, (576 / 2) - 100, 70, 200])
+                         [int(((1080 / 2) + 250 - 70) * self.memory.res_width),
+                          int(((576 / 2) - 100) * self.memory.res_height),
+                          math.ceil(70 * self.memory.res_width),
+                          math.ceil(200 * self.memory.res_height)])
 
         if pygame.time.get_ticks() - self.confirm_timer < 3000:
             screen.blit(self.confirm_text.text_img,
@@ -1206,9 +1359,13 @@ class ReplaySelect(LevelSelect):
         self.allow_select = False  # Toggle off, cannot freely choose
         self.no_data = dsnclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
                                      "impact", RED, None)
+        self.no_data.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.replay_title = dsnclass.Text("Choose A Replay Level",
                                           (1080 / 2, 160), 50, "impact",
                                           YELLOW, None)
+        self.replay_title.scale(self.memory.res_width,
+                                self.memory.res_height)
 
     def input(self, pressed, held):
         if self.choose_id in self.memory.replay_imp and \
@@ -1239,10 +1396,14 @@ class ReplayOut(ReplaySelect):
         self.copy_text = dsnclass.Text("Copied Level " + str(self.choose_id),
                                        (1080 / 2, 3 * 576 / 4),
                                        50, "impact", YELLOW, None)
+        self.copy_text.scale(self.memory.res_width,
+                                self.memory.res_height)
         self.copy_time = pygame.time.get_ticks() - 3100
         self.replayo_title = dsnclass.Text("Choose a Level to Copy!",
                                            (1080 / 2, 160), 50, "impact",
                                            YELLOW, None)
+        self.replayo_title.scale(self.memory.res_width,
+                                self.memory.res_height)
 
     def input(self, pressed, held):
         LevelSelect.input(self, pressed, held)
@@ -1255,6 +1416,8 @@ class ReplayOut(ReplaySelect):
                     "Copied Level " + str(self.choose_id),
                     (1080 / 2, 3 * 576 / 4),
                     50, "impact", YELLOW, None)
+                self.copy_text.scale(self.memory.res_width,
+                                self.memory.res_height)
                 pygame.scrap.put(pygame.SCRAP_TEXT,
                                  bytes(str(
                                      self.memory.replay_exp[self.choose_id]),
@@ -1327,15 +1490,21 @@ class PlayLevel(LevelSelect):
                                               10, 10, GREY,
                                               self.memory.diff_lookup[
                                                   level_memory.imp_diff[
-                                                      self.level_id]])
+                                                      self.level_id]],
+                                              self.memory.res_width,
+                                              self.memory.res_height)
             self.replay_counter = 0
             self.replay_time = int(
                 self.memory.replay_imp[self.level_id][0][2:-1])
             self.lose_condition = False
             self.win_text = dsnclass.Text("WIN", [1080 / 2, 576 / 2], 250,
                                           "impact", YELLOW, None)
+            self.win_text.scale(self.memory.res_width,
+                                self.memory.res_height)
             self.lose_text = dsnclass.Text("LOSE", [1080 / 2, 576 / 2], 250,
                                            "impact", YELLOW, None)
+            self.lose_text.scale(self.memory.res_width,
+                                self.memory.res_height)
             self.count_down = 3
             self.count_change = pygame.time.get_ticks()
             self.count_time = pygame.time.get_ticks()  # Time spent counting
@@ -1345,6 +1514,8 @@ class PlayLevel(LevelSelect):
                                                                    576 / 2],
                                             250,
                                             "impact", YELLOW, None)
+            self.count_text.scale(self.memory.res_width,
+                                self.memory.res_height)
 
     def input(self, pressed, held):
         if not self.start_toggle:
@@ -1363,6 +1534,8 @@ class PlayLevel(LevelSelect):
                                                                        576 / 2],
                                                 250,
                                                 "impact", YELLOW, None)
+                self.count_text.scale(self.memory.res_width,
+                                self.memory.res_height)
                 self.count_change = pygame.time.get_ticks()
 
             if 3000 < pygame.time.get_ticks() - self.count_time:
@@ -1478,7 +1651,7 @@ class PlayLevel(LevelSelect):
             self.replayer.gravity_counter = self.replayer.max_gravity
 
         # If player is below the level, count as a death (out of bounds)
-        if 580 + self.replayer.height < self.replayer.ypos:
+        if (576 * self.memory.res_height) + self.replayer.height < self.replayer.ypos:
             self.replayer.alive = False
 
         # Check for win collision
