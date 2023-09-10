@@ -208,6 +208,10 @@ class Memory:
         """Loaded in level data containing text, rects and lines for 
         platforms
         """
+        self.level_id = 0   # Initialize level_id
+
+        self.id_range = {}  # Ranges for different sets of levels
+        self.range_index = 0
 
         self.diff_lookup = {
             0: 0.6,
@@ -245,12 +249,24 @@ class Memory:
         # Volume setting for music
         self.total_music_per = 100
 
-        # Lastly, initialize music
+        # initialize music
         self.music = None
+
+        # initialize sound volume
+        self.sound_vol = 100
 
         # Initialize Width and Height of Screen, useful for changing resolutions
         self.res_width = width  # Ratio for width resolution, easily multiply
         self.res_height = height    # Ratio for height res, easily multiply
+
+        self.res_index = 1
+
+        self.res_set = {0: [900, 600],
+                        1: [1080, 576],
+                        2: [1280, 720],
+                        3: [1920, 1080]}
+
+        self.screen = None
 
     def update_mem(self, level_id, death_count, jump_count, level_time):
         """
@@ -306,10 +322,38 @@ class Memory:
             self.level_times[level_id] = add_time(self.level_times[level_id],
                                                   current_time)
 
-    def load_levels(self, in_file):
-        self.level_set = {}  # Dict holding level info/player spawn
-        self.ls_elements = {}  # Dict holding rect/text/line objects
+    def load_all_levels(self):
+        folder_path = "assets/levels/"
+        try:
+            file_list = os.listdir(folder_path)
+        except:
+            # LOG: Assets Folder Not Found
+            raise "Assets Folder Not Found"
+        else:
+            # LOG: Assets Folder Found
+            pass
 
+        if len(os.listdir(folder_path)) == 0:
+            raise "Assets Folder Empty"
+        else:
+            # LOG: Assets Folder Contains Levels
+            pass
+
+        for each_file in file_list:
+            if each_file.split("_")[0].isdecimal():
+                self.load_levels(folder_path + each_file)
+
+        # Load non-level pygame objects, start at -6 + 1 for 4 instances
+        self.level_id = -6
+        # Decrease the level_id for more than 4 instances!
+        self.load_levels("assets/levels/non_levels.txt")
+
+        """
+        MenuScene ID = -5
+        OptionsPage ID = -4
+        """
+
+    def load_levels(self, in_file):
         color_lookup = {
             "DARK_RED": DARK_RED,
             "YELLOW": YELLOW,
@@ -328,11 +372,12 @@ class Memory:
             "ORANGE": ORANGE,
             "DARK_GREY": DARK_GREY
         }
-        # Used to convert text file color names to static constant colors
 
+        start = self.level_id + 1
+
+        # Used to convert text file color names to static constant colors
         with open(in_file, "r") as open_file:
             identifier = ""
-            level_id = 1
 
             for line in open_file.readlines():
                 if re.search("self\..*", line):  # Distinguish level elements
@@ -342,19 +387,24 @@ class Memory:
                     identifier = re.search("self\..* = ", line).group()[:-3]
                 elif re.search(r"Text", line):  # Distinguish text
                     identifier = "Text"
-                elif re.search(r"\([0-9]+, [0-9]+, [0-9]+\)", line) and \
+                elif re.search(r"\(([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+)\)", line) and \
                         "pygame" not in line:
+                    self.level_id += 1
+                    self.level_set[self.level_id] = []
+                    self.ls_elements[self.level_id] = {}
+
                     # Finding level titles in the form ( , , )
-                    line_search = re.search(r"\([0-9]+, [0-9]+, [0-9]+\)",
+                    line_search = re.search(r"\(([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+)\)",
                                             line).group()
                     format_search = line_search[1:-1].split(", ")
-                    self.level_set[level_id] = [int(format_search[0]),
+
+                    self.level_set[self.level_id] = [int(format_search[0]),
                                                 int(format_search[1]),
                                                 int(format_search[2])]
+
                     """Will then get the 3 numbers split by comma, then
                     converts them into their ints - x, y and music
                     """
-                    self.ls_elements[level_id] = {}
                 elif "=" in line.replace("\n", ""):
                     """If none of the other conditions were met:
                         - self.___ = ...
@@ -363,7 +413,7 @@ class Memory:
                         Then it's a new level using the === identifier.
                         Increment level ID by 1
                     """
-                    level_id += 1
+                    pass
 
                 if re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, "
                              r"[0-9]+, [0-9]+\]\)", line):  # Add rect elements
@@ -420,12 +470,12 @@ class Memory:
                                              "rect")
 
                     # add that rect to our element list for that level
-                    if identifier not in self.ls_elements[level_id]:
+                    if identifier not in self.ls_elements[self.level_id]:
                         # If there isn't any objects, make it the first
-                        self.ls_elements[level_id][identifier] = [in_rect]
+                        self.ls_elements[self.level_id][identifier] = [in_rect]
                     else:
                         # Add rect to the existing list for that level
-                        self.ls_elements[level_id][identifier] += [in_rect]
+                        self.ls_elements[self.level_id][identifier] += [in_rect]
 
                 elif re.search(
                         r"\([a-z]+, .*, \[[0-9]+, [0-9]+\], \[[0-9]+, [0-9]+\], [0-9]\)",
@@ -446,12 +496,12 @@ class Memory:
                                                         int(line_info[6][:-1]) * max(self.res_width, self.res_height)],
                                          "line")
                     # add that line to our element list for that level
-                    if identifier not in self.ls_elements[level_id]:
+                    if identifier not in self.ls_elements[self.level_id]:
                         # If there isn't any objects, make it the first
-                        self.ls_elements[level_id][identifier] = [in_line]
+                        self.ls_elements[self.level_id][identifier] = [in_line]
                     else:
                         # Add line to the existing list for that level
-                        self.ls_elements[level_id][identifier] += [in_line]
+                        self.ls_elements[self.level_id][identifier] += [in_line]
 
                 # Search the line for the actual text
                 if re.search(r"\(\".*\", \([0-9]+, [0-9]+\), [0-9]+, "
@@ -495,20 +545,32 @@ class Memory:
                     add_text.scale(self.res_width, self.res_height)
 
                     # Add that text into our level_elements
-                    if identifier not in self.ls_elements[level_id]:
+                    if identifier not in self.ls_elements[self.level_id]:
                         # If there are no objects for Text, add it
-                        self.ls_elements[level_id][identifier] = [add_text]
+                        self.ls_elements[self.level_id][identifier] = [add_text]
                     else:
                         # If there are objects, add onto it
-                        self.ls_elements[level_id][identifier] += [add_text]
+                        self.ls_elements[self.level_id][identifier] += [add_text]
 
+        # Extra if statement for the case where there's only 1 thing in the file
+        if start is None:
+            start = self.level_id
+
+        end = self.level_id     # Get the last level that was added in
+        self.id_range[self.range_index] = [start, end]  # Put the range into mem
+        self.range_index += 1   # Increment for the next set of ranges
         # self.print_levels is mainly used for debugging purposes only
         # self.print_levels()
 
     def print_levels(self):
+        print("LEVEL TITLES:")
         print(self.level_set)
-        print()
-        # print(self.ls_elements)
+        print("=============")
+        print("LEVEL ELEMENTS:")
+        print(self.ls_elements)
+        print("===============")
+        print("LEVEL ID RANGES:")
+        print(self.id_range)
 
     def write_replays(self):
         with open("assets/replays_out.txt", "w") as write_file:
@@ -563,21 +625,22 @@ class Memory:
             open_file.write(str(self.diff_value) + "\n")
             open_file.write(str(self.bg_slider) + "\n")
             open_file.write(str(self.quick_restart) + "\n")
-            open_file.write(str(self.music.perc_vol))
+            open_file.write(str(self.music.perc_vol) + "\n")
+            open_file.write(str(self.sound_vol))
 
     def load_save(self):
         file_path = "assets/saves/save_file1.txt"
-        with open(file_path, "r") as test_file:
-            file_len = len(test_file.readlines())
+        if os.path.isfile(file_path):
+            with open(file_path, "r") as test_file:
+                file_len = len(test_file.readlines())
 
-        if os.path.isfile(file_path) and file_len == 11:
+        if os.path.isfile(file_path) and file_len == 12:
             get_save = open(file_path, "r")
             self.total_deaths = int(get_save.readline())
             self.total_jumps = int(get_save.readline())
             self.total_time = int(get_save.readline())
 
             get_death = get_save.readline()[1:-2].split(", ")
-            print(len(get_death))
             if 1 < len(get_death):
                 for each_stat in get_death:
                     split_stat = each_stat.split(": ")
@@ -613,8 +676,8 @@ class Memory:
             self.quick_restart = int(get_save.readline())
             self.total_music_per = int(get_save.readline())
             pygame.mixer.music.set_volume(self.total_music_per)
-
-        elif os.path.isfile(file_path) and file_len != 11:
+            self.sound_vol = float(get_save.readline())
+        elif os.path.isfile(file_path) and file_len != 12:
             get_save = open(file_path, "w")
         else:
             # No previous save made
@@ -700,7 +763,7 @@ class DSNElement:
 class SquareMe:  # lil purple dude
 
     def __init__(self, x_spawn, y_spawn, width, height, rgb, diff,
-                 res_width, res_height):
+                 res_width, res_height, jump_vol):
         """
         self.square parameters: [
         [x_spawn, y_spawn],
@@ -731,7 +794,7 @@ class SquareMe:  # lil purple dude
         file_path = "assets/audio/"
         self.jump_sound_1 = pygame.mixer.Sound(file_path + "jump_sfx.wav")
         # Jump sound for player
-        self.jump_sound_1.set_volume(0.1)  # out of 1 or 100%
+        self.jump_sound_1.set_volume(0.1 * (jump_vol / 100))  # out of 1 or 100%
         # Jump volume for the player, set at 0.1 out of 1, or 10%
 
         # Get location and info of surrounding blocks
@@ -1096,6 +1159,12 @@ class Scene:
         """
         self.change_scene(None)
 
+
+class KOGLog:
+    """Class used to manage and hold game logs"""
+
+    def __init__(self):
+        pass
 
 """
 !! NOTICE !!
