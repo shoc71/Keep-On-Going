@@ -10,7 +10,8 @@ class Program:
     def __init__(self, width, height) -> None:
         self.running = True     # Determines if the game is running
         self.memory = dsnclass.Memory(width / 1080, height / 576)     # Initialize game memory
-        self.memory.load_levels("assets/levels.txt")   # Load levels into memory
+        self.memory.load_all_levels()   # Load all levels from different files
+
         self.memory.init_replays()
         self.memory.load_save()
         self.memory.music = dsnclass.Music(self.memory.total_music_per)
@@ -36,7 +37,7 @@ class Program:
 
         Finally, this is where FPS is set and where the display is updated.
         """
-        screen = pygame.display.set_mode([width, height])   # Set screen size
+        self.memory.screen = pygame.display.set_mode([width, height])   # Set screen size
 
         pygame.scrap.init()
         if not pygame.scrap.get_init():
@@ -74,7 +75,7 @@ class Program:
 
                 scene.input(keys_pressed, keys_held)    # Call to use keys in
                 scene.update()  # Call to dynamically use/update/check changes
-                scene.render(screen)    # Visually render desired graphics
+                scene.render(self.memory.screen)    # Visually render desired graphics
                 scene = scene.this_scene
                 """This line is important to allow changing scenes (if 
                 this_scene is different like using 
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     pygame.display.set_icon(icon) # game window icon
 
     start_game = Program(game_width, game_height)      # Initialize running the game with Program
-    start_scene = dsnlevel.MenuScene(40, 360, start_game.memory)
+    start_scene = dsnlevel.MenuScene(24, 303, start_game.memory)
     # Initialize the first scene/starting scene shown to the player
     start_game.run(game_width, game_height, start_scene)  # Run the game loop
     """The game loop will be stuck at this line (start_game.run) until the
