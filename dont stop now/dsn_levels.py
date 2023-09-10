@@ -54,7 +54,8 @@ class LevelScene(dsnclass.Scene):
                                         level_memory.diff_lookup[
                                             level_memory.diff_value],
                                         level_memory.res_width,
-                                        level_memory.res_height)
+                                        level_memory.res_height,
+                                        level_memory.sound_vol)
         """Initialize player variable in the level using the x and y spawn,
         constant widths and heights of 10, the color PURPLE, and the difficulty
         defined by level_memory (settings dependent)
@@ -119,6 +120,10 @@ class LevelScene(dsnclass.Scene):
         self.hold_jumps = []
 
         self.loop_counter = 0
+
+        self.element_names = []
+        self.render_objects = []
+        self.collision_objects = {}
 
     def input(self, pressed, held):
         for every_key in pressed:
@@ -296,6 +301,25 @@ class LevelScene(dsnclass.Scene):
             screen.blit(self.memory.music.music_text.text_img,
                         self.memory.music.music_text.text_rect)
 
+    def load_renders(self, level_id):
+        self.element_names = list(self.level_elements[level_id].keys())
+        self.collision_objects = {"self.platforms": self.platforms,
+                                  "self.death_zones": self.death_zones,
+                                  "self.win_zones": self.win_zones,
+                                  "self.respawn_zones": self.respawn_zones}
+        self.render_objects = []  # Initialize render objects
+
+        for name in self.element_names:
+            # Get DSNElement objects that aren't under Text
+            if name != "Text" and name in self.level_elements[level_id]:
+                # For each element in the level, get collision and render lists
+                for element in self.level_elements[level_id][name]:
+                    if name in self.collision_objects:
+                        self.collision_objects[name] += [element.shape]
+                        # Add rect objects for collision (collision, no render)
+                    self.render_objects += [element]
+                    # Load up render objects (only rendering, no collision)
+
 
 class MenuScene(LevelScene):
     """
@@ -308,7 +332,9 @@ class MenuScene(LevelScene):
         self.level_id = 0  # Has a level id of 0 (defined to record jumps)
         self.option_count = 0  # Index counter to choose level
         self.options = [LevelSelect(level_memory), OptionsPage(level_memory),
-                        StatsPage(level_memory), ReplayIO(level_memory)]
+                        StatsPage(level_memory), ReplayIO(level_memory),
+                        Filler(level_memory), Filler(level_memory),
+                        Filler(level_memory), Filler(level_memory)]
         # Main menu options
 
         # Main menu text
@@ -323,22 +349,42 @@ class MenuScene(LevelScene):
                                           "impact",
                                           YELLOW, None)
         self.title_text_2.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s1 = dsnclass.Text("Level Select", (216, 490), 30,
+        self.title_text_s1 = dsnclass.Text("Level Select", (216, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s1.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s2 = dsnclass.Text("Options", (432, 490), 30,
+        self.title_text_s2 = dsnclass.Text("Options", (432, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s2.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s3 = dsnclass.Text("Stats", (648, 490), 30,
+        self.title_text_s3 = dsnclass.Text("Stats", (648, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s3.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s4 = dsnclass.Text("Replay", (864, 490), 30,
+        self.title_text_s4 = dsnclass.Text("Replay", (864, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s4.scale(self.memory.res_width, self.memory.res_height)
+
+        self.title_text_s5 = dsnclass.Text("Filler", (216, 535), 30,
+                                           "impact",
+                                           YELLOW, None)
+        self.title_text_s5.scale(self.memory.res_width, self.memory.res_height)
+
+        self.title_text_s6 = dsnclass.Text("Filler", (432, 535), 30,
+                                           "impact",
+                                           YELLOW, None)
+        self.title_text_s6.scale(self.memory.res_width, self.memory.res_height)
+
+        self.title_text_s7 = dsnclass.Text("Filler", (648, 535), 30,
+                                           "impact",
+                                           YELLOW, None)
+        self.title_text_s7.scale(self.memory.res_width, self.memory.res_height)
+
+        self.title_text_s8 = dsnclass.Text("Filler", (864, 535), 30,
+                                           "impact",
+                                           YELLOW, None)
+        self.title_text_s8.scale(self.memory.res_width, self.memory.res_height)
 
         file_path = "assets/images/"
         self.dont_image_text = pygame.image.load(
@@ -373,39 +419,36 @@ class MenuScene(LevelScene):
             [self.title_text_s4.text_rect.x - 5,
              self.title_text_s4.text_rect.y - 5,
              self.title_text_s4.text_rect.width + 10,
-             self.title_text_s4.text_rect.height + 10]
+             self.title_text_s4.text_rect.height + 10],
+            [self.title_text_s5.text_rect.x - 5,
+             self.title_text_s5.text_rect.y - 5,
+             self.title_text_s5.text_rect.width + 10,
+             self.title_text_s5.text_rect.height + 10],
+            [self.title_text_s6.text_rect.x - 5,
+             self.title_text_s6.text_rect.y - 5,
+             self.title_text_s6.text_rect.width + 10,
+             self.title_text_s6.text_rect.height + 10],
+            [self.title_text_s7.text_rect.x - 5,
+             self.title_text_s7.text_rect.y - 5,
+             self.title_text_s7.text_rect.width + 10,
+             self.title_text_s7.text_rect.height + 10],
+            [self.title_text_s8.text_rect.x - 5,
+             self.title_text_s8.text_rect.y - 5,
+             self.title_text_s8.text_rect.width + 10,
+             self.title_text_s8.text_rect.height + 10]
         ]
 
         """self.title_guy = dsnclass.SquareMe(xspawn, yspawn,
                                         10, 10, (181, 60, 177))"""
 
-        menu_plat = [pygame.Rect([0, 566, 1080, 10]),
-                          pygame.Rect([0, 400, 1080, 10]),
-                          pygame.Rect([200, 375, 200, 10]),
-                          pygame.Rect([400, 360, 200, 10]),
-                          pygame.Rect([600, 345, 200, 10]),
-                          pygame.Rect([800, 330, 200, 10]),
-                          pygame.Rect([200, 375, 810, 10]),
-                          pygame.Rect([0, 0, 10, 576]),
-                          pygame.Rect([1070, 0, 10, 576]),
-                          pygame.Rect([200, 365, 10, 10]),
-                          pygame.Rect([400, 350, 10, 10]),
-                          pygame.Rect([600, 335, 10, 10]),
-                          pygame.Rect([800, 320, 10, 10]),
-                          pygame.Rect([1000, 330, 10, 45])]
-
-        for plat in menu_plat:
-            self.platforms += [pygame.Rect(math.floor(plat.x * self.memory.res_width),
-                                           math.floor(plat.y * self.memory.res_height),
-                                           math.ceil(plat.width * self.memory.res_width),
-                                           math.ceil(plat.height * self.memory.res_height))]
+        self.load_renders(-5)
 
     def input(self, pressed, held):
         """Do not use LevelScene for input since we don't want to control
         the character on the menu"""
         for every_key in pressed:
             # If player chooses option, update menu statistics and change scene
-            if every_key in [pygame.K_SPACE, pygame.K_w]:
+            if every_key in [pygame.K_SPACE]:
                 self.memory.music.switch_music()
                 self.memory.update_mem(self.level_id, self.deaths,
                                        self.player.jumps, self.start_time)
@@ -417,6 +460,12 @@ class MenuScene(LevelScene):
             if every_key is pygame.K_a:
                 self.option_count -= 1
 
+            if every_key is pygame.K_s:
+                self.option_count += 4
+
+            if every_key is pygame.K_w:
+                self.option_count -= 4
+
     def update(self):
         # Use levelscene update for collision and player movement
         LevelScene.update(self)
@@ -424,10 +473,10 @@ class MenuScene(LevelScene):
 
         # If options selected go past right boundary, set it to the left
         if len(self.options) - 1 < self.option_count:
-            self.option_count = 0
+            self.option_count = 0 + (self.option_count - len(self.options))
         # If options selected go past left boundary, set it to the right
         if self.option_count < 0:
-            self.option_count = len(self.options) - 1
+            self.option_count = len(self.options) + self.option_count
 
         # Have player jump randomly occur rather than input
         if (random.randint(1, 2500) <= 15) and not self.player.enable_gravity:
@@ -445,16 +494,30 @@ class MenuScene(LevelScene):
         LevelScene.render(self, screen)  # Background Colors or Back-most
         self.render_level(screen)  # Level Elements or Middle
 
+        # Render Settings Decor
+        for element in self.render_objects:
+            if element.type == "rect":  # rect drawings
+                pygame.draw.rect(screen, element.color, element.shape)
+            else:  # line drawings
+                pygame.draw.line(screen, element.color,
+                                 [element.shape[0], element.shape[1]],
+                                 [element.shape[2], element.shape[3]],
+                                 element.shape[4])
+
         # Text or Front-most
         screen.blit(self.dont_image_text, (90 * self.memory.res_width, 10 * self.memory.res_height))
         screen.blit(self.stop_image_text, (410 * self.memory.res_width, 10 * self.memory.res_height))
         screen.blit(self.now_image_text, (720 * self.memory.res_width, 10 * self.memory.res_height))
-        screen.blit(self.title_text.text_img, self.title_text.text_rect)
-        screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)
+        """screen.blit(self.title_text.text_img, self.title_text.text_rect)
+        screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)"""
         screen.blit(self.title_text_s1.text_img, self.title_text_s1.text_rect)
         screen.blit(self.title_text_s2.text_img, self.title_text_s2.text_rect)
         screen.blit(self.title_text_s3.text_img, self.title_text_s3.text_rect)
         screen.blit(self.title_text_s4.text_img, self.title_text_s4.text_rect)
+        screen.blit(self.title_text_s5.text_img, self.title_text_s5.text_rect)
+        screen.blit(self.title_text_s6.text_img, self.title_text_s6.text_rect)
+        screen.blit(self.title_text_s7.text_img, self.title_text_s7.text_rect)
+        screen.blit(self.title_text_s8.text_img, self.title_text_s8.text_rect)
 
         LevelScene.render_text(self, screen)
         # self.title_guy.render(screen)
@@ -487,7 +550,7 @@ class Filler(dsnclass.Scene):
             if every_key == pygame.K_r:
                 self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
                                             0)
-                self.change_scene(MenuScene(40, 360, self.memory))
+                self.change_scene(MenuScene(24, 303, self.memory))
 
     def render(self, screen):
         # Render default white and the go back message
@@ -508,7 +571,9 @@ class OptionsPage(LevelScene):
             0: [0, 2],
             1: [255, 200],
             2: [1, 2],
-            3: [0, 100]
+            3: [0, 100],
+            4: [0, 100],
+            5: [0, 3]
         }
 
         # Remember the last value for this setting
@@ -516,7 +581,9 @@ class OptionsPage(LevelScene):
             0: self.memory.diff_value,
             1: self.memory.bg_slider,
             2: self.memory.quick_restart,
-            3: self.memory.music.perc_vol
+            3: self.memory.music.perc_vol,
+            4: self.memory.sound_vol,
+            5: self.memory.res_index
         }
 
         # Setup select options (so far, difficulty and music)
@@ -536,7 +603,7 @@ class OptionsPage(LevelScene):
         self.option_title.scale(self.memory.res_width,
                                 self.memory.res_height)
         self.return_text = dsnclass.Text(
-            "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
+            "press R to go back", (1080 / 2, 100), 25,
             "impact", DARK_GREY, None)
         self.return_text.scale(self.memory.res_width,
                                 self.memory.res_height)
@@ -551,16 +618,9 @@ class OptionsPage(LevelScene):
         self.menu_buffer = pygame.time.get_ticks()
         # Time to transition between scenes and not change settings
 
-        self.help_text1 = dsnclass.Text(
-            "Press W/S to move through the options", ((1080 / 2), 100), 25,
-            "impact", DARK_GREEN, None)
-        self.help_text1.scale(self.memory.res_width,
-                                self.memory.res_height)
-        self.help_text2 = dsnclass.Text(
-            "Press A/D to change the selected option", ((1080 / 2), 130), 25,
-            "impact", DARK_GREEN, None)
-        self.help_text2.scale(self.memory.res_width,
-                                self.memory.res_height)
+        self.load_renders(-4)
+
+        self.hold_res = False     # Used to only apply res changes once
 
     def input(self, pressed, held):
         for action in pressed:
@@ -590,7 +650,7 @@ class OptionsPage(LevelScene):
             if action is pygame.K_r:
                 self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
                                             0)
-                self.change_scene(MenuScene(40, 360, self.memory))
+                self.change_scene(MenuScene(24, 303, self.memory))
 
         if held[pygame.K_a] and (1000 / self.change_speed) < \
                 pygame.time.get_ticks() - self.change_time and \
@@ -635,6 +695,32 @@ class OptionsPage(LevelScene):
         ]
         self.memory.quick_restart = self.setting_mem[2]
         self.memory.music.perc_vol = self.setting_mem[3]
+        self.memory.sound_vol = self.setting_mem[4]
+        self.memory.res_index = self.setting_mem[5]
+        self.memory.res_width = self.memory.res_set[self.setting_mem[5]][0] / 1080
+        self.memory.res_height = self.memory.res_set[self.setting_mem[5]][1] / 576
+
+        if self.choose_setting == 5 and \
+                self.hold_res != [self.memory.res_width, self.memory.res_height]:
+            # Change the res for this scene only
+            self.memory.screen = pygame.display.set_mode(
+                [self.memory.res_set[self.setting_mem[5]][0],
+                 self.memory.res_set[self.setting_mem[5]][1]])
+            self.memory.load_all_levels()  # Apply res to all levels
+            self.load_renders(-4)
+
+            self.option_title = dsnclass.Text("OPTIONS", ((1080 / 2), 50), 50,
+                                              "impact", DARK_RED, None)
+            self.option_title.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
+                                    self.memory.res_set[self.setting_mem[5]][1] / 576)
+
+            self.return_text = dsnclass.Text(
+                "press R to go back", (1080 / 2, 100), 25,
+                "impact", DARK_GREY, None)
+            self.return_text.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
+                                   self.memory.res_set[self.setting_mem[5]][1] / 576)
+
+        self.hold_res = [self.memory.res_width, self.memory.res_height]
 
         # Increment how quick changing the settings go
         if 250 * self.change_speed < \
@@ -649,92 +735,175 @@ class OptionsPage(LevelScene):
         LevelScene.render(self, screen)  # Background Colors or Back-most
         self.render_level(screen)  # Level Elements or Middle
 
-        # Highlight the current option
-        if self.setting_type[self.choose_setting] == "Text":
-            hl_rect = self.setting_words[self.choose_setting].text_rect
-        else:
-            hl_rect = self.setting_words[self.choose_setting]
-
-        pygame.draw.rect(screen, DARK_RED,
-                         [hl_rect.x - (4 * self.memory.res_width),
-                          hl_rect.y - (1 * self.memory.res_height),
-                          hl_rect.width + (8 * self.memory.res_width),
-                          hl_rect.height + (2 * self.memory.res_height)],
-                         math.ceil(
-                             2 * self.memory.res_height * self.memory.res_width))
-
-        # Write the current settings available on the screen
-        screen.blit(self.setting_words[0].text_img,
-                    self.setting_words[0].text_rect)  # Difficulty
-
-        screen.blit(self.setting_words[1].text_img,
-                    self.setting_words[1].text_rect)
-        pygame.draw.rect(screen, BLACK, [430 * self.memory.res_width,
-                                         265 * self.memory.res_height,
-                                         220 * self.memory.res_width,
-                                         3 * self.memory.res_height])
-        pygame.draw.rect(screen, PURPLE,
-                         [(430 - 5 + (4 * (
-                                     self.memory.bg_slider - 200))) * self.memory.res_width,
-                          255 * self.memory.res_height,
-                          10 * self.memory.res_height,
-                          10 * self.memory.res_width])  # Background slider
-
-        screen.blit(self.setting_words[2].text_img,
-                    self.setting_words[2].text_rect)  # quick restart
-
-        screen.blit(self.setting_words[3].text_img,
-                    self.setting_words[3].text_rect)
-        pygame.draw.rect(screen, BLACK, [430 * self.memory.res_width,
-                                         435 * self.memory.res_height,
-                                         220 * self.memory.res_width,
-                                         3 * self.memory.res_height])
-        pygame.draw.rect(screen, PURPLE,
-                         [(430 - 5 + (
-                                     2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
-                          425 * self.memory.res_height,
-                          10 * self.memory.res_width,
-                          10 * self.memory.res_height])  # Music slider
+        # Highlight and render the current option
+        for count in range(len(self.setting_type[self.choose_setting])):
+            render_type = self.setting_type[self.choose_setting][count]
+            render_option = self.setting_words[self.choose_setting][count]
+            if render_type == "Text":
+                screen.blit(render_option.text_img,
+                            render_option.text_rect)
+            elif render_type == "Slider":
+                pygame.draw.rect(screen, PURPLE,
+                                 [render_option,
+                                  255 * self.memory.res_height,
+                                  10 * self.memory.res_height,
+                                  10 * self.memory.res_width])
+                pygame.draw.rect(screen, BLACK, [430 * self.memory.res_width,
+                                                 265 * self.memory.res_height,
+                                                 220 * self.memory.res_width,
+                                                 3 * self.memory.res_height])
+            elif render_type == "Rect":
+                pass
+            else:
+                raise "Invalid Option Identifier Error"
 
         # Render option_titles and highlight selected option
         screen.blit(self.option_title.text_img, self.option_title.text_rect)
         screen.blit(self.return_text.text_img, self.return_text.text_rect)
 
-        # Render option help text
-        screen.blit(self.help_text1.text_img, self.help_text1.text_rect)
-        screen.blit(self.help_text2.text_img, self.help_text2.text_rect)
+        # Render Settings Decor
+        for element in self.render_objects:
+            if element.type == "rect":  # rect drawings
+                pygame.draw.rect(screen, element.color, element.shape)
+            else:  # line drawings
+                pygame.draw.line(screen, element.color,
+                                 [element.shape[0], element.shape[1]],
+                                 [element.shape[2], element.shape[3]],
+                                 element.shape[4])
 
         LevelScene.render_text(self, screen)
 
     def update_text(self):
 
         # Update or initialize self.setting_words with text
-        self.setting_words = [
-            dsnclass.Text("Difficulty: " +
+        self.setting_words = {
+            0: [dsnclass.Text("Difficulty: " +
                           str(self.num_to_diff[
                                   self.memory.diff_lookup[
                                       self.memory.diff_value]]),
-                          ((1080 / 2), 200), 50, "impact",
+                          (int(1080 / 2 * self.memory.res_width),
+                           int(200 * self.memory.res_height)),
+                          50 * max(self.memory.res_width,
+                                   self.memory.res_height), "impact",
                           YELLOW, None),
-            dsnclass.Text("Change Background", ((1080 / 2), 285), 50,
-                          "impact", YELLOW, None),
-            dsnclass.Text("Quick Restart: Press R " +
+                dsnclass.Text("Choose the player movement speed with",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                dsnclass.Text("easy (slow), medium (default) and hard (fastest)",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)],
+            1: [dsnclass.Text("Change Background", (int(1080 / 2 * self.memory.res_width), int(200 * self.memory.res_height)),
+                          50 * max(self.memory.res_width, self.memory.res_height), "impact",
+                          YELLOW, None),
+                (430 - 5 + (4 * (
+                        self.memory.bg_slider - 200))) * self.memory.res_width,
+                dsnclass.Text("LIGHT GREY", (345 * self.memory.res_width,
+                                             265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                dsnclass.Text("WHITE", (715 * self.memory.res_width,
+                                             265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                dsnclass.Text("Change the background ranging between",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                dsnclass.Text("light grey and white", (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)
+                ],
+            2: [dsnclass.Text("Quick Restart: Press R " +
                           str(self.memory.quick_restart) + " Time(s)",
-                          ((1080 / 2), 370), 50, "impact",
+                             (int(1080 / 2 * self.memory.res_width),
+                              int(200 * self.memory.res_height)),
+                             50 * max(self.memory.res_width,
+                                      self.memory.res_height), "impact",
+                             YELLOW, None),
+                dsnclass.Text("Change how many times you'll need",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                dsnclass.Text("press \"R\" to restart a level",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)
+                ],
+            3: [dsnclass.Text("Set Music Volume", (int(1080 / 2 * self.memory.res_width), int(200 * self.memory.res_height)),
+                          50 * max(self.memory.res_width, self.memory.res_height), "impact",
                           YELLOW, None),
-            dsnclass.Text("Set Music Volume", ((1080 / 2), 455), 50, "impact",
-                          YELLOW, None)
-        ]
-        self.setting_words[0].scale(self.memory.res_width,
-                                self.memory.res_height)
-        self.setting_words[1].scale(self.memory.res_width,
-                                self.memory.res_height)
-        self.setting_words[2].scale(self.memory.res_width,
-                                self.memory.res_height)
-        self.setting_words[3].scale(self.memory.res_width,
-                                self.memory.res_height)
+                (430 - 5 + (2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
+                dsnclass.Text("MIN", (355 * self.memory.res_width,
+                                             265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                dsnclass.Text("MAX", (715 * self.memory.res_width,
+                                        265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                dsnclass.Text("Change the music volume on a scale",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                dsnclass.Text("from 0 to 100",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)
+                ],
+            4: [dsnclass.Text("Set Sound Volume", (int(1080 / 2 * self.memory.res_width), int(200 * self.memory.res_height)),
+                          50 * max(self.memory.res_width, self.memory.res_height), "impact",
+                          YELLOW, None),
+                (430 - 5 + (2.2 * self.memory.sound_vol)) * self.memory.res_width,
+                dsnclass.Text("MIN", (355 * self.memory.res_width,
+                                      265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                dsnclass.Text("MAX", (715 * self.memory.res_width,
+                                      265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                dsnclass.Text("Change the sound volume on a scale",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                dsnclass.Text("from 0 to 100",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)
+                ],
+            5: [dsnclass.Text("Resolution: " +
+                          str(self.memory.res_set[self.memory.res_index])[1:-1],
+                          (int(1080 / 2 * self.memory.res_width),
+                           int(200 * self.memory.res_height)),
+                          50 * max(self.memory.res_width,
+                                   self.memory.res_height), "impact",
+                          YELLOW, None),
+                dsnclass.Text("Choose game window size and resolution",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                dsnclass.Text("1080, 576 is the default",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)]
+        }
 
-        self.setting_type = ["Text", "Text", "Text", "Text"]
+        self.setting_type = {
+                            0: ["Text", "Text", "Text"],
+                            1: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+                            2: ["Text", "Text", "Text"],
+                            3: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+                            4: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+                            5: ["Text", "Text", "Text"]
+        }
 
 
 class ReplayIO(LevelScene):
@@ -843,7 +1012,7 @@ class ReplayIO(LevelScene):
                 self.choose_counter += 1
 
             if action is pygame.K_r:
-                self.change_scene(MenuScene(40, 360, self.memory))
+                self.change_scene(MenuScene(24, 303, self.memory))
 
             if action is pygame.K_SPACE:
                 # File in
@@ -989,7 +1158,7 @@ class StatsPage(LevelScene):
             if action == pygame.K_r:
                 self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
                                             0)
-                self.change_scene(MenuScene(40, 360, self.memory))
+                self.change_scene(MenuScene(24, 303, self.memory))
 
     def update(self):
         # Check if there are levels completed
@@ -1143,7 +1312,7 @@ class LevelSelect(LevelScene):
             if every_key == pygame.K_r:
                 self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
                                             0)
-                self.change_scene(MenuScene(40, 360, self.memory))
+                self.change_scene(MenuScene(24, 303, self.memory))
 
             # Allow player to choose a level (based on ID) after 0.405 seconds
             if self.allow_select and \
@@ -1168,8 +1337,7 @@ class LevelSelect(LevelScene):
                     # Reset timer for block animation
                     self.direction = 1  # Blocks going to the right
                 # Move the blocks to the left (illusion of player going right)
-                if every_key == pygame.K_d and self.choose_id < len(
-                        self.level_set):
+                if every_key == pygame.K_d and self.choose_id < self.level_set[-1] + 1:
                     self.blockmation_time = pygame.time.get_ticks()
                     # Reset timer for block animation
                     self.direction = -1  # Blocks going to the left
@@ -1195,7 +1363,7 @@ class LevelSelect(LevelScene):
             # Reset timer for block animation
             self.direction = 1  # Set block direction to the right
         elif held[pygame.K_d] and \
-                self.choose_id < len(self.level_set) and \
+                self.choose_id < self.level_set[-1] + 1 and \
                 self.player.jump_ability and \
                 not self.player.enable_gravity and \
                 (405 / self.speed_jump) < \
@@ -1492,7 +1660,8 @@ class PlayLevel(LevelSelect):
                                                   level_memory.imp_diff[
                                                       self.level_id]],
                                               self.memory.res_width,
-                                              self.memory.res_height)
+                                              self.memory.res_height,
+                                              self.memory.sound_vol)
             self.replay_counter = 0
             self.replay_time = int(
                 self.memory.replay_imp[self.level_id][0][2:-1])
@@ -1607,7 +1776,7 @@ class PlayLevel(LevelSelect):
                                   self.memory,
                                   self.level_id))
                 else:
-                    self.change_scene(MenuScene(40, 360, self.memory))
+                    self.change_scene(MenuScene(24, 303, self.memory))
         # Replay Mode
         else:
 
