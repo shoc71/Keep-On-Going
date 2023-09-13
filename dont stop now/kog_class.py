@@ -270,7 +270,7 @@ class Memory:
 
     def update_mem(self, level_id, death_count, jump_count, level_time):
         """
-        Called in dsn_levels PlayLevel to update or create statistics for
+        Called in kog_levels PlayLevel to update or create statistics for
         that level using the parameters below.
 
         :param level_id: int referring to that specific level
@@ -440,8 +440,8 @@ class Memory:
                                                "[0-9]+\)",
                                                rect_line).group().split(",")
 
-                        # Convert the rect into a DSNElement
-                        in_rect = DSNElement((int(rect_color[0][1:]),
+                        # Convert the rect into a KOGElement
+                        in_rect = KOGElement((int(rect_color[0][1:]),
                                               int(rect_color[1][1:]),
                                               int(rect_color[2][1:-1])),
                                              pygame.Rect(
@@ -460,8 +460,8 @@ class Memory:
                         rect_color = re.search("([A-Z]+_[A-Z]+_[A-Z]+|"
                                                "[A-Z]+_[A-Z]+|[A-Z]+)",
                                                rect_line).group()
-                        # Convert the rect into a DSNElement
-                        in_rect = DSNElement(color_lookup[rect_color],
+                        # Convert the rect into a KOGElement
+                        in_rect = KOGElement(color_lookup[rect_color],
                                              pygame.Rect(
                                                  math.floor(int(rect_properties[0]) * self.res_width),
                                                  math.floor(int(rect_properties[1]) * self.res_height),
@@ -488,8 +488,8 @@ class Memory:
                     line_info = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+\], "
                                           r"\[[0-9]+, [0-9]+\], [0-9]\)",
                                           line).group().split(", ")
-                    # Convert the line into an DSNElement
-                    in_line = DSNElement(line_info[1], [int(line_info[2][1:]),
+                    # Convert the line into an KOGElement
+                    in_line = KOGElement(line_info[1], [int(line_info[2][1:]),
                                                         int(line_info[3][:-1]),
                                                         int(line_info[4][1:]) * self.res_width * self.res_height,
                                                         int(line_info[5][:-1]) * self.res_width * self.res_height,
@@ -702,14 +702,14 @@ class ReplayNode:
 
 class ReplayChain:
     """
-    This is similar to dsn_editor's linked list, except we have pointers
+    This is similar to kog_editor's linked list, except we have pointers
     on both ends now. Similarly, it's crucial that we are able to move
     elements from the beginning and end of the chain. That's why, this linked
     list adapts the structure of a queue adapting pointers to the head and tail
     of a chain
     This linked list is only usable with the replay idea in mind, as it only
     holds up to 5 items. Furthermore, it also uses a count when adding which
-    corresponds with amount of deaths in the DSN game.
+    corresponds with amount of deaths in the KOG game.
     """
 
     def __init__(self):
@@ -752,7 +752,7 @@ class ReplayChain:
         return out_list
 
 
-class DSNElement:
+class KOGElement:
     """A more convenient way to hold level element info"""
     def __init__(self, color, shape, in_type):
         self.color = color  # Block color
@@ -831,7 +831,7 @@ class SquareMe:  # lil purple dude
         by the difficulty factor (max of 1 usually)
         """
         # Move horizontally depending on the direction
-        move_factor = (4 * self.direction) * self.diff_factor
+        move_factor = (4 * self.direction) * self.diff_factor * self.res_width
         if self.left_x is not None and \
                 self.xpos + move_factor <= self.left_x:
             self.direction = 1
