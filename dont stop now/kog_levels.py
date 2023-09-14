@@ -1,6 +1,6 @@
 import random
 import pygame
-import dsn_class as dsnclass
+import kog_class as kogclass
 import math
 
 DARK_RED = (139, 0, 0)
@@ -21,7 +21,7 @@ BROWN = (150, 75, 0)
 DARK_GREY = (52, 52, 52)
 
 
-class LevelScene(dsnclass.Scene):
+class LevelScene(kogclass.Scene):
     """
     Base class used for any scene related to Don't Stop Now. This class contains
     basic requirements for the game to run, such as :
@@ -41,7 +41,7 @@ class LevelScene(dsnclass.Scene):
         Set the current scene to this scene by passing this classes self to
         initialize it.
         """
-        dsnclass.Scene.__init__(self)
+        kogclass.Scene.__init__(self)
         self.platforms = []  # All platforms for that level (collision)
         self.death_zones = []  # All deaths for that level (death condition)
         self.win_zones = []  # All win areas for that level (win condition)
@@ -49,7 +49,7 @@ class LevelScene(dsnclass.Scene):
 
         self.x_spawn = x_spawn * level_memory.res_width # x spawning location for player
         self.y_spawn = y_spawn * level_memory.res_height  # y spawning location for player
-        self.player = dsnclass.SquareMe(self.x_spawn, self.y_spawn,
+        self.player = kogclass.SquareMe(self.x_spawn, self.y_spawn,
                                         10, 10, PURPLE,
                                         level_memory.diff_lookup[
                                             level_memory.diff_value],
@@ -66,9 +66,9 @@ class LevelScene(dsnclass.Scene):
         self.victory_time = 0  # Time variable for victory text display
         self.victory_counter = 0  # The index of victory_text list
         self.victory_text = [
-            dsnclass.Text("DON'T", (310, 100), 100, "impact", YELLOW, None),
-            dsnclass.Text("STOP", (570, 100), 100, "impact", YELLOW, None),
-            dsnclass.Text("NOW", (820, 100), 100, "impact", YELLOW, None)
+            kogclass.Text("DON'T", (310, 100), 100, "impact", YELLOW, None),
+            kogclass.Text("STOP", (570, 100), 100, "impact", YELLOW, None),
+            kogclass.Text("NOW", (820, 100), 100, "impact", YELLOW, None)
         ]
         self.victory_text[0].scale(level_memory.res_width,
                                    level_memory.res_height)
@@ -78,24 +78,24 @@ class LevelScene(dsnclass.Scene):
                                    level_memory.res_height)
         # Text displayed when winning (touch the win_zones), uses time/counter
 
-        self.pause_text = dsnclass.Text("PAUSED", (540, 213),
+        self.pause_text = kogclass.Text("PAUSED", (540, 213),
                                         100, "impact", DARK_RED, None)
         self.pause_text.scale(level_memory.res_width,
                                    level_memory.res_height)
-        self.pause_text_2 = dsnclass.Text("Press esc to unpause", (540, 280),
+        self.pause_text_2 = kogclass.Text("Press esc to unpause", (540, 280),
                                           30, "impact", DARK_RED, None)
         self.pause_text_2.scale(level_memory.res_width,
                                    level_memory.res_height)
-        self.pause_text_3 = dsnclass.Text("Press q to quit", (540, 315),
+        self.pause_text_3 = kogclass.Text("Press q to quit", (540, 315),
                                           30, "impact", DARK_RED, None)
         self.pause_text_3.scale(level_memory.res_width,
                                    level_memory.res_height)
-        self.pause_text_4 = dsnclass.Text("Press b to return to menu",
+        self.pause_text_4 = kogclass.Text("Press b to return to menu",
                                           (540, 350), 30,
                                           "impact", DARK_RED, None)
         self.pause_text_4.scale(level_memory.res_width,
                                    level_memory.res_height)
-        self.pause_text_5 = dsnclass.Text("Press r to restart the level",
+        self.pause_text_5 = kogclass.Text("Press r to restart the level",
                                           (540, 385), 30,
                                           "impact", DARK_RED, None)
         self.pause_text_5.scale(level_memory.res_width,
@@ -338,50 +338,50 @@ class MenuScene(LevelScene):
         # Main menu options
 
         # Main menu text
-        self.title_splash = dsnclass.Text("DON'T STOP NOW", (540, 100), 100,
+        self.title_splash = kogclass.Text("DON'T STOP NOW", (540, 100), 100,
                                           "impact", YELLOW, None)
         self.title_splash.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text = dsnclass.Text("Press Space or W To Start", (530, 200),
+        self.title_text = kogclass.Text("Press Space or W To Start", (530, 200),
                                         50, "impact",
                                         YELLOW, None)
         self.title_text.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_2 = dsnclass.Text("Press esc to pause", (530, 250), 30,
+        self.title_text_2 = kogclass.Text("Press esc to pause", (530, 250), 30,
                                           "impact",
                                           YELLOW, None)
         self.title_text_2.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s1 = dsnclass.Text("Level Select", (216, 445), 30,
+        self.title_text_s1 = kogclass.Text("Level Select", (216, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s1.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s2 = dsnclass.Text("Options", (432, 445), 30,
+        self.title_text_s2 = kogclass.Text("Options", (432, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s2.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s3 = dsnclass.Text("Stats", (648, 445), 30,
+        self.title_text_s3 = kogclass.Text("Stats", (648, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s3.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s4 = dsnclass.Text("Replay", (864, 445), 30,
+        self.title_text_s4 = kogclass.Text("Replay", (864, 445), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s4.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s5 = dsnclass.Text("Filler", (216, 535), 30,
+        self.title_text_s5 = kogclass.Text("Filler", (216, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s5.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s6 = dsnclass.Text("Filler", (432, 535), 30,
+        self.title_text_s6 = kogclass.Text("Filler", (432, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s6.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s7 = dsnclass.Text("Filler", (648, 535), 30,
+        self.title_text_s7 = kogclass.Text("Filler", (648, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s7.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s8 = dsnclass.Text("Filler", (864, 535), 30,
+        self.title_text_s8 = kogclass.Text("Filler", (864, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s8.scale(self.memory.res_width, self.memory.res_height)
@@ -438,7 +438,7 @@ class MenuScene(LevelScene):
              self.title_text_s8.text_rect.height + 10]
         ]
 
-        """self.title_guy = dsnclass.SquareMe(xspawn, yspawn,
+        """self.title_guy = kogclass.SquareMe(xspawn, yspawn,
                                         10, 10, (181, 60, 177))"""
 
         self.load_renders(-5)
@@ -531,13 +531,13 @@ class MenuScene(LevelScene):
                          self.option_select[self.option_count], 2)
 
 
-class Filler(dsnclass.Scene):
+class Filler(kogclass.Scene):
     """Used as a placeholder for unfinished parts of the game"""
 
     def __init__(self, level_memory):
-        dsnclass.Scene.__init__(self)
+        kogclass.Scene.__init__(self)
         self.level_id = -1  # Invalid level id, don't record statistics
-        self.filler_text = dsnclass.Text(
+        self.filler_text = kogclass.Text(
             "THERE'S NOTHING HERE, PRESS R TO GO BACK",
             (540, 213), 50, "impact", DARK_RED, None)
         self.filler_text.scale(level_memory.res_width,
@@ -559,7 +559,6 @@ class Filler(dsnclass.Scene):
 
 
 class OptionsPage(LevelScene):
-    # todo: add music/sound volume, need a memory variable to control all instances.
     """Class used to allow player to change game options"""
 
     def __init__(self, level_memory):
@@ -569,7 +568,7 @@ class OptionsPage(LevelScene):
         # Used to define the bounds for certain settings
         self.setting_range = {
             0: [0, 2],
-            1: [255, 200],
+            1: [255, 235],
             2: [1, 2],
             3: [0, 100],
             4: [0, 100],
@@ -591,18 +590,26 @@ class OptionsPage(LevelScene):
         self.num_to_diff = {0.6: "Easy", 0.8: "Medium", 1.0: "Hard"}
         # Difficulties available
         self.setting_words = []  # Initialize list to hold current settings
-        self.setting_type = []  # What type of setting is it
+        self.init_text()    # Initialize setting words
+        self.setting_type = {
+            0: ["Text", "Text", "Text"],
+            1: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+            2: ["Text", "Text", "Text"],
+            3: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+            4: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+            5: ["Text", "Text", "Text"]
+        }  # What type of setting is it
         self.update_text()  # Add text to setting_words to render
 
         self.choose_setting = 0  # Index for which setting to change (diff/music)
         self.change_setting = self.memory.diff_value
         # Variable for changing that selected setting (easy vs. hard)
 
-        self.option_title = dsnclass.Text("OPTIONS", ((1080 / 2), 50), 50,
+        self.option_title = kogclass.Text("OPTIONS", ((1080 / 2), 50), 50,
                                           "impact", DARK_RED, None)
         self.option_title.scale(self.memory.res_width,
                                 self.memory.res_height)
-        self.return_text = dsnclass.Text(
+        self.return_text = kogclass.Text(
             "press R to go back", (1080 / 2, 100), 25,
             "impact", DARK_GREY, None)
         self.return_text.scale(self.memory.res_width,
@@ -709,12 +716,12 @@ class OptionsPage(LevelScene):
             self.memory.load_all_levels()  # Apply res to all levels
             self.load_renders(-4)
 
-            self.option_title = dsnclass.Text("OPTIONS", ((1080 / 2), 50), 50,
+            self.option_title = kogclass.Text("OPTIONS", ((1080 / 2), 50), 50,
                                               "impact", DARK_RED, None)
             self.option_title.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
                                     self.memory.res_set[self.setting_mem[5]][1] / 576)
 
-            self.return_text = dsnclass.Text(
+            self.return_text = kogclass.Text(
                 "press R to go back", (1080 / 2, 100), 25,
                 "impact", DARK_GREY, None)
             self.return_text.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
@@ -773,137 +780,178 @@ class OptionsPage(LevelScene):
 
         LevelScene.render_text(self, screen)
 
-    def update_text(self):
-
-        # Update or initialize self.setting_words with text
+    def init_text(self):
         self.setting_words = {
-            0: [dsnclass.Text("Difficulty: " +
-                          str(self.num_to_diff[
-                                  self.memory.diff_lookup[
-                                      self.memory.diff_value]]),
-                          (int(1080 / 2 * self.memory.res_width),
-                           int(200 * self.memory.res_height)),
-                          50 * max(self.memory.res_width,
-                                   self.memory.res_height), "impact",
-                          YELLOW, None),
-                dsnclass.Text("Choose the player movement speed with",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(315 * self.memory.res_height)),
-                              25, "impact", YELLOW, None),
-                dsnclass.Text("easy (slow), medium (default) and hard (fastest)",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(340 * self.memory.res_height)),
-                              25, "impact", YELLOW, None)],
-            1: [dsnclass.Text("Change Background", (int(1080 / 2 * self.memory.res_width), int(200 * self.memory.res_height)),
-                          50 * max(self.memory.res_width, self.memory.res_height), "impact",
-                          YELLOW, None),
+            0: ["Difficulty: " +
+                              str(self.num_to_diff[
+                                      self.memory.diff_lookup[
+                                          self.memory.diff_value]]),
+                "Choose the player movement speed with",
+                "easy (slow), medium (default) and hard (fastest)"],
+            1: ["Change Background",
                 (430 - 5 + (4 * (
                         self.memory.bg_slider - 200))) * self.memory.res_width,
-                dsnclass.Text("LIGHT GREY", (345 * self.memory.res_width,
-                                             265 * self.memory.res_height),
-                              25 * max(self.memory.res_width,
-                                       self.memory.res_height),
-                              "impact", BLACK, None),
-                dsnclass.Text("WHITE", (715 * self.memory.res_width,
-                                             265 * self.memory.res_height),
-                              25 * max(self.memory.res_width,
-                                       self.memory.res_height),
-                              "impact", BLACK, None),
-                dsnclass.Text("Change the background ranging between",
+                "LIGHT GREY",
+                "WHITE",
+                "Change the background ranging between",
+                "light grey and white"],
+            2: ["Quick Restart: Press R " +
+                              str(self.memory.quick_restart) + " Time(s)",
+                "Change how many times you'll need",
+                "press \"R\" to restart a level"],
+            3: ["Set Music Volume",
+                (430 - 5 + (
+                        2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
+                "MIN",
+                "MAX",
+                "Change the music volume on a scale",
+                "from 0 to 100"],
+            4: ["Set Sound Volume"],
+            5: []
+        }
+
+        self.setting_words = {
+            0: [kogclass.Text("Difficulty: " +
+                              str(self.num_to_diff[
+                                      self.memory.diff_lookup[
+                                          self.memory.diff_value]]),
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(200 * self.memory.res_height)),
+                              50 * max(self.memory.res_width,
+                                       self.memory.res_height), "impact",
+                              YELLOW, None),
+                kogclass.Text("Choose the player movement speed with",
                               (int(1080 / 2 * self.memory.res_width),
                                int(315 * self.memory.res_height)),
                               25, "impact", YELLOW, None),
-                dsnclass.Text("light grey and white", (int(1080 / 2 * self.memory.res_width),
-                               int(340 * self.memory.res_height)),
-                              25, "impact", YELLOW, None)
-                ],
-            2: [dsnclass.Text("Quick Restart: Press R " +
-                          str(self.memory.quick_restart) + " Time(s)",
-                             (int(1080 / 2 * self.memory.res_width),
-                              int(200 * self.memory.res_height)),
-                             50 * max(self.memory.res_width,
-                                      self.memory.res_height), "impact",
-                             YELLOW, None),
-                dsnclass.Text("Change how many times you'll need",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(315 * self.memory.res_height)),
-                              25, "impact", YELLOW, None),
-                dsnclass.Text("press \"R\" to restart a level",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(340 * self.memory.res_height)),
-                              25, "impact", YELLOW, None)
-                ],
-            3: [dsnclass.Text("Set Music Volume", (int(1080 / 2 * self.memory.res_width), int(200 * self.memory.res_height)),
-                          50 * max(self.memory.res_width, self.memory.res_height), "impact",
-                          YELLOW, None),
-                (430 - 5 + (2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
-                dsnclass.Text("MIN", (355 * self.memory.res_width,
+                kogclass.Text(
+                    "easy (slow), medium (default) and hard (fastest)",
+                    (int(1080 / 2 * self.memory.res_width),
+                     int(340 * self.memory.res_height)),
+                    25, "impact", YELLOW, None)],
+            1: [kogclass.Text("Change Background", (
+            int(1080 / 2 * self.memory.res_width),
+            int(200 * self.memory.res_height)),
+                              50 * max(self.memory.res_width,
+                                       self.memory.res_height), "impact",
+                              YELLOW, None),
+                (430 - 5 + (4 * (
+                        self.memory.bg_slider - 200))) * self.memory.res_width,
+                kogclass.Text("LIGHT GREY", (345 * self.memory.res_width,
                                              265 * self.memory.res_height),
                               25 * max(self.memory.res_width,
                                        self.memory.res_height),
                               "impact", BLACK, None),
-                dsnclass.Text("MAX", (715 * self.memory.res_width,
+                kogclass.Text("WHITE", (715 * self.memory.res_width,
                                         265 * self.memory.res_height),
                               25 * max(self.memory.res_width,
                                        self.memory.res_height),
                               "impact", BLACK, None),
-                dsnclass.Text("Change the music volume on a scale",
+                kogclass.Text("Change the background ranging between",
                               (int(1080 / 2 * self.memory.res_width),
                                int(315 * self.memory.res_height)),
                               25, "impact", YELLOW, None),
-                dsnclass.Text("from 0 to 100",
+                kogclass.Text("light grey and white",
                               (int(1080 / 2 * self.memory.res_width),
                                int(340 * self.memory.res_height)),
                               25, "impact", YELLOW, None)
                 ],
-            4: [dsnclass.Text("Set Sound Volume", (int(1080 / 2 * self.memory.res_width), int(200 * self.memory.res_height)),
-                          50 * max(self.memory.res_width, self.memory.res_height), "impact",
-                          YELLOW, None),
-                (430 - 5 + (2.2 * self.memory.sound_vol)) * self.memory.res_width,
-                dsnclass.Text("MIN", (355 * self.memory.res_width,
-                                      265 * self.memory.res_height),
-                              25 * max(self.memory.res_width,
-                                       self.memory.res_height),
-                              "impact", BLACK, None),
-                dsnclass.Text("MAX", (715 * self.memory.res_width,
-                                      265 * self.memory.res_height),
-                              25 * max(self.memory.res_width,
-                                       self.memory.res_height),
-                              "impact", BLACK, None),
-                dsnclass.Text("Change the sound volume on a scale",
+            2: [kogclass.Text("Quick Restart: Press R " +
+                              str(self.memory.quick_restart) + " Time(s)",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(200 * self.memory.res_height)),
+                              50 * max(self.memory.res_width,
+                                       self.memory.res_height), "impact",
+                              YELLOW, None),
+                kogclass.Text("Change how many times you'll need",
                               (int(1080 / 2 * self.memory.res_width),
                                int(315 * self.memory.res_height)),
                               25, "impact", YELLOW, None),
-                dsnclass.Text("from 0 to 100",
+                kogclass.Text("press \"R\" to restart a level",
                               (int(1080 / 2 * self.memory.res_width),
                                int(340 * self.memory.res_height)),
                               25, "impact", YELLOW, None)
                 ],
-            5: [dsnclass.Text("Resolution: " +
-                          str(self.memory.res_set[self.memory.res_index])[1:-1],
-                          (int(1080 / 2 * self.memory.res_width),
-                           int(200 * self.memory.res_height)),
-                          50 * max(self.memory.res_width,
-                                   self.memory.res_height), "impact",
-                          YELLOW, None),
-                dsnclass.Text("Choose game window size and resolution",
+            3: [kogclass.Text("Set Music Volume", (
+            int(1080 / 2 * self.memory.res_width),
+            int(200 * self.memory.res_height)),
+                              50 * max(self.memory.res_width,
+                                       self.memory.res_height), "impact",
+                              YELLOW, None),
+                (430 - 5 + (
+                            2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
+                kogclass.Text("MIN", (355 * self.memory.res_width,
+                                      265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                kogclass.Text("MAX", (715 * self.memory.res_width,
+                                      265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                kogclass.Text("Change the music volume on a scale",
                               (int(1080 / 2 * self.memory.res_width),
                                int(315 * self.memory.res_height)),
                               25, "impact", YELLOW, None),
-                dsnclass.Text("1080, 576 is the default",
+                kogclass.Text("from 0 to 100",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)
+                ],
+            4: [kogclass.Text("Set Sound Volume", (
+            int(1080 / 2 * self.memory.res_width),
+            int(200 * self.memory.res_height)),
+                              50 * max(self.memory.res_width,
+                                       self.memory.res_height), "impact",
+                              YELLOW, None),
+                (430 - 5 + (
+                            2.2 * self.memory.sound_vol)) * self.memory.res_width,
+                kogclass.Text("MIN", (355 * self.memory.res_width,
+                                      265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                kogclass.Text("MAX", (715 * self.memory.res_width,
+                                      265 * self.memory.res_height),
+                              25 * max(self.memory.res_width,
+                                       self.memory.res_height),
+                              "impact", BLACK, None),
+                kogclass.Text("Change the sound volume on a scale",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                kogclass.Text("from 0 to 100",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(340 * self.memory.res_height)),
+                              25, "impact", YELLOW, None)
+                ],
+            5: [kogclass.Text("Resolution: " +
+                              str(self.memory.res_set[self.memory.res_index])[
+                              1:-1],
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(200 * self.memory.res_height)),
+                              50 * max(self.memory.res_width,
+                                       self.memory.res_height), "impact",
+                              YELLOW, None),
+                kogclass.Text("Choose game window size and resolution",
+                              (int(1080 / 2 * self.memory.res_width),
+                               int(315 * self.memory.res_height)),
+                              25, "impact", YELLOW, None),
+                kogclass.Text("1080, 576 is the default",
                               (int(1080 / 2 * self.memory.res_width),
                                int(340 * self.memory.res_height)),
                               25, "impact", YELLOW, None)]
         }
 
-        self.setting_type = {
-                            0: ["Text", "Text", "Text"],
-                            1: ["Text", "Slider", "Text", "Text", "Text", "Text"],
-                            2: ["Text", "Text", "Text"],
-                            3: ["Text", "Slider", "Text", "Text", "Text", "Text"],
-                            4: ["Text", "Slider", "Text", "Text", "Text", "Text"],
-                            5: ["Text", "Text", "Text"]
-        }
+    def update_text(self):
+        # Update or initialize self.setting_words with text
+
+        for each_setting in range(len(self.setting_type)):
+            if "Slider" in self.setting_type[each_setting]:
+                pass
+            else:
+                pass
 
 
 class ReplayIO(LevelScene):
@@ -911,25 +959,25 @@ class ReplayIO(LevelScene):
 
     def __init__(self, level_memory):
         LevelScene.__init__(self, -50, -50, level_memory)
-        self.file_in = dsnclass.Text("File Input", (1080 / 3, 376 / 3),
+        self.file_in = kogclass.Text("File Input", (1080 / 3, 376 / 3),
                                      50, "impact", PURPLE, None)
         self.file_in.scale(self.memory.res_width,
                                 self.memory.res_height)
-        self.file_out = dsnclass.Text("File Output", (1080 / 3, 376 / 3 * 2),
+        self.file_out = kogclass.Text("File Output", (1080 / 3, 376 / 3 * 2),
                                       50, "impact", PURPLE, None)
         self.file_out.scale(self.memory.res_width,
                                 self.memory.res_height)
 
-        self.text_in = dsnclass.Text("Text Input", (1080 / 3 * 2, 376 / 3),
+        self.text_in = kogclass.Text("Text Input", (1080 / 3 * 2, 376 / 3),
                                      50, "impact", PURPLE, None)
         self.text_in.scale(self.memory.res_width,
                                 self.memory.res_height)
-        self.text_out = dsnclass.Text("Text Output", (1080 / 3 * 2,
+        self.text_out = kogclass.Text("Text Output", (1080 / 3 * 2,
                                                       376 / 3 * 2),
                                       50, "impact", PURPLE, None)
         self.text_out.scale(self.memory.res_width,
                                 self.memory.res_height)
-        self.return_text = dsnclass.Text(
+        self.return_text = kogclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", DARK_GREY, None)
         self.return_text.scale(self.memory.res_width,
@@ -950,16 +998,16 @@ class ReplayIO(LevelScene):
         self.choose_counter = 0
 
         self.help_text = [
-            dsnclass.Text("Press Space to Import Replays!",
+            kogclass.Text("Press Space to Import Replays!",
                           (1080 / 2, 576 - 150), 50,
                           "impact", YELLOW, None),
-            dsnclass.Text("Press Space to Paste a Level!",
+            kogclass.Text("Press Space to Paste a Level!",
                           (1080 / 2, 576 - 150), 50,
                           "impact", YELLOW, None),
-            dsnclass.Text("Press Space to Export Replays!",
+            kogclass.Text("Press Space to Export Replays!",
                           (1080 / 2, 576 - 150), 50,
                           "impact", YELLOW, None),
-            dsnclass.Text("Press Space to Select a Level to Copy!",
+            kogclass.Text("Press Space to Select a Level to Copy!",
                           (1080 / 2, 576 - 150), 50,
                           "impact", YELLOW, None)
         ]
@@ -973,15 +1021,15 @@ class ReplayIO(LevelScene):
                                 self.memory.res_height)
 
         self.extra_help = [
-            dsnclass.Text("Remember to paste replays_out into replays_in!",
+            kogclass.Text("Remember to paste replays_out into replays_in!",
                           (1080 / 2, 576 - 100), 50,
                           "impact", YELLOW, None),
-            dsnclass.Text("", (1080 / 2, 576 - 100), 50,
+            kogclass.Text("", (1080 / 2, 576 - 100), 50,
                           "impact", YELLOW, None),
-            dsnclass.Text("Go check and copy from replays_out!",
+            kogclass.Text("Go check and copy from replays_out!",
                           (1080 / 2, 576 - 100), 50,
                           "impact", YELLOW, None),
-            dsnclass.Text("", (1080 / 2, 576 - 100), 50,
+            kogclass.Text("", (1080 / 2, 576 - 100), 50,
                           "impact", YELLOW, None)
         ]
         self.extra_help[0].scale(self.memory.res_width,
@@ -993,7 +1041,7 @@ class ReplayIO(LevelScene):
         self.extra_help[3].scale(self.memory.res_width,
                                 self.memory.res_height)
 
-        self.invalid_text = dsnclass.Text("INVALID Copy and Paste, Try Again!",
+        self.invalid_text = kogclass.Text("INVALID Copy and Paste, Try Again!",
                                           (1080 / 2, 576 / 3), 75,
                                           "impact", RED, None)
         self.invalid_text.scale(self.memory.res_width,
@@ -1125,7 +1173,7 @@ class StatsPage(LevelScene):
         if len(self.memory.level_progress) == 0:
             self.select_level = None  # No levels available
             self.render_stats = []  # No statistics to render
-            self.nothing_text = dsnclass.Text(
+            self.nothing_text = kogclass.Text(
                 "GO COMPLETE SOME LEVELS FIRST!", (1080 / 2, (576 / 2)), 50,
                 "impact", DARK_RED, None)
             self.nothing_text.scale(self.memory.res_width,
@@ -1136,7 +1184,7 @@ class StatsPage(LevelScene):
             self.select_level = 0  # set the counter to 0, first selection
             self.update_stats()  # Update text for the statistics shown
 
-        self.return_text = dsnclass.Text(
+        self.return_text = kogclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", DARK_GREY, None)
         self.return_text.scale(self.memory.res_width,
@@ -1178,33 +1226,33 @@ class StatsPage(LevelScene):
             self.memory.level_progress[self.select_level]]
         # Get total time for that game instance
         self.memory.total_time = pygame.time.get_ticks()
-        total_time = dsnclass.convert_time(self.memory.total_time)
+        total_time = kogclass.convert_time(self.memory.total_time)
 
         # Initialize text for the statistics for that selected level
         self.render_stats = [
-            dsnclass.Text(
+            kogclass.Text(
                 "LEVEL: " + str(self.memory.level_progress[self.select_level]),
                 (1080 / 2, (576 / 2) - 25), 25, "impact", YELLOW, None),
-            dsnclass.Text("Deaths: " + str(self.memory.level_deaths[
+            kogclass.Text("Deaths: " + str(self.memory.level_deaths[
                                                self.memory.level_progress[
                                                    self.select_level]]),
                           (1080 / 2, (576 / 2)), 25, "impact", YELLOW, None),
-            dsnclass.Text("Jumps: " + str(self.memory.level_jumps[
+            kogclass.Text("Jumps: " + str(self.memory.level_jumps[
                                               self.memory.level_progress[
                                                   self.select_level]]),
                           (1080 / 2, (576 / 2) + 25), 25, "impact", YELLOW,
                           None),
-            dsnclass.Text("Total Deaths: " + str(self.memory.total_deaths),
+            kogclass.Text("Total Deaths: " + str(self.memory.total_deaths),
                           ((1080 / 4), 50), 25, "impact", YELLOW, None),
-            dsnclass.Text("Total Jumps: " + str(self.memory.total_jumps),
+            kogclass.Text("Total Jumps: " + str(self.memory.total_jumps),
                           ((1080 / 4 * 3), 50), 25, "impact", YELLOW, None),
-            dsnclass.Text("Total Time:",
+            kogclass.Text("Total Time:",
                           ((1080 / 4 * 2), 50), 25, "impact", YELLOW, None),
-            dsnclass.Text(
+            kogclass.Text(
                 str(total_time[0]) + ":" + str(total_time[1]) + ":" + str(
                     total_time[2]),
                 ((1080 / 4 * 2), 100), 25, "impact", YELLOW, None),
-            dsnclass.Text("Level Time: " + str(get_time[0]) + ":" + str(
+            kogclass.Text("Level Time: " + str(get_time[0]) + ":" + str(
                 get_time[1]) + ":" + str(get_time[2]),
                           ((1080 / 4 * 2), (576 / 2) + 50), 25, "impact",
                           YELLOW, None)
@@ -1257,36 +1305,36 @@ class LevelSelect(LevelScene):
         """Initialize LevelScene with player parameters to the middle
         of the screen.
         """
-        self.filler_text = dsnclass.Text("Choose A Level",
+        self.filler_text = kogclass.Text("Choose A Level",
                                          (540, 153), 50, "impact", YELLOW, None)
         self.filler_text.scale(self.memory.res_width,
                                 self.memory.res_height)
 
-        self.level_selector_text_0 = dsnclass.Text("Choose a Level", (535, 100),
+        self.level_selector_text_0 = kogclass.Text("Choose a Level", (535, 100),
                                                    65,
                                                    "impact", YELLOW, None)
         self.level_selector_text_0.scale(self.memory.res_width,
                                 self.memory.res_height)
 
-        self.level_selector_text_1 = dsnclass.Text(
+        self.level_selector_text_1 = kogclass.Text(
             "Tap/Hold A or D to navigate through the levels",
             (535, 450), 30, "impact", YELLOW, None)
         self.level_selector_text_1.scale(self.memory.res_width,
                                 self.memory.res_height)
 
-        self.level_selector_text_2 = dsnclass.Text(
+        self.level_selector_text_2 = kogclass.Text(
             "Tap R to return to Main Menu", (545, 530), 25,
             "impact", DARK_GREY, None)
         self.level_selector_text_2.scale(self.memory.res_width,
                                 self.memory.res_height)
 
-        self.level_selector_text_3 = dsnclass.Text(
+        self.level_selector_text_3 = kogclass.Text(
             "Press W or Space to start the level",
             (535, 490), 28, "impact", YELLOW, None)
         self.level_selector_text_3.scale(self.memory.res_width,
                                 self.memory.res_height)
 
-        self.confirm_text = dsnclass.Text("UNLOCKED ALL LEVELS",
+        self.confirm_text = kogclass.Text("UNLOCKED ALL LEVELS",
                                           (1080 / 2, 576 / 2), 100, "impact",
                                           RED, None)
         self.confirm_text.scale(self.memory.res_width,
@@ -1381,9 +1429,11 @@ class LevelSelect(LevelScene):
             self.repjump_time = pygame.time.get_ticks()
 
         # Secret :P
-        if held[pygame.K_d] and held[pygame.K_s] and held[pygame.K_n] and \
+        if held[pygame.K_k] and held[pygame.K_o] and held[pygame.K_g] and \
             pygame.K_ESCAPE:
-            self.level_set = self.level_data
+            for level_key in self.level_data:
+                if 0 < level_key and level_key not in self.level_set:
+                    self.level_set += [level_key]
             self.confirm_timer = pygame.time.get_ticks()
 
     def update(self):
@@ -1423,21 +1473,21 @@ class LevelSelect(LevelScene):
                     self.level_selector_text_3.text_rect)
 
         # Text seen to the left side (current selection, -1)
-        left_text = dsnclass.Text(str(self.choose_id - 1),
+        left_text = kogclass.Text(str(self.choose_id - 1),
                                   [(1080 / 2) - 200 + self.text_x,
                                    (576 / 2) + 39], 40, "impact", YELLOW,
                                   None)
         left_text.scale(self.memory.res_width,
                                 self.memory.res_height)
         # Text seen in the middle/what the player is standing on (current sel)
-        middle_text = dsnclass.Text(str(self.choose_id),
+        middle_text = kogclass.Text(str(self.choose_id),
                                     [(1080 / 2) + self.text_x,
                                      (576 / 2) + 39],
                                     40, "impact", YELLOW, None)
         middle_text.scale(self.memory.res_width,
                                 self.memory.res_height)
         # Text seen to the right side (current selection, +1)
-        right_text = dsnclass.Text(str(self.choose_id + 1),
+        right_text = kogclass.Text(str(self.choose_id + 1),
                                    [(1080 / 2) + 200 + self.text_x,
                                     (576 / 2) + 39], 40, "impact", YELLOW,
                                    None)
@@ -1525,11 +1575,11 @@ class ReplaySelect(LevelSelect):
     def __init__(self, level_memory):
         LevelSelect.__init__(self, level_memory)
         self.allow_select = False  # Toggle off, cannot freely choose
-        self.no_data = dsnclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
+        self.no_data = kogclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
                                      "impact", RED, None)
         self.no_data.scale(self.memory.res_width,
                                 self.memory.res_height)
-        self.replay_title = dsnclass.Text("Choose A Replay Level",
+        self.replay_title = kogclass.Text("Choose A Replay Level",
                                           (1080 / 2, 160), 50, "impact",
                                           YELLOW, None)
         self.replay_title.scale(self.memory.res_width,
@@ -1561,13 +1611,13 @@ class ReplayOut(ReplaySelect):
     def __init__(self, level_memory):
         ReplaySelect.__init__(self, level_memory)
         self.allow_select = False
-        self.copy_text = dsnclass.Text("Copied Level " + str(self.choose_id),
+        self.copy_text = kogclass.Text("Copied Level " + str(self.choose_id),
                                        (1080 / 2, 3 * 576 / 4),
                                        50, "impact", YELLOW, None)
         self.copy_text.scale(self.memory.res_width,
                                 self.memory.res_height)
         self.copy_time = pygame.time.get_ticks() - 3100
-        self.replayo_title = dsnclass.Text("Choose a Level to Copy!",
+        self.replayo_title = kogclass.Text("Choose a Level to Copy!",
                                            (1080 / 2, 160), 50, "impact",
                                            YELLOW, None)
         self.replayo_title.scale(self.memory.res_width,
@@ -1580,7 +1630,7 @@ class ReplayOut(ReplaySelect):
                     self.memory.replay_exp[self.choose_id] != [] and \
                     action == pygame.K_SPACE:
                 self.copy_time = pygame.time.get_ticks()
-                self.copy_text = dsnclass.Text(
+                self.copy_text = kogclass.Text(
                     "Copied Level " + str(self.choose_id),
                     (1080 / 2, 3 * 576 / 4),
                     50, "impact", YELLOW, None)
@@ -1612,7 +1662,7 @@ class ReplayOut(ReplaySelect):
 class PlayLevel(LevelSelect):
     """
     Class used to play levels defined in levels.txt. Levels are first
-    loaded in dsn_class with Memory into their dictionaries. Then the level
+    loaded in kog_class with Memory into their dictionaries. Then the level
     id's selected in the LevelSelect determines what level is played here.
     On level completion, another PlayLevel instance is initialized but
     with level id + 1 (next level).
@@ -1653,7 +1703,7 @@ class PlayLevel(LevelSelect):
                 level_memory.imp_diff[self.level_id]]
             self.replayer_xspawn = self.x_spawn
             self.replayer_yspawn = self.y_spawn
-            self.replayer = dsnclass.SquareMe(self.replayer_xspawn,
+            self.replayer = kogclass.SquareMe(self.replayer_xspawn,
                                               self.replayer_yspawn,
                                               10, 10, GREY,
                                               self.memory.diff_lookup[
@@ -1666,11 +1716,11 @@ class PlayLevel(LevelSelect):
             self.replay_time = int(
                 self.memory.replay_imp[self.level_id][0][2:-1])
             self.lose_condition = False
-            self.win_text = dsnclass.Text("WIN", [1080 / 2, 576 / 2], 250,
+            self.win_text = kogclass.Text("WIN", [1080 / 2, 576 / 2], 250,
                                           "impact", YELLOW, None)
             self.win_text.scale(self.memory.res_width,
                                 self.memory.res_height)
-            self.lose_text = dsnclass.Text("LOSE", [1080 / 2, 576 / 2], 250,
+            self.lose_text = kogclass.Text("LOSE", [1080 / 2, 576 / 2], 250,
                                            "impact", YELLOW, None)
             self.lose_text.scale(self.memory.res_width,
                                 self.memory.res_height)
@@ -1679,7 +1729,7 @@ class PlayLevel(LevelSelect):
             self.count_time = pygame.time.get_ticks()  # Time spent counting
             self.start_toggle = False
 
-            self.count_text = dsnclass.Text(str(self.count_down), [1080 / 2,
+            self.count_text = kogclass.Text(str(self.count_down), [1080 / 2,
                                                                    576 / 2],
                                             250,
                                             "impact", YELLOW, None)
@@ -1699,7 +1749,7 @@ class PlayLevel(LevelSelect):
             if 1000 < pygame.time.get_ticks() - self.count_change and \
                     1 < self.count_down:
                 self.count_down -= 1
-                self.count_text = dsnclass.Text(str(self.count_down), [1080 / 2,
+                self.count_text = kogclass.Text(str(self.count_down), [1080 / 2,
                                                                        576 / 2],
                                                 250,
                                                 "impact", YELLOW, None)
@@ -1766,7 +1816,7 @@ class PlayLevel(LevelSelect):
                                            [self.memory.diff_value] +
                                            self.memory.hold_replay.chain_to_list())
                 # Reset temporary hold on chain of level's timed events
-                self.memory.hold_replay = dsnclass.ReplayChain()
+                self.memory.hold_replay = kogclass.ReplayChain()
                 self.level_id += 1
 
                 if self.level_id in self.level_data:
