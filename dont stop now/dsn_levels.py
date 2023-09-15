@@ -1923,61 +1923,63 @@ level zero coding
 
 
 class LevelZero(LevelScene):
+
     def __init__(self, level_memory):
 
         LevelScene.__init__(self, 45, 525, level_memory)
         # Initialize LevelScene for it's memory/rendering
-        self.memory.level_progress.sort()  # Sort level order
+        self.memory.level_progress.sort()   # Sort level order
         self.level_id = -1  # Invalid level id, don't record statistics
         self.memory = level_memory  # Get memory
+        # self.timer = pygame.time.get_ticks()
+        self.timer = 0
+        self.fps = pygame.time.Clock()
+        self.elasped = self.fps.tick(30)
+        self.countdown = 45
+        self.delete_everything_text = False
 
         # choosing level is set to None
         self.choose_level = None
 
-        self.str_morse_code = ""
-        self.str_words = ""
-        self.morse_code_count = 0
+        self.str_morse_code = "" # morse code entries for short and long
+        self.str_words = "" # words to be displayed on screen as an entry for the user
+        self.str_pass_word_check = '' # checking if the word is correct
+        self.morse_code_count = 0 # making sure you can't input more than 5 characters
 
-        self.clear_code_morse_block = []
-        self.convert_code_morse_block = []
-        self.check_correct_morse_block = []
+        self.clear_code_morse_block = [] # box to clear text
+        self.convert_code_morse_block = [] # box to convert morse_code into english aplhabets
+        self.check_correct_morse_block = [] # checking if word exists in lock 
+        self.clear_all_text_morse_block = [] # clearing all texts
 
-        self.input_block = []
-        self.delete_block = []
-        self.check_block = []  # visual indicator - you're on the right track
-        # self.display_letter_block_1 = []
-        # self.display_letter_block_2 = []
-        # self.display_letter_block_3 = []
-        # self.display_letter_block_4 = []
-        # self.display_letter_block_5 = []
-        self.display_check_block = []
-        self.short_dot = []
-        self.long_dot = []
+        self.short_dot = [] # short box entry
+        self.long_dot = [] # long box entry
+
+        ''''
+        still trying to figure the timed text part
+        '''
+
+        self.clear_text = [
+            dsnclass.Text("KEEP", (310, 100), 100, "impact", YELLOW, None),
+            dsnclass.Text("ON", (570, 100), 100, "impact", YELLOW, None),
+            dsnclass.Text("GOING", (820, 100), 100, "impact", YELLOW, None)
+        ]
+        self.clear_text[0].scale(level_memory.res_width,
+                                   level_memory.res_height)
+        self.clear_text[1].scale(level_memory.res_width,
+                                   level_memory.res_height)
+        self.clear_text[2].scale(level_memory.res_width,
+                                   level_memory.res_height)
 
         self.collision_objects = {
             "self.platforms": self.platforms,
-            "self.delete_block": self.delete_block,
-            "self.input_block": self.input_block,
-            "self.check_block": self.check_block,
-            # "self.display_letter_block_1": self.display_letter_block_1,
-            # "self.display_letter_block_2": self.display_letter_block_2,
-            # "self.display_letter_block_3": self.display_letter_block_3,
-            # "self.display_letter_block_4": self.display_letter_block_4,
-            # "self.display_letter_block_5": self.display_letter_block_5,
-            "self.self.display_check_block": self.display_check_block,
-            "self.short_dot": self.short_dot,
-            "self.long_dot": self.long_dot
-        }
-
+            "self.short_dot" : self.short_dot,
+            "self.long_dot" : self.long_dot
+            }
+        
+        
         self.render_objects = []
-        # for name in self.element_names:
-        #     if name != "Text" and name in self.level_elements[self.level_id]:
-        #         for element in self.level_elements[self.level_id][name]:
-        #             if name in self.collision_objects:
-        #                 self.collision_objects[name] += [element.shape]
-        #             self.render_objects += [element]
-        self.action_timer = pygame.time.get_ticks()
 
+    
     def input(self, pressed, held):
         LevelScene.input(self, pressed, held)
 
@@ -1988,28 +1990,13 @@ class LevelZero(LevelScene):
 
         # morse code dictionary
         morse_dict = {
-            'short_long_': 'A', 'long_short_short_short_': 'B',
-            'long_short_long_short_': 'C', 'long_short_short_': 'D',
-            'short_': 'E',
-            'short_short_long_short_': 'F', 'long_long_short_': 'G',
-            'short_short_short_short_': 'H', 'short_short_': 'I',
-            'short_long_long_long_': 'J',
-            'long_short_long_': 'K', 'short_long_short_short_': 'L',
-            'long_long_': 'M', 'long_short_': 'N', 'long_long_long_': 'O',
-            'short_long_long_short_': 'P', 'long_long_short_long_': 'Q',
-            'short_long_short_': 'R', 'short_short_short_': 'S', 'long_': 'T',
-            'short_short_long_': 'U', 'short_short_short_long_': 'V',
-            'short_long_long_': 'W', 'long_short_short_long_': 'X',
-            'long_short_long_long_': 'Y',
-            'long_long_short_short_': 'Z', 'long_long_long_long_long_': '0',
-            'short_long_long_long_long_': '1',
-            'short_short_long_long_long_': '2',
-            'short_short_short_long_long_': '3',
-            'short_short_short_short_long_': '4',
-            'short_short_short_short_short_': '5',
-            'long_short_short_short_short_': '6',
-            'long_long_short_short_short_': '7',
-            'long_long_long_short_short_': '8',
+            'short_long_': 'A', 'long_short_short_short_': 'B', 'long_short_long_short_': 'C', 'long_short_short_': 'D', 'short_': 'E',
+            'short_short_long_short_': 'F', 'long_long_short_': 'G', 'short_short_short_short_': 'H', 'short_short_': 'I', 'short_long_long_long_': 'J',
+            'long_short_long_': 'K', 'short_long_short_short_': 'L', 'long_long_': 'M', 'long_short_': 'N', 'long_long_long_': 'O',
+            'short_long_long_short_': 'P', 'long_long_short_long_': 'Q', 'short_long_short_': 'R', 'short_short_short_': 'S', 'long_': 'T',
+            'short_short_long_': 'U', 'short_short_short_long_': 'V', 'short_long_long_': 'W', 'long_short_short_long_': 'X', 'long_short_long_long_': 'Y',
+            'long_long_short_short_': 'Z', 'long_long_long_long_long_': '0', 'short_long_long_long_long_': '1', 'short_short_long_long_long_': '2', 'short_short_short_long_long_': '3',
+            'short_short_short_short_long_': '4', 'short_short_short_short_short_': '5', 'long_short_short_short_short_': '6', 'long_long_short_short_short_': '7', 'long_long_long_short_short_': '8',
             'long_long_long_long_short_': '9'
         }
 
@@ -2017,158 +2004,210 @@ class LevelZero(LevelScene):
         if morse_code_text in morse_dict:
             display = morse_dict[morse_code]
         else:
-            print(
-                "No morse_code like that exists. Please refer to the 'Internationl Morse Code'")
-
+            print("No morse_code like that exists. Please refer to the 'Internationl Morse Code'")
+            
         return display
 
     def clear_display_morse_code(self):
-        self.str_morse_code = ""
+        self.str_morse_code = ''
         self.morse_code_count = 0
         print("morse code text has been cleared!")
-        print(f"{self.str_morse_code} and {self.morse_code_count}")
+        print(f"{self.str_morse_code} and {self.morse_code_count} and {len(self.str_words)}")
+
+    def clear_display_english_words(self):
+        self.str_words = ''
+        self.morse_code_count = 0
+        print("attempted answer has been cleared!")
+        print(f"{self.str_morse_code} and {self.morse_code_count} and {self.str_words}")
+
+    def pass_word_morse_code(self, f_string, display):
+        adict = {
+            'EE':'000000000000000000',
+            'ET':'000000001111111100',
+            'E':'1111111111111100000'
+        }
+        g_string = str(f_string)
+
+        if f_string in adict:
+            display = adict[g_string]
+        else:
+            display = 'what is going on here?'
+        print(display)
+        return display
+
+    def display_clear_text(self, screen):
+            # Victory function played when win condition
+            if 500 <= pygame.time.get_ticks() - self.victory_time and \
+                    self.victory_counter < 3:
+                self.victory_time = pygame.time.get_ticks()  # Reset timer
+                self.victory_counter += 1  # Increase index for victory_text
+            for x in range(self.victory_counter):
+                screen.blit(self.clear_text.text_img,
+                            self.clear_text.text_rect)
+                # Display victory text depending on index available (0-3)
 
     def update(self):
         LevelScene.update(self)
 
         # This is when you win
-        if pygame.time.get_ticks() - self.action_timer < 1200:
-            return None
+
+        # if pygame.time.get_ticks() - self.timer < 1200:
+        #     pass
+
+        # if self.delete_everything_text == True:
+        #         self.delete_everything_text_function()
 
         if self.morse_code_count < 5:
             if self.player.alive and \
                     self.player.square_render.collidelist(self.short_dot) != -1:
                 self.str_morse_code = self.str_morse_code + "short_"
                 self.morse_code_count += 1
-                self.action_timer = pygame.time.get_ticks()
-                print(f"{self.str_morse_code} and {self.morse_code_count}")
+                # print(f"{self.str_morse_code} and {self.morse_code_count}")
             elif self.player.alive and \
                     self.player.square_render.collidelist(self.long_dot) != -1:
                 self.str_morse_code = self.str_morse_code + "long_"
                 self.morse_code_count += 1
-                self.action_timer = pygame.time.get_ticks()
-                print(f"{self.str_morse_code} and {self.morse_code_count}")
+                # print(f"{self.str_morse_code} and {self.morse_code_count}")
             elif self.player.alive and \
-                    self.player.square_render.collidelist(
-                        self.clear_code_morse_block) != -1:
-                self.action_timer = pygame.time.get_ticks()
+                    self.player.square_render.collidelist(self.clear_code_morse_block) != -1:
                 self.clear_display_morse_code()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(
-                        self.convert_code_morse_block) != -1:
-                print(self.morse_decoder(self.str_morse_code,
-                                                     self.str_words))
-                self.str_words += self.morse_decoder(self.str_morse_code,
-                                                     self.str_words)
+                    self.player.square_render.collidelist(self.convert_code_morse_block) != -1:
+                self.str_words += self.morse_decoder(self.str_morse_code, self.str_words)
                 self.clear_display_morse_code()
                 print(f"{self.str_morse_code} and {self.morse_code_count}")
-                self.action_timer = pygame.time.get_ticks()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(
-                        self.check_correct_morse_block) != -1:
-                self.str_morse_code = ""
-                self.morse_code_count = 0
-                print(
-                    "morse code text has been cleared! More needs to be here!")
-                print(f"{self.str_morse_code} and {self.morse_code_count}")
-                self.action_timer = pygame.time.get_ticks()
+                    self.player.square_render.collidelist(self.check_correct_morse_block) != -1:
+                self.pass_word_morse_code(self.str_words, self.str_pass_word_check)
+                self.clear_display_morse_code()
+                self.clear_display_english_words()
+            elif self.player.alive and \
+                    self.player.square_render.collidelist(self.clear_all_text_morse_block) != -1:
+                # print("deleted everything")
+                self.delete_everything_text = True
+                self.delete_everything_text_function()
         elif self.morse_code_count == 5:
             print("Maximum character amount reached! Clear or Convert Code.")
             if self.player.alive and \
-                    self.player.square_render.collidelist(
-                        self.clear_code_morse_block) != -1:
+                    self.player.square_render.collidelist(self.clear_code_morse_block) != -1:
                 self.clear_display_morse_code()
-                self.action_timer = pygame.time.get_ticks()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(
-                        self.convert_code_morse_block) != -1:
-                self.str_words += self.morse_decoder(self.str_morse_code,
-                                                     self.str_words)
+                    self.player.square_render.collidelist(self.convert_code_morse_block) != -1:
+                self.str_words += self.morse_decoder(self.str_morse_code, self.str_words)
                 print(f"{self.str_words}")
                 self.clear_display_morse_code()
-                self.action_timer = pygame.time.get_ticks()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(
-                        self.check_correct_morse_block) != -1:
-                self.str_morse_code = ""
-                self.morse_code_count = 0
-                self.action_timer = pygame.time.get_ticks()
-                print(
-                    "morse code text has been cleared! More needs to be here!")
-                print(f"{self.str_morse_code} and {self.morse_code_count}")
-            # self.level_condition = True
-            # self.player.alive = False
+                    self.player.square_render.collidelist(self.check_correct_morse_block) != -1:
+                self.pass_word_morse_code(self.str_words, self.str_pass_word_check)
+                self.clear_display_morse_code()
+                self.clear_display_english_words()
+            elif self.player.alive and \
+                    self.player.square_render.collidelist(self.clear_all_text_morse_block) != -1:
+                # print("deleted everything")
+                self.delete_everything_text = True
 
-        # for p in pressed:
+            # print(self.timer)
 
-        # if
-
-        # checking morse code in levels
-        # self.dict1 = {
-        #     ["short","short","short"] : PlayLevel(48, 53, self.memory, 11)
-        #     }
-        # if self.morse_check in self.dict1:
-        #     self.choose_level = self.dict1["short","short","short"]
-
-        # checking for morse list exceeding character limit
-        # if len(self.morse_check) > 5:
-        #     # print("limit reached")
-        #     self.display_check_block_1 = []
-        #     self.display_check_block_2 = []
-        #     self.display_check_block_3 = []
-        #     self.display_check_block_4 = []
-        #     self.display_check_block_5 = []
+    '''couldn't get this to work as I would like to in a function, with screen in there'''
+    def delete_everything_text_function(self):
+        if self.delete_everything_text == True:
+            self.clear_display_morse_code()
+            self.clear_display_english_words()
+            self.timer = self.timer + self.elasped/30 #should be /1000
+            if self.timer > self.countdown:
+                self.delete_everything_text = False
+                self.timer = 0
+            # print(self.timer)
 
     def render(self, screen):
         LevelScene.render(self, screen)
         self.render_level(screen)
-        self.platforms = [
-            pygame.draw.rect(screen, (0, 0, 0), [1055, 0, 25, 576]),
-            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 25, 576]),
-            pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 23]),
-            pygame.draw.rect(screen, (0, 0, 0), [0, 480, 1080, 23]),
-            pygame.draw.rect(screen, (0, 0, 0), [0, 553, 1080, 23])
+
+        # drawing platforms
+        self.platforms =  [
+            pygame.draw.rect(screen, BLACK, [1055, 0, 25, 576]),
+            pygame.draw.rect(screen, BLACK, [0, 0, 25, 576]),
+            pygame.draw.rect(screen, BLACK, [0, 0, 1080, 23]),
+            pygame.draw.rect(screen, BLACK, [0, 480, 1080, 23]),
+            pygame.draw.rect(screen, BLACK, [0, 553, 1080, 23])
         ]
 
-        self.clear_code_morse_block = [
-            pygame.draw.rect(screen, BLUE, [642, 455, 72, 71])]
-        self.convert_code_morse_block = [
-            pygame.draw.rect(screen, DARK_GREEN, [415, 455, 72, 71])]
-        self.check_correct_morse_block = [
-            pygame.draw.rect(screen, LIME_GREEN, [192, 455, 72, 71])]
-        self.test_text = kogclass.Text(self.str_morse_code, (545, 413),
-                                       35, "impact", BLACK, None)
-        # self.test_text.text_rect = 100
+        self.clear_code_morse_block = [pygame.draw.rect(screen, BLUE, [200, 433, 150, 71])] # bottom 480
+        self.convert_code_morse_block = [pygame.draw.rect(screen, YELLOW, [450, 433, 150, 71])]
+        self.check_correct_morse_block = [pygame.draw.rect(screen, LIME_GREEN, [700, 433, 150, 71])]
+        self.clear_all_text_morse_block = [
+            pygame.draw.rect(screen, LIGHT_RED, [100, 433, 50, 71]),
+            pygame.draw.rect(screen, LIGHT_RED, [900, 433, 50, 71])
+        ]
+        
+        self.long_dot = [pygame.draw.rect(screen, CYAN, [1054, 444, 17, 85])]
+        self.short_dot = [pygame.draw.rect(screen, CYAN, [9, 488, 17, 39])]
+        
+    # display texts as they appear
+        self.test_text = dsnclass.Text(self.str_morse_code, (545, 413),
+                                        35, "impact", DARK_GREY, None)
         screen.blit(self.test_text.text_img,
-                    self.test_text.text_rect)  # big bold for pausing
+                        self.test_text.text_rect)  # draw text
 
-        # self.input_block = [pygame.draw.rect(screen, (50, 205, 50), [415, 415, 72, 71])]
-        # self.delete_block = [pygame.draw.rect(screen, (255, 0, 0), [192, 415, 72, 71])]
-        # self.check_block = [pygame.draw.rect(screen, (30, 144, 255), [642, 415, 72, 71])]
-        # self.display_check_block = [pygame.draw.rect(screen, (50, 205, 50), [946, 162, 48, 46])]
-        # self.display_letter_block = [
-        #     pygame.draw.rect(screen, (1, 100, 32), [136, 117, 67, 90]),
-        #     pygame.draw.rect(screen, (1, 100, 32), [275, 117, 67, 90]),
-        #     pygame.draw.rect(screen, (1, 100, 32), [443, 117, 67, 90]),
-        #     pygame.draw.rect(screen, (1, 100, 32), [616, 117, 67, 90]),
-        #     pygame.draw.rect(screen, (1, 100, 32), [797, 117, 67, 90])
-        # ]
-
-        self.long_dot = [
-            pygame.draw.rect(screen, (47, 237, 237), [1054, 434, 17, 85])
-        ]
-
-        self.short_dot = [
-            pygame.draw.rect(screen, (47, 237, 237), [9, 478, 17, 39])
-        ]
-
-        # Text Rendering
-        # if "Text" in self.level_elements[self.level_id]:
-        #     for text in self.level_elements[self.level_id]["Text"]:
-        #         screen.blit(text.text_img, text.text_rect)
+        self.test_text_2 = dsnclass.Text(self.str_words, (545, 223),
+                                        105, "impact", BLACK, None)
+        screen.blit(self.test_text_2.text_img,
+                        self.test_text_2.text_rect)
+        
+        self.test_text_3 = dsnclass.Text("Check", (775, 453),
+                                        25, "impact", BLACK, None)
+        screen.blit(self.test_text_3.text_img,
+                        self.test_text_3.text_rect)
+        
+        self.test_text_4 = dsnclass.Text("Word", (775, 483),
+                                        25, "impact", BLACK, None)
+        screen.blit(self.test_text_4.text_img,
+                        self.test_text_4.text_rect)
+        
+        self.test_text_5 = dsnclass.Text("Clear", (270, 453),
+                                        25, "impact", BLACK, None)
+        screen.blit(self.test_text_5.text_img,
+                        self.test_text_5.text_rect)
+        
+        self.test_text_6 = dsnclass.Text("Code", (270, 483),
+                                        25, "impact", BLACK, None)
+        screen.blit(self.test_text_6.text_img,
+                        self.test_text_6.text_rect)
+        
+        self.test_text_7 = dsnclass.Text("Convert", (525, 453),
+                                        25, "impact", BLACK, None)
+        screen.blit(self.test_text_7.text_img,
+                        self.test_text_7.text_rect)
+        
+        self.test_text_8 = dsnclass.Text("Code", (525, 483),
+                                        25, "impact", BLACK, None)
+        screen.blit(self.test_text_8.text_img,
+                        self.test_text_8.text_rect)
+        
+        # delete everythign text
+        # if self.delete_everything_text == True:
+        #     self.clear_display_morse_code()
+        #     self.clear_display_english_words()
+        #     self.test_text_9 = dsnclass.Text("ALL CODE HAS BEEN DELETED", (525, 100),
+        #                                 55, "impact", DARK_RED, None)
+        #     screen.blit(self.test_text_9.text_img,
+        #                     self.test_text_9.text_rect)
+        #     if self.timer > self.countdown:
+        #         self.timer = self.timer + self.elasped/30 #should be /1000
+        #         self.delete_everything_text = False
+        if self.delete_everything_text == True:
+            self.test_text_9 = dsnclass.Text("Everthing Has Been Reset", (525, 100),
+                                        55, "impact", DARK_RED, None)
+            screen.blit(self.test_text_9.text_img,
+                            self.test_text_9.text_rect)
+            self.timer = self.timer + self.elasped/30 #should be /1000
+            if self.timer > self.countdown:
+                self.delete_everything_text = False
+                self.timer = 0
 
         LevelScene.render_text(self, screen)
 
     def render_level(self, screen):
         # No death zones in this level!
         pass
+
