@@ -1,8 +1,0 @@
-
- PlayerSpawn_2: 35, 93 
-self.platforms =  []
-self.draw =  []
-self.death_zones =  []
-self.win_zones =  []
-self.respawn_zones =  []
-Text =  []
