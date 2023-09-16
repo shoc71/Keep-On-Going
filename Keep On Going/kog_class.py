@@ -22,7 +22,7 @@ PURPLE = (181, 60, 177)
 BROWN = (150, 75, 0)
 DARK_GREY = (52, 52, 52)
 
-
+# delete this comment
 class Text:
     """
     Class used to simplify text creation for pygame
@@ -32,7 +32,7 @@ class Text:
                  font_color, text_other):
         self.text = text  # Text as a string
         self.position = text_pos  # Text position as a tuple or list (x and y)
-        self.font_size = int(font_size)  # Int determining how big the text is
+        self.font_size = int(font_size)  # Int determining how big the text is 
         self.font_type = font_type  # String used to indicate what font
         """Font selection is determined by your computer and it's preset fonts
         """
