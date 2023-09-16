@@ -389,20 +389,20 @@ class MenuScene(LevelScene):
 
         #############################################
         file_path = "assets/images/"
-        self.dont_image_text = pygame.image.load(
-            file_path + "dont (Custom).png")  # ratio is 15:8
-        self.stop_image_text = pygame.image.load(file_path + "stop (Custom).png")
-        self.now_image_text = pygame.image.load(file_path + "now (Custom).png")
+        self.keep_image_text = pygame.image.load(
+            file_path + "Keep.png")  # ratio is 15:8
+        self.on_image_text = pygame.image.load(file_path + "On.png")
+        self.going_image_text = pygame.image.load(file_path + "Going.png")
 
-        self.dont_image_text = pygame.transform.scale(self.dont_image_text,
-                                                      (self.dont_image_text.get_rect().width * self.memory.res_width,
-                                                       self.dont_image_text.get_rect().height * self.memory.res_height))
-        self.stop_image_text = pygame.transform.scale(self.stop_image_text,
-                                                      (self.stop_image_text.get_rect().width * self.memory.res_width,
-                                                       self.stop_image_text.get_rect().height * self.memory.res_height))
-        self.now_image_text = pygame.transform.scale(self.now_image_text,
-                                                      (self.now_image_text.get_rect().width * self.memory.res_width,
-                                                       self.now_image_text.get_rect().height * self.memory.res_height))
+        self.keep_image_text = pygame.transform.scale(self.keep_image_text,
+                                                      (self.keep_image_text.get_rect().width * self.memory.res_width,
+                                                       self.keep_image_text.get_rect().height * self.memory.res_height))
+        self.on_image_text = pygame.transform.scale(self.on_image_text,
+                                                      (self.on_image_text.get_rect().width * self.memory.res_width,
+                                                       self.on_image_text.get_rect().height * self.memory.res_height))
+        self.going_image_text = pygame.transform.scale(self.going_image_text,
+                                                      (self.going_image_text.get_rect().width * self.memory.res_width,
+                                                       self.going_image_text.get_rect().height * self.memory.res_height))
 
         # Text for displaying title select options organized in a lists
         self.option_select = [
@@ -507,9 +507,9 @@ class MenuScene(LevelScene):
                                  element.shape[4])
 
         # Text or Front-most
-        screen.blit(self.dont_image_text, (90 * self.memory.res_width, 10 * self.memory.res_height))
-        screen.blit(self.stop_image_text, (410 * self.memory.res_width, 10 * self.memory.res_height))
-        screen.blit(self.now_image_text, (720 * self.memory.res_width, 10 * self.memory.res_height))
+        screen.blit(self.keep_image_text, (90 * self.memory.res_width, 10 * self.memory.res_height))
+        screen.blit(self.on_image_text, (410 * self.memory.res_width, 10 * self.memory.res_height))
+        screen.blit(self.going_image_text, (720 * self.memory.res_width, 10 * self.memory.res_height))
         """screen.blit(self.title_text.text_img, self.title_text.text_rect)
         screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)"""
         screen.blit(self.title_text_s1.text_img, self.title_text_s1.text_rect)
