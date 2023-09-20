@@ -2,7 +2,7 @@ import pygame
 import kog_levels as koglevels
 import kog_class as kogclass
 
-#small commetn change on github
+#small comment change on github
 class Program:
     """
     Class responsible for how the game runs
