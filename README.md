@@ -1,4 +1,4 @@
-## Keep-Going-On
+## Keep-On-Going
 
 # Complete all the bizarre levels in this game without ever stopping. Not even for a second.
 
