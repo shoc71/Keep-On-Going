@@ -22,7 +22,7 @@ PURPLE = (181, 60, 177)
 BROWN = (150, 75, 0)
 DARK_GREY = (52, 52, 52)
 
-# delete this comment
+
 class Text:
     """
     Class used to simplify text creation for pygame
@@ -32,7 +32,7 @@ class Text:
                  font_color, text_other):
         self.text = text  # Text as a string
         self.position = text_pos  # Text position as a tuple or list (x and y)
-        self.font_size = int(font_size)  # Int determining how big the text is 
+        self.font_size = int(font_size)  # Int determining how big the text is
         self.font_type = font_type  # String used to indicate what font
         """Font selection is determined by your computer and it's preset fonts
         """
@@ -266,6 +266,8 @@ class Memory:
                         2: [1280, 720],
                         3: [1920, 1080]}
 
+        self.star_data = {}
+
         self.screen = None
 
     def update_mem(self, level_id, death_count, jump_count, level_time):
@@ -348,6 +350,8 @@ class Memory:
         # Decrease the level_id for more than 4 instances!
         self.load_levels("assets/levels/non_levels.txt")
 
+        self.load_stars(folder_path + "stars.txt")
+
         """
         MenuScene ID = -5
         OptionsPage ID = -4
@@ -416,7 +420,7 @@ class Memory:
                     pass
 
                 if re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, "
-                             r"[0-9]+, [0-9]+\]\)", line):  # Add rect elements
+                             r"[0-9]+, [0-9]+]\)", line):  # Add rect elements
                     """Rect elements are detected by this format:
                     (screen, color, rect_properties ([x, y, width, height]))
                     """
@@ -478,15 +482,15 @@ class Memory:
                         self.ls_elements[self.level_id][identifier] += [in_rect]
 
                 elif re.search(
-                        r"\([a-z]+, .*, \[[0-9]+, [0-9]+\], \[[0-9]+, [0-9]+\], [0-9]\)",
+                        r"\([a-z]+, .*, \[[0-9]+, [0-9]+], \[[0-9]+, [0-9]+], [0-9]\)",
                         line):  # add line elements
                     """Line elements are detected by this format:
                     (screen, color, [x, y], [width, height], thickness)
                     """
 
                     # Assign the line containing pygame.line elements
-                    line_info = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+\], "
-                                          r"\[[0-9]+, [0-9]+\], [0-9]\)",
+                    line_info = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+], "
+                                          r"\[[0-9]+, [0-9]+], [0-9]\)",
                                           line).group().split(", ")
                     # Convert the line into an KOGElement
                     in_line = KOGElement(line_info[1], [int(line_info[2][1:]),
@@ -561,6 +565,41 @@ class Memory:
         self.range_index += 1   # Increment for the next set of ranges
         # self.print_levels is mainly used for debugging purposes only
         # self.print_levels()
+
+    def load_stars(self, in_file):
+        with open(in_file, "r") as star_file:
+            level_id = 0
+            all_lines = star_file.readlines()
+
+            for line in all_lines:
+                if re.search("\\(.+\)", line):
+                    level_id += 1
+                    self.star_data[level_id] = []
+
+                if re.search("\\[.+]", line):
+                    get_data = line[1:-2].split(", ")
+                    img_rect = pygame.Rect(int(get_data[1]),
+                                           int(get_data[2]),
+                                           int(get_data[3]),
+                                           int(get_data[4]))
+                    detect_rect = pygame.Rect((int(get_data[1]) +
+                                               (int(get_data[3]) / 2)) -
+                                              (int(get_data[5]) / 2),
+                                              (int(get_data[2]) + (int(get_data[4]) / 2)) -
+                                              (int(get_data[6]) / 2),
+                                              int(get_data[5]),
+                                              int(get_data[6])
+                                              )
+                    roam_rect = pygame.Rect(int(get_data[7]),
+                                            int(get_data[8]),
+                                            int(get_data[9]),
+                                            int(get_data[10]))
+                    in_star = Collectable(int(get_data[0]),
+                                          img_rect,
+                                          detect_rect,
+                                          roam_rect)
+                    self.star_data[level_id] += [in_star]
+                print(self.star_data)
 
     def print_levels(self):
         print("LEVEL TITLES:")
@@ -757,7 +796,179 @@ class KOGElement:
     def __init__(self, color, shape, in_type):
         self.color = color  # Block color
         self.shape = shape  # Block shape
-        self.type = in_type     # Distinguish line vs rect
+        self.type = in_type     # Distinguish line vs rect types
+
+
+class Animate:
+
+    def __init__(self, in_files, xpos, ypos, width, height, frame_delay, memory):
+        """
+        :param in_files: List of file_paths to all of this objects frames
+        :param xpos: x position relative to the 1080 scale
+        :param ypos: y position relative to the 576 scale
+        :param frame_delay: time inbetween each  (in seconds)
+        """
+        if type(in_files) is list:
+            for file in in_files:
+                load_image = pygame.image.load(file)
+                scale_image = pygame.transform.scale(load_image,
+                                                     load_image.get_rect().width * memory.res_width * 0.2,
+                                                     load_image.get_rect().height * memory.res_height * 0.225)
+                self.file_frames += [scale_image]
+
+            self.img_rect = pygame.Rect(xpos, ypos, width, height)
+            self.frame_delay = frame_delay * 1000
+            self.memory = memory
+        else:
+            self.file_frames = None
+            self.img_rect = None
+            self.frame_delay = None
+
+        self.animate_index = 0
+        self.animate_time = pygame.time.get_ticks()
+
+    def validate(self):
+        if self.file_frames is None:
+            return "File's Provided Not Put In A List"
+        elif self.img_rect is None or \
+                self.img_rect.x < 0 or 1080 < self.img_rect.x:
+            return "Invalid x position out of bounds or not given"
+        elif self.img_rect is None or \
+                self.img_rect.y < 0 or 576 < self.img_rect:
+            return "Invalid y position out of bounds or not given"
+        elif self.frame_delay is None or type(self.frame_delay) is not int or \
+            type(self.frame_delay) is not float:
+            return "Frame delay is invalid (not int or float)"
+
+    def animate(self, screen):
+        self.update()
+        self.render(screen)
+
+    def update(self):
+        # Check if it's time to change the frame
+        if self.frame_delay < pygame.time.get_ticks() - self.animate_time:
+            self.animate_index += 1
+            self.animate_time = pygame.time.get_ticks()
+
+        # Check if the animate_index is out of bounds and ready to loop
+        if self.animate_index < 0:
+            self.animate_index = len(self.file_frames)
+        elif len(self.file_frames) < self.animate_index:
+            self.animate_index = 0
+
+    def render(self, screen):
+        frame = self.file_frames[self.animate_index]
+        screen.blit(frame, self.img_rect)
+
+
+class Collectable:
+    """
+    Render, move, and give mechanics to colelctables
+    This can otherwise be known as the star pets (starmets)
+    """
+
+    def __init__(self, object_id, collect_rect, detect_rect, roam_rect):
+        self.id = object_id
+        self.rect = collect_rect
+        self.detect_rect = detect_rect
+        self.roam_rect = roam_rect
+        self.animate = None
+        self.behaviour = 0  # 3 behaviours, max index of 2
+
+        self.move_x = 0
+        self.move_y = 0
+
+        self.random_direction = [-1, 0, 1]
+        self.random_time = pygame.time.get_ticks()
+        # Time before next random movement change
+        self.move_delay = pygame.time.get_ticks()
+        # Time used to move away from the zone
+
+        self.movement_time = pygame.time.get_ticks()
+        # Control the movement speed of the stars with time
+
+    def render_test(self, screen):
+        # Render unrendered rects for debugging
+        pygame.draw.rect(screen, RED, self.roam_rect)       # Roam rect
+        pygame.draw.rect(screen, BLUE, self.detect_rect)    # Detection rect
+        pygame.draw.rect(screen, YELLOW, self.rect)         # Image rect
+
+    def update(self, player_rect):
+        """Move delay used in self.detect_bounds(): if enough time
+        has passed in moving away from the border, resume usual movement.
+        Usual movement is usually either avoiding the player or random
+        movement"""
+        if 100 <= pygame.time.get_ticks() - self.move_delay:
+            # If the player is within the star's vision zone
+            if self.detect_rect.colliderect(player_rect):
+                # move accordingly away from the player
+                self.detect_player(player_rect)
+            else:
+                # do random movement
+                self.random_movement()
+        # Prioritize moving away from the border over avoiding/random movement
+        self.detect_bounds()
+
+        # every 0.025 seconds, apply the movement
+        if 25 <= pygame.time.get_ticks() - self.movement_time:
+            self.rect.x += self.move_x
+            self.rect.y += self.move_y
+
+            self.detect_rect.x = (self.rect.x + (self.rect.width / 2)) - \
+                                 (self.detect_rect.width / 2)
+            self.detect_rect.y = (self.rect.y + (self.rect.height / 2)) - \
+                                 (self.detect_rect.height / 2)
+
+            self.movement_time = pygame.time.get_ticks()
+
+    def render(self, screen):
+        # Test render only renders the collision rects
+        self.render_test(screen)
+
+    def detect_player(self, player_rect):
+        # If the player is to the left of the star
+        if player_rect.x < self.rect.x:
+            self.move_x = 1     # move right
+        # If the player is to the right of the star
+        elif self.rect.x + self.rect.width < player_rect.x:
+            self.move_x = -1    # move left
+
+        # If the player is above the star
+        if player_rect.y < self.rect.y:
+            self.move_y = 1     # move down
+        # If the player is below the star
+        elif self.rect.y + self.rect.height < player_rect.y:
+            self.move_y = -1    # move up
+
+    def detect_bounds(self):
+        # If the star is out to the right of the barrier
+        if self.roam_rect.x + self.roam_rect.width <= \
+                self.rect.x + self.rect.width:
+            self.move_x = -1    # move back to the left
+            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+        # If the star is out to the left of the barrier
+        elif self.rect.x <= self.roam_rect.x:
+            self.move_x = 1     # move back to the right
+            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+
+        # If the star is below the barrier
+        if self.roam_rect.y + self.roam_rect.height <= \
+                self.rect.y + self.rect.height:
+            self.move_y = -1    # move back up into the barrier
+            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+        # If the star is above the barrier
+        elif self.rect.y <= self.roam_rect.y:
+            self.move_y = 1     # move back down into the barrier
+            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+
+    def random_movement(self):
+        # randomly set the direction of x and y from -1, 0, then 1
+        # Don't do another random movement for another 0.5 seconds at least
+        if 500 <= pygame.time.get_ticks() - self.random_time:
+            self.move_x = self.random_direction[random.randint(0, 2)]
+            self.move_y = self.random_direction[random.randint(0, 2)]
+            self.random_time = pygame.time.get_ticks()
+            # Reset the timer
 
 
 class SquareMe:  # lil purple dude
