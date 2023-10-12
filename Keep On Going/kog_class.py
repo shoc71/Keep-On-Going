@@ -357,6 +357,8 @@ class Memory:
         OptionsPage ID = -4
         """
 
+    # load_levels is used to get level data from the levels folder
+
     def load_levels(self, in_file):
         color_lookup = {
             "DARK_RED": DARK_RED,
@@ -391,87 +393,16 @@ class Memory:
                     identifier = re.search("self\..* = ", line).group()[:-3]
                 elif re.search(r"Text", line):  # Distinguish text
                     identifier = "Text"
-                elif re.search(r"\(([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+)\)", line) and \
+                elif re.search(r"\(([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+), "
+                               r"([0-9]+|-[0-9]+)\)", line) and \
                         "pygame" not in line:
-                    self.level_id += 1
-                    self.level_set[self.level_id] = []
-                    self.ls_elements[self.level_id] = {}
-
-                    # Finding level titles in the form ( , , )
-                    line_search = re.search(r"\(([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+), ([0-9]+|-[0-9]+)\)",
-                                            line).group()
-                    format_search = line_search[1:-1].split(", ")
-
-                    self.level_set[self.level_id] = [int(format_search[0]),
-                                                int(format_search[1]),
-                                                int(format_search[2])]
-
-                    """Will then get the 3 numbers split by comma, then
-                    converts them into their ints - x, y and music
-                    """
-                elif "=" in line.replace("\n", ""):
-                    """If none of the other conditions were met:
-                        - self.___ = ...
-                        - Text
-                        - (x_spawn, y_spawn, player)
-                        Then it's a new level using the === identifier.
-                        Increment level ID by 1
-                    """
-                    pass
+                    self.find_title(line)
 
                 if re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, "
                              r"[0-9]+, [0-9]+]\)", line):  # Add rect elements
-                    """Rect elements are detected by this format:
-                    (screen, color, rect_properties ([x, y, width, height]))
-                    """
-                    rect_line = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, "
-                                          r"[0-9]+, [0-9]+]\)", line).group()
-                    """Obtain rect from the current line and assign to variable
-                    """
-                    rect_properties = re.search(r"\[[0-9]+, [0-9]+, "
-                                                r"[0-9]+, [0-9]+]",
-                                                rect_line).group()[1:-1].split(
-                        ", ")
-                    """Get a list of numbers as a string
-                    from .split, without the brackets ([1:-1]),
-                    from the rect_line variable
-                    """
 
-                    # If the color is in a tuple of string numbers (x, y, z)
-                    if re.search("\([0-9]+, [0-9]+, [0-9]+\)", rect_line):
-                        # Get the individual color values
-                        rect_color = re.search("\([0-9]+, [0-9]+, "
-                                               "[0-9]+\)",
-                                               rect_line).group().split(",")
-
-                        # Convert the rect into a KOGElement
-                        in_rect = KOGElement((int(rect_color[0][1:]),
-                                              int(rect_color[1][1:]),
-                                              int(rect_color[2][1:-1])),
-                                             pygame.Rect(
-                                                 math.floor(int(rect_properties[0]) * self.res_width),
-                                                 math.floor(int(rect_properties[1]) * self.res_height),
-                                                 math.ceil(int(rect_properties[2]) * self.res_width),
-                                                 math.floor(int(rect_properties[3]) * self.res_height)),
-                                             "rect")
-                    else:
-                        """Otherwise the color is defined in words:
-                            - X (BLUE)
-                            - X_Y (DARK_RED)
-                            - X_Y_Z (EDIT_DARK_GREEN)
-                        """
-                        # Get the color from the words
-                        rect_color = re.search("([A-Z]+_[A-Z]+_[A-Z]+|"
-                                               "[A-Z]+_[A-Z]+|[A-Z]+)",
-                                               rect_line).group()
-                        # Convert the rect into a KOGElement
-                        in_rect = KOGElement(color_lookup[rect_color],
-                                             pygame.Rect(
-                                                 math.floor(int(rect_properties[0]) * self.res_width),
-                                                 math.floor(int(rect_properties[1]) * self.res_height),
-                                                 math.ceil(int(rect_properties[2]) * self.res_width),
-                                                 math.floor(int(rect_properties[3]) * self.res_height)),
-                                             "rect")
+                    # Get rect with color as a tuple or constant
+                    in_rect = self.find_rect(line, color_lookup)
 
                     # add that rect to our element list for that level
                     if identifier not in self.ls_elements[self.level_id]:
@@ -481,24 +412,12 @@ class Memory:
                         # Add rect to the existing list for that level
                         self.ls_elements[self.level_id][identifier] += [in_rect]
 
-                elif re.search(
-                        r"\([a-z]+, .*, \[[0-9]+, [0-9]+], \[[0-9]+, [0-9]+], [0-9]\)",
-                        line):  # add line elements
-                    """Line elements are detected by this format:
-                    (screen, color, [x, y], [width, height], thickness)
-                    """
+                elif re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+], "
+                               r"\[[0-9]+, [0-9]+], [0-9]\)", line):
 
-                    # Assign the line containing pygame.line elements
-                    line_info = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+], "
-                                          r"\[[0-9]+, [0-9]+], [0-9]\)",
-                                          line).group().split(", ")
-                    # Convert the line into an KOGElement
-                    in_line = KOGElement(line_info[1], [int(line_info[2][1:]),
-                                                        int(line_info[3][:-1]),
-                                                        int(line_info[4][1:]) * self.res_width * self.res_height,
-                                                        int(line_info[5][:-1]) * self.res_width * self.res_height,
-                                                        int(line_info[6][:-1]) * max(self.res_width, self.res_height)],
-                                         "line")
+                    # Get line with color as a tuple or constant
+                    in_line = self.find_line(line, color_lookup)
+
                     # add that line to our element list for that level
                     if identifier not in self.ls_elements[self.level_id]:
                         # If there isn't any objects, make it the first
@@ -513,40 +432,9 @@ class Memory:
                              r"[A-Z]+_[A-Z]+|"
                              r"[A-Z]+|"
                              r"\([0-9]+, [0-9]+, [0-9]+\)), None\)", line):
-                    """(text, (x, y), color )
 
-                    Color is defined currently as:
-                        - X (BLUE)
-                        - X_Y (DARK_RED)
-                        - X_Y_Z (EDIT_DARK_GREEN)
-                    or as a tuple of numbers in the form of a string
-                    """
-                    # Split the parameters into their own separate strings
-                    format_search = re.search(r"\(\".*\", \([0-9]+, [0-9]+\), "
-                                              r"[0-9]+, \"[a-zA-Z]+\", "
-                                              r"([A-Z]+_[A-Z]+_[A-Z]+|"
-                                              r"[A-Z]+_[A-Z]+|"
-                                              r"[A-Z]+|"
-                                              r"\([0-9]+, [0-9]+, [0-9]+\)), "
-                                              r"None\)",
-                                              line).group()[1:-1].split(", ")
-                    # Get color
-                    if format_search[5] in color_lookup:
-                        text_color = color_lookup[format_search[5]]
-                    else:
-                        text_color = (int(format_search[5][1:]),
-                                      int(format_search[6]),
-                                      int(format_search[7][:-1]))
-
-                    # Create Text class
-                    add_text = Text(format_search[0][1:-1],
-                                    (int(format_search[1][1:]),
-                                     int(format_search[2][0:-1])),
-                                    int(format_search[3]),
-                                    format_search[4][1:-1],
-                                    text_color,
-                                    None)
-                    add_text.scale(self.res_width, self.res_height)
+                    # Get text from file and assign it to text object
+                    add_text = self.find_text(line, color_lookup)
 
                     # Add that text into our level_elements
                     if identifier not in self.ls_elements[self.level_id]:
@@ -565,6 +453,171 @@ class Memory:
         self.range_index += 1   # Increment for the next set of ranges
         # self.print_levels is mainly used for debugging purposes only
         # self.print_levels()
+
+    # The following methods are helpers for load_levels
+
+    def find_title(self, line):
+        """ Class helper method for load_levels
+        This method finds and assigns the level title
+        """
+        # Search for the level title
+        self.level_id += 1
+        self.level_set[self.level_id] = []
+        self.ls_elements[self.level_id] = {}
+
+        # Finding level titles in the form ( , , )
+        line_search = re.search(r"\(([0-9]+|-[0-9]+), "
+                                r"([0-9]+|-[0-9]+), "
+                                r"([0-9]+|-[0-9]+)\)",
+                                line).group()
+        format_search = line_search[1:-1].split(", ")
+
+        self.level_set[self.level_id] = [int(format_search[0]),
+                                         int(format_search[1]),
+                                         int(format_search[2])]
+
+        """Will then get the 3 numbers split by comma, then
+        converts them into their ints - x, y and music
+        """
+
+    def find_rect(self, line, color_lookup):
+        """ Class helper method for load_levels
+        This method finds and assigns rects
+        """
+
+        """Rect elements are detected by this format:
+        (screen, color, rect_properties ([x, y, width, height]))
+        """
+        rect_line = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+, "
+                              r"[0-9]+, [0-9]+]\)", line).group()
+        """Obtain rect from the current line and assign to variable
+        """
+        rect_properties = re.search(r"\[[0-9]+, [0-9]+, "
+                                    r"[0-9]+, [0-9]+]",
+                                    rect_line).group()[1:-1].split(
+            ", ")
+        """Get a list of numbers as a string
+        from .split, without the brackets ([1:-1]),
+        from the rect_line variable
+        """
+
+        # If the color is in a tuple of string numbers (x, y, z)
+        if re.search("\([0-9]+, [0-9]+, [0-9]+\)", rect_line):
+            # Get the individual color values
+            rect_color = re.search("\([0-9]+, [0-9]+, "
+                                   "[0-9]+\)",
+                                   rect_line).group().split(",")
+
+            # Convert the rect into a KOGElement
+            in_rect = KOGElement((int(rect_color[0][1:]),
+                                  int(rect_color[1][1:]),
+                                  int(rect_color[2][1:-1])),
+                                 pygame.Rect(
+                                     math.floor(int(
+                                         rect_properties[0]) * self.res_width),
+                                     math.floor(int(
+                                         rect_properties[1]) * self.res_height),
+                                     math.ceil(int(
+                                         rect_properties[2]) * self.res_width),
+                                     math.floor(int(rect_properties[
+                                                        3]) * self.res_height)),
+                                 "rect")
+        else:
+            """Otherwise the color is defined in words:
+                - X (BLUE)
+                - X_Y (DARK_RED)
+                - X_Y_Z (EDIT_DARK_GREEN)
+            """
+            # Get the color from the words
+            rect_color = re.search("([A-Z]+_[A-Z]+_[A-Z]+|"
+                                   "[A-Z]+_[A-Z]+|[A-Z]+)",
+                                   rect_line).group()
+            # Convert the rect into a KOGElement
+            in_rect = KOGElement(color_lookup[rect_color],
+                                 pygame.Rect(
+                                     math.floor(int(
+                                         rect_properties[0]) *
+                                                self.res_width),
+                                     math.floor(int(
+                                         rect_properties[1]) *
+                                                self.res_height),
+                                     math.ceil(int(
+                                         rect_properties[2]) *
+                                               self.res_width),
+                                     math.floor(int(rect_properties[3]) *
+                                                self.res_height)),
+                                 "rect")
+
+        return in_rect
+
+    def find_line(self, line, color_lookup):
+        """ Class helper method for load_levels
+        This method finds and assigns line elements
+        """
+
+        """Line elements are detected by this format:
+        (screen, color, [x, y], [width, height], thickness)
+        """
+
+        # Assign the line containing pygame.line elements
+        line_info = re.search(r"\([a-z]+, .*, \[[0-9]+, [0-9]+], "
+                              r"\[[0-9]+, [0-9]+], [0-9]\)",
+                              line).group().split(", ")
+        # Convert the line into an KOGElement
+        in_line = KOGElement(line_info[1], [int(line_info[2][1:]),
+                                            int(line_info[3][:-1]),
+                                            int(line_info[4][1:]) * \
+                                            self.res_width * self.res_height,
+                                            int(line_info[5][:-1]) * \
+                                            self.res_width * self.res_height,
+                                            int(line_info[6][:-1]) * \
+                                            max(self.res_width,
+                                                self.res_height)],
+                             "line")
+        return in_line
+
+    def find_text(self, line, color_lookup):
+        """ Class helper method for load_levels
+        This method finds and assigns text objects
+        """
+
+        """(text, (x, y), color)
+        Color is defined currently as:
+            - X (BLUE)
+            - X_Y (DARK_RED)
+            - X_Y_Z (EDIT_DARK_GREEN)
+        or as a tuple of numbers in the form of a string
+        """
+        # Split the parameters into their own separate strings
+        format_search = re.search(r"\(\".*\", \([0-9]+, [0-9]+\), "
+                                  r"[0-9]+, \"[a-zA-Z]+\", "
+                                  r"([A-Z]+_[A-Z]+_[A-Z]+|"
+                                  r"[A-Z]+_[A-Z]+|"
+                                  r"[A-Z]+|"
+                                  r"\([0-9]+, [0-9]+, [0-9]+\)), "
+                                  r"None\)",
+                                  line).group()[1:-1].split(", ")
+        # Get color
+        if format_search[5] in color_lookup:
+            text_color = color_lookup[format_search[5]]
+        else:
+            text_color = (int(format_search[5][1:]),
+                          int(format_search[6]),
+                          int(format_search[7][:-1]))
+
+        # Create Text class
+        add_text = Text(format_search[0][1:-1],
+                        (int(format_search[1][1:]),
+                         int(format_search[2][0:-1])),
+                        int(format_search[3]),
+                        format_search[4][1:-1],
+                        text_color,
+                        None)
+        add_text.scale(self.res_width, self.res_height)
+
+        return add_text
+
+    # load_stars will get star data/behavior in stars.txt
 
     def load_stars(self, in_file):
         with open(in_file, "r") as star_file:
@@ -599,7 +652,8 @@ class Memory:
                                           detect_rect,
                                           roam_rect)
                     self.star_data[level_id] += [in_star]
-                print(self.star_data)
+
+    # print_levels is used for debug purposes for load_levels/load_stars
 
     def print_levels(self):
         print("LEVEL TITLES:")
@@ -610,6 +664,8 @@ class Memory:
         print("===============")
         print("LEVEL ID RANGES:")
         print(self.id_range)
+
+    # The following methods are used for manipulating Replay class files/data
 
     def write_replays(self):
         with open("assets/replays_out.txt", "w") as write_file:
@@ -666,6 +722,8 @@ class Memory:
             open_file.write(str(self.quick_restart) + "\n")
             open_file.write(str(self.music.perc_vol) + "\n")
             open_file.write(str(self.sound_vol))
+
+    # load_save will load miscellaneous data from file
 
     def load_save(self):
         file_path = "assets/saves/save_file1.txt"
@@ -725,6 +783,8 @@ class Memory:
         get_save.close()
 
 
+# The following classes are for recording player movement while playing a level
+
 class ReplayBlock:
     """A more convenient way to hold replay info, the info in each node"""
     def __init__(self, times, in_type):
@@ -756,15 +816,18 @@ class ReplayChain:
         self.tail = None
 
     def append(self, item):
-        if self.head is None and self.tail is None and self.check_len() == 0:     # Empty, get first node
+        if self.head is None and self.tail is None and self.check_len() == 0:
+            # Empty, get first node
             self.head = ReplayNode(item)
             self.tail = self.head
-        elif 0 < self.check_len() < 5 and self.tail is not None:    # More than one node, not at limit of 5 yet
+        elif 0 < self.check_len() < 5 and self.tail is not None:
+            # More than one node, not at limit of 5 yet
             new_node = ReplayNode(item)
             self.tail.next = new_node
             self.tail = self.tail.next
         elif 5 <= self.check_len() < 6 and self.head is not None and \
-                self.tail is not None:   # Chain going to go past the length limit
+                self.tail is not None:
+            # Chain going to go past the length limit
             self.head = self.head.next
             new_node = ReplayNode(item)
             self.tail.next = new_node
@@ -986,7 +1049,8 @@ class SquareMe:  # lil purple dude
         self.xpos = x_spawn  # Current x_position, initialized as spawn
         self.ypos = y_spawn # Current y_position, initialized as spawn
         self.width = math.ceil(width * res_width)  # Current width, always 10
-        self.height = math.ceil(height * res_height)  # Current height, always 10
+        self.height = math.ceil(height * res_height)
+        # Current height, always 10
         self.color = rgb  # Color of player as static constant or tuple
         self.square_render = None  # Pygame.draw rect of the player
         self.alive = False  # If the player is alive (able to move)
@@ -1000,7 +1064,8 @@ class SquareMe:  # lil purple dude
         self.direction = 1  # Move direction: 1 for right, -1 for left
         self.max_gravity = 95  # Limit for the gravity loop to iterate
         self.gravity_counter = self.max_gravity  # Counter for gravity loop
-        self.diff_factor = diff * res_width # Movement multiplier based on difficulty and resolution sclaing
+        self.diff_factor = diff * res_width
+        # Movement multiplier based on difficulty and resolution sclaing
 
         file_path = "assets/audio/"
         self.jump_sound_1 = pygame.mixer.Sound(file_path + "jump_sfx.wav")
@@ -1014,7 +1079,6 @@ class SquareMe:  # lil purple dude
                                         self.width + (60 * res_width),
                                         self.height + (80 * res_height))
         # Top, bottom, left and right collision
-        # todo: lower left and right col to a proper position
         self.left_col = pygame.Rect(self.xpos - self.width - (10 * res_width),
                                     self.ypos + (res_height * 1),
                                     self.width + (res_width * 10),
@@ -1058,6 +1122,9 @@ class SquareMe:  # lil purple dude
         self.gravity()
         self.jump()
 
+        self.update_collision_detection()
+
+    def update_collision_detection(self):
         # Update collision logic position in real time with the player position
         self.collide_rect.x = self.xpos - (30 * self.res_width)
         self.collide_rect.y = self.ypos - (30 * self.res_height)
@@ -1107,66 +1174,26 @@ class SquareMe:  # lil purple dude
         # Update the square render/rect with the position (x and y)
 
     def collision_plat(self, object_list: [pygame.Rect]):
-        # in reserve:
-        """self.gravity()
-        self.jump()"""
         # Get all the colliding rects with the bottom rect
         bot_collisions = self.collide_rect.collidelistall(object_list)
 
-        """By default, set gravity to be true (we don't know if the player is on
-        the ground or in the air)
-        """
-        all_y = []
-        self.enable_gravity = True
-        for bcollide_id in bot_collisions:
-            """
-            The if statement checks for if the player is on top of a platform
-            and does so by checking:
-            - If there's any rect that collided (id != -1)
-            - If the player's bottom (self.ypos + self.height) is touching
-                the bottom platform (collide_y <=) or a bit inside the platform
-                (<= collide_y + self.height)
-            - and If the player is within the bounds of the platform.
+        # Bottom platform collision
+        self.bottom_collision(object_list, bot_collisions)
 
-                The left boundary is collide_x < self.xpos + self.width, or if
-                the right side of the player (self.xpos + self.width) is within 
-                the left side of the platform (collide_x).
-
-                The right boundary is self.xpos < collide_x + collide_width, or
-                if the left side of the player (self. xpos) is within the
-                right side of the platform (collide_x + collide_width)
-            """
-            collide_x = object_list[bcollide_id].x
-            collide_y = object_list[bcollide_id].y
-            collide_width = object_list[bcollide_id].width
-            collide_height = object_list[bcollide_id].height
-            if self.ypos < collide_y and \
-                    self.bot_col.colliderect(object_list[bcollide_id]) and not \
-                    self.left_col.colliderect(object_list[bcollide_id]) and not \
-                    self.right_col.colliderect(object_list[bcollide_id]):
-                all_y += [collide_y]
-
-            if (self.ypos + self.height == collide_y or
-                self.square_render.colliderect(object_list[bcollide_id])) and \
-                self.bot_col.colliderect(object_list[bcollide_id]) and \
-                    not self.left_col.colliderect(object_list[bcollide_id]) and \
-                    not self.right_col.colliderect(object_list[bcollide_id]):
-                # If true, disable/reset gravity, enable jump
-                self.enable_gravity = False
-                self.jump_ability = True
-                self.gravity_counter = self.max_gravity
-
-                if collide_y < self.ypos + self.height:
-                    self.ypos = collide_y - self.height
-
-        if 0 < len(all_y):
-            self.grav_y = min(all_y)
-        else:
-            self.grav_y = None
-
-        all_yheight = []
         # Top ceiling collision
         top_collisions = self.collide_rect.collidelistall(object_list)
+        self.top_collision(object_list, top_collisions)
+
+    def collision_wall(self, object_list: [pygame.Rect]):
+        # New collision logic:
+        left_collision = self.collide_rect.collidelistall(object_list)
+        right_collision = self.collide_rect.collidelistall(object_list)
+
+        self.left_collision(object_list, left_collision)
+        self.right_collision(object_list, right_collision)
+
+    def top_collision(self, object_list, top_collisions):
+        all_yheight = []
         for tcollide_id in top_collisions:
             collide_x = object_list[tcollide_id].x
             collide_y = object_list[tcollide_id].y
@@ -1204,11 +1231,56 @@ class SquareMe:  # lil purple dude
         else:
             self.jump_y = None
 
-    def collision_wall(self, object_list: [pygame.Rect]):
-        # New collision logic:
-        left_collision = self.collide_rect.collidelistall(object_list)
-        right_collision = self.collide_rect.collidelistall(object_list)
+    def bottom_collision(self, object_list, bot_collisions):
+        """By default, set gravity to be true (we don't know if the player is on
+        the ground or in the air)
+        """
+        all_y = []
+        self.enable_gravity = True
+        for bcollide_id in bot_collisions:
+            """
+            The if statement checks for if the player is on top of a platform
+            and does so by checking:
+            - If there's any rect that collided (id != -1)
+            - If the player's bottom (self.ypos + self.height) is touching
+                the bottom platform (collide_y <=) or a bit inside the platform
+                (<= collide_y + self.height)
+            - and If the player is within the bounds of the platform.
 
+                The left boundary is collide_x < self.xpos + self.width, or if
+                the right side of the player (self.xpos + self.width) is within 
+                the left side of the platform (collide_x).
+
+                The right boundary is self.xpos < collide_x + collide_width, or
+                if the left side of the player (self. xpos) is within the
+                right side of the platform (collide_x + collide_width)
+            """
+            collide_y = object_list[bcollide_id].y
+            if self.ypos < collide_y and \
+                    self.bot_col.colliderect(object_list[bcollide_id]) and not \
+                    self.left_col.colliderect(object_list[bcollide_id]) and not \
+                    self.right_col.colliderect(object_list[bcollide_id]):
+                all_y += [collide_y]
+
+            if (self.ypos + self.height == collide_y or
+                self.square_render.colliderect(object_list[bcollide_id])) and \
+                    self.bot_col.colliderect(object_list[bcollide_id]) and \
+                    not self.left_col.colliderect(object_list[bcollide_id]) and \
+                    not self.right_col.colliderect(object_list[bcollide_id]):
+                # If true, disable/reset gravity, enable jump
+                self.enable_gravity = False
+                self.jump_ability = True
+                self.gravity_counter = self.max_gravity
+
+                if collide_y < self.ypos + self.height:
+                    self.ypos = collide_y - self.height
+
+        if 0 < len(all_y):
+            self.grav_y = min(all_y)
+        else:
+            self.grav_y = None
+
+    def left_collision(self, object_list, left_collision):
         all_xl = []
         # Left side collision, going left to turn right
         for lcollide_id in left_collision:
@@ -1232,9 +1304,15 @@ class SquareMe:  # lil purple dude
                 self.enable_gravity = True
 
                 if self.xpos < collide_x + collide_width and \
-                    not self.top_col.colliderect(object_list[lcollide_id]):
+                        not self.top_col.colliderect(object_list[lcollide_id]):
                     self.xpos = collide_x + collide_width
 
+        if 0 < len(all_xl):
+            self.left_x = max(all_xl)
+        else:
+            self.left_x = None
+
+    def right_collision(self, object_list, right_collision):
         all_xr = []
         # Right side collision, going right to turn left
         for rcollide_id in right_collision:
@@ -1258,13 +1336,9 @@ class SquareMe:  # lil purple dude
                 self.enable_gravity = True
 
                 if collide_x < self.xpos + self.width and \
-                    not self.top_col.colliderect(object_list[rcollide_id]):
+                        not self.top_col.colliderect(object_list[rcollide_id]):
                     self.xpos = collide_x - self.width
 
-        if 0 < len(all_xl):
-            self.left_x = max(all_xl)
-        else:
-            self.left_x = None
         if 0 < len(all_xr):
             self.right_x = min(all_xr)
         else:
