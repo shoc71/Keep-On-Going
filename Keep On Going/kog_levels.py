@@ -571,8 +571,7 @@ class OptionsPage(LevelScene):
             1: [255, 235],
             2: [1, 2],
             3: [0, 100],
-            4: [0, 100],
-            5: [0, 3]
+            4: [0, 100]
         }
 
         # Remember the last value for this setting
@@ -581,8 +580,7 @@ class OptionsPage(LevelScene):
             1: self.memory.bg_slider,
             2: self.memory.quick_restart,
             3: self.memory.music.perc_vol,
-            4: self.memory.sound_vol,
-            5: self.memory.res_index
+            4: self.memory.sound_vol
         }
 
         # Setup select options (so far, difficulty and music)
@@ -595,8 +593,7 @@ class OptionsPage(LevelScene):
             1: ["Text", "Slider", "Text", "Text", "Text", "Text"],
             2: ["Text", "Text", "Text"],
             3: ["Text", "Slider", "Text", "Text", "Text", "Text"],
-            4: ["Text", "Slider", "Text", "Text", "Text", "Text"],
-            5: ["Text", "Text", "Text"]
+            4: ["Text", "Slider", "Text", "Text", "Text", "Text"]
         }  # What type of setting is it
         self.update_text()  # Add text to setting_words to render
 
@@ -702,31 +699,6 @@ class OptionsPage(LevelScene):
         self.memory.quick_restart = self.setting_mem[2]
         self.memory.music.perc_vol = self.setting_mem[3]
         self.memory.sound_vol = self.setting_mem[4]
-        self.memory.res_index = self.setting_mem[5]
-        self.memory.res_width = self.memory.res_set[self.setting_mem[5]][0] / 1080
-        self.memory.res_height = self.memory.res_set[self.setting_mem[5]][1] / 576
-
-        if self.choose_setting == 5 and \
-                self.hold_res != [self.memory.res_width, self.memory.res_height]:
-            # Change the res for this scene only
-            self.memory.screen = pygame.display.set_mode(
-                [self.memory.res_set[self.setting_mem[5]][0],
-                 self.memory.res_set[self.setting_mem[5]][1]])
-            self.memory.load_all_levels()  # Apply res to all levels
-            self.load_renders(-4)
-
-            self.option_title = kogclass.Text("OPTIONS", ((1080 / 2), 50), 50,
-                                              "impact", DARK_RED, None)
-            self.option_title.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
-                                    self.memory.res_set[self.setting_mem[5]][1] / 576)
-
-            self.return_text = kogclass.Text(
-                "press R to go back", (1080 / 2, 100), 25,
-                "impact", DARK_GREY, None)
-            self.return_text.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
-                                   self.memory.res_set[self.setting_mem[5]][1] / 576)
-
-        self.hold_res = [self.memory.res_width, self.memory.res_height]
 
         # Increment how quick changing the settings go
         if 250 * self.change_speed < \
@@ -805,8 +777,7 @@ class OptionsPage(LevelScene):
                 "MAX",
                 "Change the music volume on a scale",
                 "from 0 to 100"],
-            4: ["Set Sound Volume"],
-            5: []
+            4: ["Set Sound Volume"]
         }
 
         self.setting_words = {
@@ -924,23 +895,7 @@ class OptionsPage(LevelScene):
                               (int(1080 / 2 * self.memory.res_width),
                                int(340 * self.memory.res_height)),
                               25, "impact", YELLOW, None)
-                ],
-            5: [kogclass.Text("Resolution: " +
-                              str(self.memory.res_set[self.memory.res_index])[
-                              1:-1],
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(200 * self.memory.res_height)),
-                              50 * max(self.memory.res_width,
-                                       self.memory.res_height), "impact",
-                              YELLOW, None),
-                kogclass.Text("Choose game window size and resolution",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(315 * self.memory.res_height)),
-                              25, "impact", YELLOW, None),
-                kogclass.Text("1080, 576 is the default",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(340 * self.memory.res_height)),
-                              25, "impact", YELLOW, None)]
+                ]
         }
 
     def update_text(self):
@@ -1972,7 +1927,7 @@ class LevelZero(LevelScene):
 
         self.clear_code_morse_block = [] # box to clear text
         self.convert_code_morse_block = [] # box to convert morse_code into english aplhabets
-        self.check_correct_morse_block = [] # checking if word exists in lock 
+        self.check_correct_morse_block = [] # checking if word exists in lock
         self.clear_all_text_morse_block = [] # clearing all texts
 
         self.short_dot = [] # short box entry
