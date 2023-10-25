@@ -326,6 +326,19 @@ class Memory:
 
     def load_all_levels(self):
         folder_path = "assets/levels/"
+
+        self.level_set = {}
+        """Loaded in level data containing player spawn (ADD MORE)
+        """
+        self.ls_elements = {}
+        """Loaded in level data containing text, rects and lines for 
+        platforms
+        """
+        self.level_id = 0  # Initialize level_id
+
+        self.id_range = {}  # Ranges for different sets of levels
+        self.range_index = 0
+
         try:
             file_list = os.listdir(folder_path)
         except:
@@ -513,14 +526,14 @@ class Memory:
                                   int(rect_color[1][1:]),
                                   int(rect_color[2][1:-1])),
                                  pygame.Rect(
-                                     math.floor(int(
-                                         rect_properties[0]) * self.res_width),
-                                     math.floor(int(
-                                         rect_properties[1]) * self.res_height),
-                                     math.ceil(int(
-                                         rect_properties[2]) * self.res_width),
-                                     math.floor(int(rect_properties[
-                                                        3]) * self.res_height)),
+                                     int(math.floor(int(
+                                         rect_properties[0]) * self.res_width)),
+                                     int(math.floor(int(
+                                         rect_properties[1]) * self.res_height)),
+                                     int(math.ceil(int(
+                                         rect_properties[2]) * self.res_width)),
+                                     int(math.floor(int(rect_properties[
+                                                        3]) * self.res_height))),
                                  "rect")
         else:
             """Otherwise the color is defined in words:
@@ -535,17 +548,17 @@ class Memory:
             # Convert the rect into a KOGElement
             in_rect = KOGElement(color_lookup[rect_color],
                                  pygame.Rect(
-                                     math.floor(int(
+                                     int(math.floor(int(
                                          rect_properties[0]) *
-                                                self.res_width),
-                                     math.floor(int(
+                                                self.res_width)),
+                                     int(math.floor(int(
                                          rect_properties[1]) *
-                                                self.res_height),
-                                     math.ceil(int(
-                                         rect_properties[2]) *
-                                               self.res_width),
-                                     math.floor(int(rect_properties[3]) *
                                                 self.res_height)),
+                                     int(math.ceil(int(
+                                         rect_properties[2]) *
+                                               self.res_width)),
+                                     int(math.floor(int(rect_properties[3]) *
+                                                self.res_height))),
                                  "rect")
 
         return in_rect
@@ -566,13 +579,13 @@ class Memory:
         # Convert the line into an KOGElement
         in_line = KOGElement(line_info[1], [int(line_info[2][1:]),
                                             int(line_info[3][:-1]),
-                                            int(line_info[4][1:]) * \
-                                            self.res_width * self.res_height,
-                                            int(line_info[5][:-1]) * \
-                                            self.res_width * self.res_height,
-                                            int(line_info[6][:-1]) * \
+                                            int(int(line_info[4][1:]) * \
+                                            self.res_width * self.res_height),
+                                            int(int(line_info[5][:-1]) * \
+                                            self.res_width * self.res_height),
+                                            int(int(line_info[6][:-1]) * \
                                             max(self.res_width,
-                                                self.res_height)],
+                                                self.res_height))],
                              "line")
         return in_line
 
