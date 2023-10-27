@@ -47,8 +47,10 @@ class LevelScene(kogclass.Scene):
         self.win_zones = []  # All win areas for that level (win condition)
         self.respawn_zones = []  # todo: add new respawn zones to levels
 
-        self.x_spawn = x_spawn * level_memory.res_width # x spawning location for player
-        self.y_spawn = y_spawn * level_memory.res_height  # y spawning location for player
+        self.x_spawn = x_spawn * level_memory.res_width
+        # x spawning location for player
+        self.y_spawn = y_spawn * level_memory.res_height
+        # y spawning location for player
         self.player = kogclass.SquareMe(self.x_spawn, self.y_spawn,
                                         10, 10, PURPLE,
                                         level_memory.diff_lookup[
@@ -81,25 +83,25 @@ class LevelScene(kogclass.Scene):
         self.pause_text = kogclass.Text("PAUSED", (540, 213),
                                         100, "impact", DARK_RED, None)
         self.pause_text.scale(level_memory.res_width,
-                                   level_memory.res_height)
+                              level_memory.res_height)
         self.pause_text_2 = kogclass.Text("Press esc to unpause", (540, 280),
                                           30, "impact", DARK_RED, None)
         self.pause_text_2.scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                level_memory.res_height)
         self.pause_text_3 = kogclass.Text("Press q to quit", (540, 315),
                                           30, "impact", DARK_RED, None)
         self.pause_text_3.scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                level_memory.res_height)
         self.pause_text_4 = kogclass.Text("Press b to return to menu",
                                           (540, 350), 30,
                                           "impact", DARK_RED, None)
         self.pause_text_4.scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                level_memory.res_height)
         self.pause_text_5 = kogclass.Text("Press r to restart the level",
                                           (540, 385), 30,
                                           "impact", DARK_RED, None)
         self.pause_text_5.scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                level_memory.res_height)
         # Text displayed when player pauses the game (ESC)
 
         self.memory = level_memory
@@ -131,7 +133,8 @@ class LevelScene(kogclass.Scene):
             # Pressing/tapping and not holding jump key to jump
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
                     self.player.enable_gravity and self.player.alive and not \
-                    self.player.freeze and 150 <= pygame.time.get_ticks() - self.jump_timer:
+                    self.player.freeze and \
+                    150 <= pygame.time.get_ticks() - self.jump_timer:
                 self.player.jump_ability = True  # Allow player to jump
                 self.player.jump_boost = self.player.max_jump  # Setup jump
                 self.player.jump_sound_1.play()  # Play jump sound
@@ -190,7 +193,8 @@ class LevelScene(kogclass.Scene):
         # Held controls for jumping
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
                 and not self.player.enable_gravity and self.player.alive and \
-                not self.player.freeze and 150 <= pygame.time.get_ticks() - self.jump_timer:
+                not self.player.freeze and \
+                150 <= pygame.time.get_ticks() - self.jump_timer:
             self.player.jump_ability = True  # Allow player to jump
             self.player.jump_boost = self.player.max_jump  # Setup jump
             self.player.jump_sound_1.play()  # Play jump sound
@@ -227,7 +231,8 @@ class LevelScene(kogclass.Scene):
             self.player.gravity_counter = self.player.max_gravity
 
         # If player is below the level, count as a death (out of bounds)
-        if (576 * self.memory.res_height) + self.player.height < self.player.ypos:
+        if (576 * self.memory.res_height) + \
+                self.player.height < self.player.ypos:
             self.player.alive = False
             self.deaths += 1
 
@@ -392,15 +397,24 @@ class MenuScene(LevelScene):
         self.on_image_text = pygame.image.load(file_path + "On.png")
         self.going_image_text = pygame.image.load(file_path + "Going.png")
 
-        self.keep_image_text = pygame.transform.scale(self.keep_image_text,
-                                                      (self.keep_image_text.get_rect().width * self.memory.res_width * (0.2),
-                                                       self.keep_image_text.get_rect().height * self.memory.res_height * (0.225)))
-        self.on_image_text = pygame.transform.scale(self.on_image_text,
-                                                      (self.on_image_text.get_rect().width * self.memory.res_width * (0.2),
-                                                       self.on_image_text.get_rect().height * self.memory.res_height * (0.225)))
-        self.going_image_text = pygame.transform.scale(self.going_image_text,
-                                                      (self.going_image_text.get_rect().width * self.memory.res_width  * (0.2),
-                                                       self.going_image_text.get_rect().height * self.memory.res_height * (0.225)))
+        self.keep_image_text = \
+            pygame.transform.scale(self.keep_image_text,
+                                   (self.keep_image_text.get_rect().width *
+                                    self.memory.res_width * 0.2,
+                                    self.keep_image_text.get_rect().height *
+                                    self.memory.res_height * 0.225))
+        self.on_image_text = \
+            pygame.transform.scale(self.on_image_text,
+                                   (self.on_image_text.get_rect().width *
+                                    self.memory.res_width * 0.2,
+                                    self.on_image_text.get_rect().height *
+                                    self.memory.res_height * 0.225))
+        self.going_image_text = \
+            pygame.transform.scale(self.going_image_text,
+                                   (self.going_image_text.get_rect().width *
+                                    self.memory.res_width * 0.2,
+                                    self.going_image_text.get_rect().height *
+                                    self.memory.res_height * 0.225))
 
         # Text for displaying title select options organized in a lists
         self.option_select = [
@@ -505,9 +519,12 @@ class MenuScene(LevelScene):
                                  element.shape[4])
 
         # Text or Front-most
-        screen.blit(self.keep_image_text, (self.memory.res_width + 35, 10 * self.memory.res_height))
-        screen.blit(self.on_image_text, (410 * self.memory.res_width - 5, 10 * self.memory.res_height))
-        screen.blit(self.going_image_text, (720 * self.memory.res_width - 95, 10 * self.memory.res_height))
+        screen.blit(self.keep_image_text,
+                    (self.memory.res_width + 35, 10 * self.memory.res_height))
+        screen.blit(self.on_image_text, (
+            410 * self.memory.res_width - 5, 10 * self.memory.res_height))
+        screen.blit(self.going_image_text, (
+            720 * self.memory.res_width - 95, 10 * self.memory.res_height))
         """screen.blit(self.title_text.text_img, self.title_text.text_rect)
         screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)"""
         screen.blit(self.title_text_s1.text_img, self.title_text_s1.text_rect)
@@ -571,8 +588,7 @@ class OptionsPage(LevelScene):
             1: [255, 235],
             2: [1, 2],
             3: [0, 100],
-            4: [0, 100],
-            5: [0, 3]
+            4: [0, 100]
         }
 
         # Remember the last value for this setting
@@ -581,26 +597,27 @@ class OptionsPage(LevelScene):
             1: self.memory.bg_slider,
             2: self.memory.quick_restart,
             3: self.memory.music.perc_vol,
-            4: self.memory.sound_vol,
-            5: self.memory.res_index
+            4: self.memory.sound_vol
         }
 
         # Setup select options (so far, difficulty and music)
 
         self.num_to_diff = {0.6: "Easy", 0.8: "Medium", 1.0: "Hard"}
         # Difficulties available
-        self.init_text()    # Initialize setting words
+
+        self.setting_words = {}
+
         self.setting_type = {
             0: ["Text", "Text", "Text"],
             1: ["Text", "Slider", "Text", "Text", "Text", "Text"],
             2: ["Text", "Text", "Text"],
             3: ["Text", "Slider", "Text", "Text", "Text", "Text"],
-            4: ["Text", "Slider", "Text", "Text", "Text", "Text"],
-            5: ["Text", "Text", "Text"]
+            4: ["Text", "Slider", "Text", "Text", "Text", "Text"]
         }  # What type of setting is it
         self.update_text()  # Add text to setting_words to render
 
-        self.choose_setting = 0  # Index for which setting to change (diff/music)
+        self.choose_setting = 0
+        # Index for which setting to change (diff/music)
         self.change_setting = self.memory.diff_value
         # Variable for changing that selected setting (easy vs. hard)
 
@@ -612,7 +629,7 @@ class OptionsPage(LevelScene):
             "press R to go back", (1080 / 2, 100), 25,
             "impact", DARK_GREY, None)
         self.return_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                               self.memory.res_height)
 
         self.change_speed = 1
         # How fast holding the button will change the option
@@ -626,7 +643,7 @@ class OptionsPage(LevelScene):
 
         self.load_renders(-4)
 
-        self.hold_res = False     # Used to only apply res changes once
+        self.hold_res = False  # Used to only apply res changes once
 
     def input(self, pressed, held):
         for action in pressed:
@@ -660,13 +677,13 @@ class OptionsPage(LevelScene):
 
         if held[pygame.K_a] and (1000 / self.change_speed) < \
                 pygame.time.get_ticks() - self.change_time and \
-                    1200 < pygame.time.get_ticks() - self.menu_buffer:
+                1200 < pygame.time.get_ticks() - self.menu_buffer:
             self.setting_mem[self.choose_setting] -= 1
             self.change_time = pygame.time.get_ticks()
 
         elif held[pygame.K_d] and (1000 / self.change_speed) < \
                 pygame.time.get_ticks() - self.change_time and \
-                    1200 < pygame.time.get_ticks() - self.menu_buffer:
+                1200 < pygame.time.get_ticks() - self.menu_buffer:
             self.setting_mem[self.choose_setting] += 1
             self.change_time = pygame.time.get_ticks()
 
@@ -686,8 +703,8 @@ class OptionsPage(LevelScene):
                 self.setting_range[self.choose_setting]):
             self.setting_mem[self.choose_setting] = max(
                 self.setting_range[self.choose_setting])
-        elif max(self.setting_range[self.choose_setting]) < self.setting_mem[
-            self.choose_setting]:
+        elif max(self.setting_range[self.choose_setting]) < \
+                self.setting_mem[self.choose_setting]:
             self.setting_mem[self.choose_setting] = min(
                 self.setting_range[self.choose_setting])
 
@@ -702,31 +719,6 @@ class OptionsPage(LevelScene):
         self.memory.quick_restart = self.setting_mem[2]
         self.memory.music.perc_vol = self.setting_mem[3]
         self.memory.sound_vol = self.setting_mem[4]
-        self.memory.res_index = self.setting_mem[5]
-        self.memory.res_width = self.memory.res_set[self.setting_mem[5]][0] / 1080
-        self.memory.res_height = self.memory.res_set[self.setting_mem[5]][1] / 576
-
-        if self.choose_setting == 5 and \
-                self.hold_res != [self.memory.res_width, self.memory.res_height]:
-            # Change the res for this scene only
-            self.memory.screen = pygame.display.set_mode(
-                [self.memory.res_set[self.setting_mem[5]][0],
-                 self.memory.res_set[self.setting_mem[5]][1]])
-            self.memory.load_all_levels()  # Apply res to all levels
-            self.load_renders(-4)
-
-            self.option_title = kogclass.Text("OPTIONS", ((1080 / 2), 50), 50,
-                                              "impact", DARK_RED, None)
-            self.option_title.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
-                                    self.memory.res_set[self.setting_mem[5]][1] / 576)
-
-            self.return_text = kogclass.Text(
-                "press R to go back", (1080 / 2, 100), 25,
-                "impact", DARK_GREY, None)
-            self.return_text.scale(self.memory.res_set[self.setting_mem[5]][0] / 1080,
-                                   self.memory.res_set[self.setting_mem[5]][1] / 576)
-
-        self.hold_res = [self.memory.res_width, self.memory.res_height]
 
         # Increment how quick changing the settings go
         if 250 * self.change_speed < \
@@ -779,36 +771,8 @@ class OptionsPage(LevelScene):
 
         LevelScene.render_text(self, screen)
 
-    def init_text(self):
-        self.setting_words = {
-            0: ["Difficulty: " +
-                              str(self.num_to_diff[
-                                      self.memory.diff_lookup[
-                                          self.memory.diff_value]]),
-                "Choose the player movement speed with",
-                "easy (slow), medium (default) and hard (fastest)"],
-            1: ["Change Background",
-                (430 - 5 + (4 * (
-                        self.memory.bg_slider - 200))) * self.memory.res_width,
-                "LIGHT GREY",
-                "WHITE",
-                "Change the background ranging between",
-                "light grey and white"],
-            2: ["Quick Restart: Press R " +
-                              str(self.memory.quick_restart) + " Time(s)",
-                "Change how many times you'll need",
-                "press \"R\" to restart a level"],
-            3: ["Set Music Volume",
-                (430 - 5 + (
-                        2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
-                "MIN",
-                "MAX",
-                "Change the music volume on a scale",
-                "from 0 to 100"],
-            4: ["Set Sound Volume"],
-            5: []
-        }
-
+    def update_text(self):
+        # Update or initialize self.setting_words with text
         self.setting_words = {
             0: [kogclass.Text("Difficulty: " +
                               str(self.num_to_diff[
@@ -829,8 +793,8 @@ class OptionsPage(LevelScene):
                      int(340 * self.memory.res_height)),
                     25, "impact", YELLOW, None)],
             1: [kogclass.Text("Change Background", (
-            int(1080 / 2 * self.memory.res_width),
-            int(200 * self.memory.res_height)),
+                int(1080 / 2 * self.memory.res_width),
+                int(200 * self.memory.res_height)),
                               50 * max(self.memory.res_width,
                                        self.memory.res_height), "impact",
                               YELLOW, None),
@@ -872,13 +836,13 @@ class OptionsPage(LevelScene):
                               25, "impact", YELLOW, None)
                 ],
             3: [kogclass.Text("Set Music Volume", (
-            int(1080 / 2 * self.memory.res_width),
-            int(200 * self.memory.res_height)),
+                int(1080 / 2 * self.memory.res_width),
+                int(200 * self.memory.res_height)),
                               50 * max(self.memory.res_width,
                                        self.memory.res_height), "impact",
                               YELLOW, None),
-                (430 - 5 + (
-                            2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
+                (430 - 5 +
+                 (2.2 * self.memory.music.perc_vol)) * self.memory.res_width,
                 kogclass.Text("MIN", (355 * self.memory.res_width,
                                       265 * self.memory.res_height),
                               25 * max(self.memory.res_width,
@@ -899,13 +863,13 @@ class OptionsPage(LevelScene):
                               25, "impact", YELLOW, None)
                 ],
             4: [kogclass.Text("Set Sound Volume", (
-            int(1080 / 2 * self.memory.res_width),
-            int(200 * self.memory.res_height)),
+                int(1080 / 2 * self.memory.res_width),
+                int(200 * self.memory.res_height)),
                               50 * max(self.memory.res_width,
                                        self.memory.res_height), "impact",
                               YELLOW, None),
                 (430 - 5 + (
-                            2.2 * self.memory.sound_vol)) * self.memory.res_width,
+                        2.2 * self.memory.sound_vol)) * self.memory.res_width,
                 kogclass.Text("MIN", (355 * self.memory.res_width,
                                       265 * self.memory.res_height),
                               25 * max(self.memory.res_width,
@@ -925,32 +889,15 @@ class OptionsPage(LevelScene):
                                int(340 * self.memory.res_height)),
                               25, "impact", YELLOW, None)
                 ],
-            5: [kogclass.Text("Resolution: " +
-                              str(self.memory.res_set[self.memory.res_index])[
-                              1:-1],
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(200 * self.memory.res_height)),
-                              50 * max(self.memory.res_width,
-                                       self.memory.res_height), "impact",
-                              YELLOW, None),
-                kogclass.Text("Choose game window size and resolution",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(315 * self.memory.res_height)),
-                              25, "impact", YELLOW, None),
-                kogclass.Text("1080, 576 is the default",
-                              (int(1080 / 2 * self.memory.res_width),
-                               int(340 * self.memory.res_height)),
-                              25, "impact", YELLOW, None)]
         }
 
-    def update_text(self):
-        # Update or initialize self.setting_words with text
-
-        for each_setting in range(len(self.setting_type)):
-            if "Slider" in self.setting_type[each_setting]:
-                pass
-            else:
-                pass
+        self.setting_type = {
+            0: ["Text", "Text", "Text"],
+            1: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+            2: ["Text", "Text", "Text"],
+            3: ["Text", "Slider", "Text", "Text", "Text", "Text"],
+            4: ["Text", "Slider", "Text", "Text", "Text", "Text"]
+        }
 
 
 class ReplayIO(LevelScene):
@@ -961,26 +908,26 @@ class ReplayIO(LevelScene):
         self.file_in = kogclass.Text("File Input", (1080 / 3, 376 / 3),
                                      50, "impact", PURPLE, None)
         self.file_in.scale(self.memory.res_width,
-                                self.memory.res_height)
+                           self.memory.res_height)
         self.file_out = kogclass.Text("File Output", (1080 / 3, 376 / 3 * 2),
                                       50, "impact", PURPLE, None)
         self.file_out.scale(self.memory.res_width,
-                                self.memory.res_height)
+                            self.memory.res_height)
 
         self.text_in = kogclass.Text("Text Input", (1080 / 3 * 2, 376 / 3),
                                      50, "impact", PURPLE, None)
         self.text_in.scale(self.memory.res_width,
-                                self.memory.res_height)
+                           self.memory.res_height)
         self.text_out = kogclass.Text("Text Output", (1080 / 3 * 2,
                                                       376 / 3 * 2),
                                       50, "impact", PURPLE, None)
         self.text_out.scale(self.memory.res_width,
-                                self.memory.res_height)
+                            self.memory.res_height)
         self.return_text = kogclass.Text(
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", DARK_GREY, None)
         self.return_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                               self.memory.res_height)
 
         self.icon_list = [self.file_in, self.text_in,
                           self.file_out, self.text_out]
@@ -1032,13 +979,13 @@ class ReplayIO(LevelScene):
                           "impact", YELLOW, None)
         ]
         self.extra_help[0].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                 self.memory.res_height)
         self.extra_help[1].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                 self.memory.res_height)
         self.extra_help[2].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                 self.memory.res_height)
         self.extra_help[3].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                 self.memory.res_height)
 
         self.invalid_text = kogclass.Text("INVALID Copy and Paste, Try Again!",
                                           (1080 / 2, 576 / 3), 75,
@@ -1113,7 +1060,6 @@ class ReplayIO(LevelScene):
                         self.invalid_timer = pygame.time.get_ticks()
                         # text invalid stuff
 
-
                 # File out
                 elif self.choose_counter == 2:
                     self.memory.write_replays()
@@ -1176,7 +1122,7 @@ class StatsPage(LevelScene):
                 "GO COMPLETE SOME LEVELS FIRST!", (1080 / 2, (576 / 2)), 50,
                 "impact", DARK_RED, None)
             self.nothing_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                    self.memory.res_height)
         # Otherwise, set the counter to 0 (first displayed level) and display
         # the statistics
         else:
@@ -1187,7 +1133,7 @@ class StatsPage(LevelScene):
             "press R to go back", (1080 / 2, (576 / 2) + 250), 25,
             "impact", DARK_GREY, None)
         self.return_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                               self.memory.res_height)
 
     def input(self, pressed, held):
         # Check if there are level's completed
@@ -1257,21 +1203,21 @@ class StatsPage(LevelScene):
                           YELLOW, None)
         ]
         self.render_stats[0].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
         self.render_stats[1].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
         self.render_stats[2].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
         self.render_stats[3].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
         self.render_stats[4].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
         self.render_stats[5].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
         self.render_stats[6].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
         self.render_stats[7].scale(self.memory.res_width,
-                                self.memory.res_height)
+                                   self.memory.res_height)
 
     def render(self, screen):
         LevelScene.render(self, screen)  # Background Colors or Back-most
@@ -1307,31 +1253,31 @@ class LevelSelect(LevelScene):
         self.filler_text = kogclass.Text("Choose A Level",
                                          (540, 153), 50, "impact", YELLOW, None)
         self.filler_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                               self.memory.res_height)
 
         self.level_selector_text_0 = kogclass.Text("Choose a Level", (535, 100),
                                                    65,
                                                    "impact", YELLOW, None)
         self.level_selector_text_0.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                         self.memory.res_height)
 
         self.level_selector_text_1 = kogclass.Text(
             "Tap/Hold A or D to navigate through the levels",
             (535, 450), 30, "impact", YELLOW, None)
         self.level_selector_text_1.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                         self.memory.res_height)
 
         self.level_selector_text_2 = kogclass.Text(
             "Tap R to return to Main Menu", (545, 530), 25,
             "impact", DARK_GREY, None)
         self.level_selector_text_2.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                         self.memory.res_height)
 
         self.level_selector_text_3 = kogclass.Text(
             "Press W or Space to start the level",
             (535, 490), 28, "impact", YELLOW, None)
         self.level_selector_text_3.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                         self.memory.res_height)
 
         self.confirm_text = kogclass.Text("UNLOCKED ALL LEVELS",
                                           (1080 / 2, 576 / 2), 100, "impact",
@@ -1384,7 +1330,8 @@ class LevelSelect(LevelScene):
                     # Reset timer for block animation
                     self.direction = 1  # Blocks going to the right
                 # Move the blocks to the left (illusion of player going right)
-                if every_key == pygame.K_d and self.choose_id < self.level_set[-1] + 1:
+                if every_key == pygame.K_d and \
+                        self.choose_id < self.level_set[-1] + 1:
                     self.blockmation_time = pygame.time.get_ticks()
                     # Reset timer for block animation
                     self.direction = -1  # Blocks going to the left
@@ -1420,7 +1367,7 @@ class LevelSelect(LevelScene):
             self.player.jumps += 1  # Add to jump counter (useless)
 
             self.blockmation_time = pygame.time.get_ticks()
-            # Reset timer for block animat
+            # Reset timer for block animation
             self.direction = -1  # Set block direction to the left
 
         # If nothing is held, reset the quick jump
@@ -1429,7 +1376,7 @@ class LevelSelect(LevelScene):
 
         # Secret :P
         if held[pygame.K_k] and held[pygame.K_o] and held[pygame.K_g] and \
-            pygame.K_ESCAPE:
+                pygame.K_ESCAPE:
             for level_key in self.level_data:
                 if 0 < level_key and level_key not in self.level_set:
                     self.level_set += [level_key]
@@ -1451,9 +1398,9 @@ class LevelSelect(LevelScene):
 
         # After 3 seconds, speed up jumping
         if 3000 <= pygame.time.get_ticks() - self.repjump_time:
-            self.speed_jump = 2  # Jump speed multiplier
+            self.speed_jump = 2  # The jump speed multiplier
         else:
-            self.speed_jump = 1  # Jump speed multiplier
+            self.speed_jump = 1  # The jump speed multiplier
 
     def render(self, screen):
         LevelScene.render(self, screen)  # Basic rendering (screen.fill, etc.)
@@ -1461,7 +1408,7 @@ class LevelSelect(LevelScene):
         LevelScene.render_text(self, screen)  # LevelScene text (useless)
 
         # Rendering the instructions of using the level-selector
-        if self.memory.enable_replay == False:
+        if not self.memory.enable_replay:
             screen.blit(self.level_selector_text_0.text_img,
                         self.level_selector_text_0.text_rect)
         screen.blit(self.level_selector_text_1.text_img,
@@ -1477,21 +1424,21 @@ class LevelSelect(LevelScene):
                                    (576 / 2) + 39], 40, "impact", YELLOW,
                                   None)
         left_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                        self.memory.res_height)
         # Text seen in the middle/what the player is standing on (current sel)
         middle_text = kogclass.Text(str(self.choose_id),
                                     [(1080 / 2) + self.text_x,
                                      (576 / 2) + 39],
                                     40, "impact", YELLOW, None)
         middle_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                          self.memory.res_height)
         # Text seen to the right side (current selection, +1)
         right_text = kogclass.Text(str(self.choose_id + 1),
                                    [(1080 / 2) + 200 + self.text_x,
                                     (576 / 2) + 39], 40, "impact", YELLOW,
                                    None)
         right_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                         self.memory.res_height)
 
         scroll_text = [left_text, middle_text, right_text]
         # Make a list to render it in a for loop
@@ -1577,7 +1524,7 @@ class ReplaySelect(LevelSelect):
         self.no_data = kogclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
                                      "impact", RED, None)
         self.no_data.scale(self.memory.res_width,
-                                self.memory.res_height)
+                           self.memory.res_height)
         self.replay_title = kogclass.Text("Choose A Replay Level",
                                           (1080 / 2, 160), 50, "impact",
                                           YELLOW, None)
@@ -1614,13 +1561,13 @@ class ReplayOut(ReplaySelect):
                                        (1080 / 2, 3 * 576 / 4),
                                        50, "impact", YELLOW, None)
         self.copy_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                             self.memory.res_height)
         self.copy_time = pygame.time.get_ticks() - 3100
         self.replayo_title = kogclass.Text("Choose a Level to Copy!",
                                            (1080 / 2, 160), 50, "impact",
                                            YELLOW, None)
         self.replayo_title.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                 self.memory.res_height)
 
     def input(self, pressed, held):
         LevelSelect.input(self, pressed, held)
@@ -1634,7 +1581,7 @@ class ReplayOut(ReplaySelect):
                     (1080 / 2, 3 * 576 / 4),
                     50, "impact", YELLOW, None)
                 self.copy_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                     self.memory.res_height)
                 pygame.scrap.put(pygame.SCRAP_TEXT,
                                  bytes(str(
                                      self.memory.replay_exp[self.choose_id]),
@@ -1722,7 +1669,7 @@ class PlayLevel(LevelSelect):
             self.lose_text = kogclass.Text("LOSE", [1080 / 2, 576 / 2], 250,
                                            "impact", YELLOW, None)
             self.lose_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                 self.memory.res_height)
             self.count_down = 3
             self.count_change = pygame.time.get_ticks()
             self.count_time = pygame.time.get_ticks()  # Time spent counting
@@ -1733,7 +1680,7 @@ class PlayLevel(LevelSelect):
                                             250,
                                             "impact", YELLOW, None)
             self.count_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                  self.memory.res_height)
 
     def input(self, pressed, held):
         if not self.start_toggle:
@@ -1753,7 +1700,7 @@ class PlayLevel(LevelSelect):
                                                 250,
                                                 "impact", YELLOW, None)
                 self.count_text.scale(self.memory.res_width,
-                                self.memory.res_height)
+                                      self.memory.res_height)
                 self.count_change = pygame.time.get_ticks()
 
             if 3000 < pygame.time.get_ticks() - self.count_time:
@@ -1780,7 +1727,8 @@ class PlayLevel(LevelSelect):
                    1:2] == "J":
                     self.replayer.gravity_counter = self.replayer.max_gravity
                     self.replayer.jump_ability = True  # Allow player to jump
-                    self.replayer.jump_boost = self.player.max_jump  # Setup jump
+                    self.replayer.jump_boost = self.player.max_jump
+                    # Setup jump
 
                 elif self.memory.replay_imp[self.level_id][self.replay_counter][
                      1:2] == "R":
@@ -1810,10 +1758,11 @@ class PlayLevel(LevelSelect):
                                        self.player.jumps, self.start_time)
                 # Add this level's timed jumps/unfreezes
                 self.memory.update_temp(self.resp_jumps + self.hold_jumps)
-                self.memory.update_replays(self.level_id,
-                                           [self.level_id] +
-                                           [self.memory.diff_value] +
-                                           self.memory.hold_replay.chain_to_list())
+                self.memory.update_replays(
+                    self.level_id,
+                    [self.level_id] +
+                    [self.memory.diff_value] +
+                    self.memory.hold_replay.chain_to_list())
                 # Reset temporary hold on chain of level's timed events
                 self.memory.hold_replay = kogclass.ReplayChain()
                 self.level_id += 1
@@ -1869,7 +1818,8 @@ class PlayLevel(LevelSelect):
             self.replayer.gravity_counter = self.replayer.max_gravity
 
         # If player is below the level, count as a death (out of bounds)
-        if (576 * self.memory.res_height) + self.replayer.height < self.replayer.ypos:
+        if (576 * self.memory.res_height) + \
+                self.replayer.height < self.replayer.ypos:
             self.replayer.alive = False
 
         # Check for win collision
@@ -1886,12 +1836,14 @@ class PlayLevel(LevelSelect):
             respawn_block = self.replayer.square_render.collidelist(
                 self.respawn_zones)
             # Set new x and y default spawns
-            self.replayer_xspawn = self.respawn_zones[respawn_block].x + \
-                                   (self.respawn_zones[
-                                        respawn_block].width / 2) - 5
-            self.replayer_yspawn = self.respawn_zones[respawn_block].y + \
-                                   (self.respawn_zones[
-                                        respawn_block].height / 2) - 5
+            self.replayer_xspawn = \
+                self.respawn_zones[respawn_block].x + \
+                (self.respawn_zones[
+                 respawn_block].width / 2) - 5
+            self.replayer_yspawn = \
+                self.respawn_zones[respawn_block].y + \
+                (self.respawn_zones[
+                 respawn_block].height / 2) - 5
 
     def render(self, screen):
         if self.level_id in self.level_data:
@@ -1945,14 +1897,13 @@ class PlayLevel(LevelSelect):
                                  element.shape[4])
 
 
-
 class LevelZero(LevelScene):
 
     def __init__(self, level_memory):
 
         LevelScene.__init__(self, 45, 525, level_memory)
         # Initialize LevelScene for it's memory/rendering
-        self.memory.level_progress.sort()   # Sort level order
+        self.memory.level_progress.sort()  # Sort level order
         self.level_id = -1  # Invalid level id, don't record statistics
         self.memory = level_memory  # Get memory
         # self.timer = pygame.time.get_ticks()
@@ -1965,18 +1916,21 @@ class LevelZero(LevelScene):
         # choosing level is set to None
         self.choose_level = None
 
-        self.str_morse_code = "" # morse code entries for short and long
-        self.str_words = "" # words to be displayed on screen as an entry for the user
-        self.str_pass_word_check = '' # checking if the word is correct
-        self.morse_code_count = 0 # making sure you can't input more than 5 characters
+        self.str_morse_code = ""  # morse code entries for short and long
+        self.str_words = ""
+        # words to be displayed on screen as an entry for the user
+        self.str_pass_word_check = ''  # checking if the word is correct
+        self.morse_code_count = 0
+        # making sure you can't input more than 5 characters
 
-        self.clear_code_morse_block = [] # box to clear text
-        self.convert_code_morse_block = [] # box to convert morse_code into english aplhabets
-        self.check_correct_morse_block = [] # checking if word exists in lock 
-        self.clear_all_text_morse_block = [] # clearing all texts
+        self.clear_code_morse_block = []  # box to clear text
+        self.convert_code_morse_block = []
+        # box to convert morse_code into english aplhabets
+        self.check_correct_morse_block = []  # checking if word exists in lock
+        self.clear_all_text_morse_block = []  # clearing all texts
 
-        self.short_dot = [] # short box entry
-        self.long_dot = [] # long box entry
+        self.short_dot = []  # short box entry
+        self.long_dot = []  # long box entry
 
         ''''
         still trying to figure the timed text part
@@ -1984,49 +1938,48 @@ class LevelZero(LevelScene):
 
         self.level_text = [
             kogclass.Text(self.str_morse_code, (545, 413),
-                                        35, "impact", DARK_GREY, None),
+                          35, "impact", DARK_GREY, None),
             kogclass.Text(self.str_words, (545, 223),
-                                        105, "impact", BLACK, None),
+                          105, "impact", BLACK, None),
             kogclass.Text("Check", (775, 453),
-                                        25, "impact", BLACK, None),
+                          25, "impact", BLACK, None),
             kogclass.Text("Word", (775, 483),
-                                        25, "impact", BLACK, None),
+                          25, "impact", BLACK, None),
             kogclass.Text("Clear", (270, 453),
-                                        25, "impact", BLACK, None),
+                          25, "impact", BLACK, None),
             kogclass.Text("Code", (270, 483),
-                                        25, "impact", BLACK, None),
+                          25, "impact", BLACK, None),
             kogclass.Text("Convert", (525, 453),
-                                        25, "impact", BLACK, None),
+                          25, "impact", BLACK, None),
             kogclass.Text("Code", (525, 483),
-                                        25, "impact", BLACK, None),
+                          25, "impact", BLACK, None),
             kogclass.Text("Everthing Has Been Reset", (525, 100),
-                                        55, "impact", DARK_RED, None)
+                          55, "impact", DARK_RED, None)
         ]
         self.level_text[0].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         self.level_text[1].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         self.level_text[2].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         self.level_text[3].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         self.level_text[4].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         self.level_text[5].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         self.level_text[6].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         self.level_text[7].scale(level_memory.res_width,
-                                   level_memory.res_height)
+                                 level_memory.res_height)
         # self.level_text[2].scale(level_memory.res_width,
         #                            level_memory.res_height)
 
         self.collision_objects = {
             "self.platforms": self.platforms,
-            "self.short_dot" : self.short_dot,
-            "self.long_dot" : self.long_dot
-            }
-
+            "self.short_dot": self.short_dot,
+            "self.long_dot": self.long_dot
+        }
 
         self.render_objects = []
 
@@ -2035,6 +1988,7 @@ class LevelZero(LevelScene):
     def input(self, pressed, held):
         LevelScene.input(self, pressed, held)
 
+    @staticmethod
     def morse_decoder(self, morse_code_text, display):
 
         # keeping it in a string, redundant yes, can be removed and replaced
@@ -2042,13 +1996,28 @@ class LevelZero(LevelScene):
 
         # morse code dictionary
         morse_dict = {
-            'short_long_': 'A', 'long_short_short_short_': 'B', 'long_short_long_short_': 'C', 'long_short_short_': 'D', 'short_': 'E',
-            'short_short_long_short_': 'F', 'long_long_short_': 'G', 'short_short_short_short_': 'H', 'short_short_': 'I', 'short_long_long_long_': 'J',
-            'long_short_long_': 'K', 'short_long_short_short_': 'L', 'long_long_': 'M', 'long_short_': 'N', 'long_long_long_': 'O',
-            'short_long_long_short_': 'P', 'long_long_short_long_': 'Q', 'short_long_short_': 'R', 'short_short_short_': 'S', 'long_': 'T',
-            'short_short_long_': 'U', 'short_short_short_long_': 'V', 'short_long_long_': 'W', 'long_short_short_long_': 'X', 'long_short_long_long_': 'Y',
-            'long_long_short_short_': 'Z', 'long_long_long_long_long_': '0', 'short_long_long_long_long_': '1', 'short_short_long_long_long_': '2', 'short_short_short_long_long_': '3',
-            'short_short_short_short_long_': '4', 'short_short_short_short_short_': '5', 'long_short_short_short_short_': '6', 'long_long_short_short_short_': '7', 'long_long_long_short_short_': '8',
+            'short_long_': 'A', 'long_short_short_short_': 'B',
+            'long_short_long_short_': 'C', 'long_short_short_': 'D',
+            'short_': 'E',
+            'short_short_long_short_': 'F', 'long_long_short_': 'G',
+            'short_short_short_short_': 'H', 'short_short_': 'I',
+            'short_long_long_long_': 'J',
+            'long_short_long_': 'K', 'short_long_short_short_': 'L',
+            'long_long_': 'M', 'long_short_': 'N', 'long_long_long_': 'O',
+            'short_long_long_short_': 'P', 'long_long_short_long_': 'Q',
+            'short_long_short_': 'R', 'short_short_short_': 'S', 'long_': 'T',
+            'short_short_long_': 'U', 'short_short_short_long_': 'V',
+            'short_long_long_': 'W', 'long_short_short_long_': 'X',
+            'long_short_long_long_': 'Y',
+            'long_long_short_short_': 'Z', 'long_long_long_long_long_': '0',
+            'short_long_long_long_long_': '1',
+            'short_short_long_long_long_': '2',
+            'short_short_short_long_long_': '3',
+            'short_short_short_short_long_': '4',
+            'short_short_short_short_short_': '5',
+            'long_short_short_short_short_': '6',
+            'long_long_short_short_short_': '7',
+            'long_long_long_short_short_': '8',
             'long_long_long_long_short_': '9'
         }
 
@@ -2056,7 +2025,8 @@ class LevelZero(LevelScene):
         if morse_code_text in morse_dict:
             display = morse_dict[morse_code]
         else:
-            print("No morse_code like that exists. Please refer to the 'Internationl Morse Code'")
+            print(
+                "No morse_code like that exists. Please refer to the 'Internationl Morse Code'")
 
         return display
 
@@ -2064,19 +2034,22 @@ class LevelZero(LevelScene):
         self.str_morse_code = ''
         self.morse_code_count = 0
         # print("morse code text has been cleared!")
-        # print(f"{self.str_morse_code} and {self.morse_code_count} and {len(self.str_words)}")
+        # print(f"{self.str_morse_code} and
+        # {self.morse_code_count} and {len(self.str_words)}")
 
     def clear_display_english_words(self):
         self.str_words = ''
         self.morse_code_count = 0
         # print("attempted answer has been cleared!")
-        # print(f"{self.str_morse_code} and {self.morse_code_count} and {self.str_words}")
+        # print(f"{self.str_morse_code} and
+        # {self.morse_code_count} and {self.str_words}")
 
+    @staticmethod
     def pass_word_morse_code(self, f_string, display):
         adict = {
-            'EE':'000000000000000000',
-            'ET':'000000001111111100',
-            'E':'1111111111111100000'
+            'EE': '000000000000000000',
+            'ET': '000000001111111100',
+            'E': '1111111111111100000'
         }
         g_string = str(f_string)
 
@@ -2088,15 +2061,15 @@ class LevelZero(LevelScene):
         return display
 
     def display_clear_text(self, screen):
-            # Victory function played when win condition
-            if 500 <= pygame.time.get_ticks() - self.victory_time and \
-                    self.victory_counter < 3:
-                self.victory_time = pygame.time.get_ticks()  # Reset timer
-                self.victory_counter += 1  # Increase index for victory_text
-            for x in range(self.victory_counter):
-                screen.blit(self.clear_text.text_img,
-                            self.clear_text.text_rect)
-                # Display victory text depending on index available (0-3)
+        # Victory function played when win condition
+        if 500 <= pygame.time.get_ticks() - self.victory_time and \
+                self.victory_counter < 3:
+            self.victory_time = pygame.time.get_ticks()  # Reset timer
+            self.victory_counter += 1  # Increase index for victory_text
+        for x in range(self.victory_counter):
+            screen.blit(self.clear_text.text_img,
+                        self.clear_text.text_rect)
+            # Display victory text depending on index available (0-3)
 
     def update(self):
         LevelScene.update(self)
@@ -2123,23 +2096,29 @@ class LevelZero(LevelScene):
                 self.action_timer = pygame.time.get_ticks()
                 # print(f"{self.str_morse_code} and {self.morse_code_count}")
             elif self.player.alive and \
-                    self.player.square_render.collidelist(self.clear_code_morse_block) != -1:
+                    self.player.square_render.collidelist(
+                        self.clear_code_morse_block) != -1:
                 self.clear_display_morse_code()
                 self.action_timer = pygame.time.get_ticks()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(self.convert_code_morse_block) != -1:
-                self.str_words += self.morse_decoder(self.str_morse_code, self.str_words)
+                    self.player.square_render.collidelist(
+                        self.convert_code_morse_block) != -1:
+                self.str_words += self.morse_decoder(self.str_morse_code,
+                                                     self.str_words)
                 self.clear_display_morse_code()
                 self.action_timer = pygame.time.get_ticks()
                 # print(f"{self.str_morse_code} and {self.morse_code_count}")
             elif self.player.alive and \
-                    self.player.square_render.collidelist(self.check_correct_morse_block) != -1:
-                self.pass_word_morse_code(self.str_words, self.str_pass_word_check)
+                    self.player.square_render.collidelist(
+                        self.check_correct_morse_block) != -1:
+                self.pass_word_morse_code(self.str_words,
+                                          self.str_pass_word_check)
                 self.clear_display_morse_code()
                 self.action_timer = pygame.time.get_ticks()
                 self.clear_display_english_words()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(self.clear_all_text_morse_block) != -1:
+                    self.player.square_render.collidelist(
+                        self.clear_all_text_morse_block) != -1:
                 # print("deleted everything")
                 self.delete_everything_text = True
                 self.delete_everything_text_function()
@@ -2147,23 +2126,29 @@ class LevelZero(LevelScene):
         elif self.morse_code_count == 5:
             print("Maximum character amount reached! Clear or Convert Code.")
             if self.player.alive and \
-                    self.player.square_render.collidelist(self.clear_code_morse_block) != -1:
+                    self.player.square_render.collidelist(
+                        self.clear_code_morse_block) != -1:
                 self.clear_display_morse_code()
                 self.action_timer = pygame.time.get_ticks()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(self.convert_code_morse_block) != -1:
-                self.str_words += self.morse_decoder(self.str_morse_code, self.str_words)
+                    self.player.square_render.collidelist(
+                        self.convert_code_morse_block) != -1:
+                self.str_words += self.morse_decoder(self.str_morse_code,
+                                                     self.str_words)
                 print(f"{self.str_words}")
                 self.clear_display_morse_code()
                 self.action_timer = pygame.time.get_ticks()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(self.check_correct_morse_block) != -1:
-                self.pass_word_morse_code(self.str_words, self.str_pass_word_check)
+                    self.player.square_render.collidelist(
+                        self.check_correct_morse_block) != -1:
+                self.pass_word_morse_code(self.str_words,
+                                          self.str_pass_word_check)
                 self.clear_display_morse_code()
                 self.clear_display_english_words()
                 self.action_timer = pygame.time.get_ticks()
             elif self.player.alive and \
-                    self.player.square_render.collidelist(self.clear_all_text_morse_block) != -1:
+                    self.player.square_render.collidelist(
+                        self.clear_all_text_morse_block) != -1:
                 # print("deleted everything")
                 self.delete_everything_text = True
                 self.delete_everything_text_function()
@@ -2171,23 +2156,25 @@ class LevelZero(LevelScene):
 
             # print(self.timer)
 
-    '''couldn't get this to work as I would like to in a function, with screen in there'''
+    '''couldn't get this to work as 
+    I would like to in a function, with screen in there'''
+
     def delete_everything_text_function(self):
         # if self.delete_everything_text == True:
-            self.clear_display_morse_code()
-            self.clear_display_english_words()
-            # self.timer = self.timer + self.elasped/30 #should be /1000
-            # if self.timer > self.countdown:
-            #     self.delete_everything_text = False
-            #     self.timer = 0
-            # print(self.timer)
+        self.clear_display_morse_code()
+        self.clear_display_english_words()
+        # self.timer = self.timer + self.elasped/30 #should be /1000
+        # if self.timer > self.countdown:
+        #     self.delete_everything_text = False
+        #     self.timer = 0
+        # print(self.timer)
 
     def render(self, screen):
         LevelScene.render(self, screen)
         self.render_level(screen)
 
         # drawing platforms
-        self.platforms =  [
+        self.platforms = [
             pygame.draw.rect(screen, BLACK, [1055, 0, 25, 576]),
             pygame.draw.rect(screen, BLACK, [0, 0, 25, 576]),
             pygame.draw.rect(screen, BLACK, [0, 0, 1080, 23]),
@@ -2195,9 +2182,12 @@ class LevelZero(LevelScene):
             pygame.draw.rect(screen, BLACK, [0, 553, 1080, 23])
         ]
 
-        self.clear_code_morse_block = [pygame.draw.rect(screen, BLUE, [200, 433, 150, 71])] # bottom 480
-        self.convert_code_morse_block = [pygame.draw.rect(screen, YELLOW, [450, 433, 150, 71])]
-        self.check_correct_morse_block = [pygame.draw.rect(screen, LIME_GREEN, [700, 433, 150, 71])]
+        self.clear_code_morse_block = [
+            pygame.draw.rect(screen, BLUE, [200, 433, 150, 71])]  # bottom 480
+        self.convert_code_morse_block = [
+            pygame.draw.rect(screen, YELLOW, [450, 433, 150, 71])]
+        self.check_correct_morse_block = [
+            pygame.draw.rect(screen, LIME_GREEN, [700, 433, 150, 71])]
         self.clear_all_text_morse_block = [
             pygame.draw.rect(screen, LIGHT_RED, [100, 433, 50, 71]),
             pygame.draw.rect(screen, LIGHT_RED, [900, 433, 50, 71])
@@ -2206,54 +2196,55 @@ class LevelZero(LevelScene):
         self.long_dot = [pygame.draw.rect(screen, CYAN, [1054, 444, 17, 85])]
         self.short_dot = [pygame.draw.rect(screen, CYAN, [9, 488, 17, 39])]
 
-    # display texts as they appear
+        # display texts as they appear
         self.level_text[0] = kogclass.Text(self.str_morse_code, (545, 413),
-                                        35, "impact", DARK_GREY, None)
+                                           35, "impact", DARK_GREY, None)
         screen.blit(self.level_text[0].text_img,
-                        self.level_text[0].text_rect)  # draw text
+                    self.level_text[0].text_rect)  # draw text
 
         self.test_text_2 = kogclass.Text(self.str_words, (545, 223),
-                                        105, "impact", BLACK, None)
+                                         105, "impact", BLACK, None)
         screen.blit(self.test_text_2.text_img,
-                        self.test_text_2.text_rect)
+                    self.test_text_2.text_rect)
 
         # self.level_text[2] = kogclass.Text("Check", (775, 453),
         #                                 25, "impact", BLACK, None)
         screen.blit(self.level_text[2].text_img,
-                        self.level_text[2].text_rect)
+                    self.level_text[2].text_rect)
 
         # self.level_text[3] = kogclass.Text("Word", (775, 483),
         #                                 25, "impact", BLACK, None)
         screen.blit(self.level_text[3].text_img,
-                        self.level_text[3].text_rect)
+                    self.level_text[3].text_rect)
 
         # self.level_text[4] = kogclass.Text("Clear", (270, 453),
         #                                 25, "impact", BLACK, None)
         screen.blit(self.level_text[4].text_img,
-                        self.level_text[4].text_rect)
+                    self.level_text[4].text_rect)
 
         # self.level_text[5] = kogclass.Text("Code", (270, 483),
         #                                 25, "impact", BLACK, None)
         screen.blit(self.level_text[5].text_img,
-                        self.level_text[5].text_rect)
+                    self.level_text[5].text_rect)
 
         # self.level_text[6] = kogclass.Text("Convert", (525, 453),
         #                                 25, "impact", BLACK, None)
         screen.blit(self.level_text[6].text_img,
-                        self.level_text[6].text_rect)
+                    self.level_text[6].text_rect)
 
         # self.level_text[7] = kogclass.Text("Code", (525, 483),
         #                                 25, "impact", BLACK, None)
         screen.blit(self.level_text[7].text_img,
-                        self.level_text[7].text_rect)
+                    self.level_text[7].text_rect)
 
         # display for delete text
-        if self.delete_everything_text == True:
-            self.test_text_9 = kogclass.Text("Everthing Has Been Reset", (525, 100),
-                                        55, "impact", DARK_RED, None)
+        if self.delete_everything_text:
+            self.test_text_9 = kogclass.Text("Everthing Has Been Reset",
+                                             (525, 100),
+                                             55, "impact", DARK_RED, None)
             screen.blit(self.level_text[8].text_img,
-                            self.level_text[8].text_rect)
-            self.timer = self.timer + self.elasped/30 #should be /1000
+                        self.level_text[8].text_rect)
+            self.timer = self.timer + self.elasped / 30  # should be /1000
             if self.timer > self.countdown:
                 self.delete_everything_text = False
                 self.timer = 0

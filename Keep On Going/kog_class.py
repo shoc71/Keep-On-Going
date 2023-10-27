@@ -326,6 +326,19 @@ class Memory:
 
     def load_all_levels(self):
         folder_path = "assets/levels/"
+
+        self.level_set = {}
+        """Loaded in level data containing player spawn (ADD MORE)
+        """
+        self.ls_elements = {}
+        """Loaded in level data containing text, rects and lines for 
+        platforms
+        """
+        self.level_id = 0  # Initialize level_id
+
+        self.id_range = {}  # Ranges for different sets of levels
+        self.range_index = 0
+
         try:
             file_list = os.listdir(folder_path)
         except:
