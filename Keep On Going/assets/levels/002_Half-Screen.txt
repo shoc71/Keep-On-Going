@@ -841,7 +841,7 @@ self.win_zones =  [
 
 ====
 
-respawn_abuse(51,349,1)
+respawn_abuse(51, 349, 1)
 
 self.platforms =  [
         pygame.draw.rect(screen, (0, 0, 0), [1059, 0, 21, 576]),
@@ -882,7 +882,7 @@ self.respawn_zones =  [
 
 ===========
 
-Pyramid_scheme(30,546,1)
+Pyramid_scheme(30, 546, 1)
 
 self.platforms =  [
         pygame.draw.rect(screen, (0, 0, 0), [0, 0, 26, 576]),
@@ -977,7 +977,7 @@ self.respawn_zones =  [
 
 ======================
 
-Choose_a_pill(25,97,1)
+Choose_a_pill(25, 97, 1)
 
 self.platforms =  [
         pygame.draw.rect(screen, (0, 0, 0), [0, 0, 18, 576]),
