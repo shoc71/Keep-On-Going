@@ -270,6 +270,14 @@ class Memory:
 
         self.screen = None
 
+        self.options_status = 0
+        """Since there's different ways to access the options page,
+        we denote:
+            - 0 for coming from the menu
+            - greater than 0 for coming from a level
+            
+        """
+
     def update_mem(self, level_id, death_count, jump_count, level_time):
         """
         Called in kog_levels PlayLevel to update or create statistics for
@@ -1499,3 +1507,4 @@ def add_time(old_times, new_times):
     # print(seconds, minutes_to_s, hours_to_s)
 
     return convert_time((seconds + minutes_to_s + hours_to_s) * 1000)
+
