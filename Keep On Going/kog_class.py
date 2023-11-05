@@ -194,10 +194,12 @@ class Memory:
         self.total_deaths = 0  # Total deaths in one session
         self.total_jumps = 0  # Total jumps in one session
         self.total_time = 0  # Total time passed in one session
+        self.total_stars = 0    # Total stars collected
 
         self.level_deaths = {}  # Deaths per level in one session
         self.level_jumps = {}  # Jumps per level in one session
         self.level_times = {}  # Times per level in one session
+        self.stars_collected = {}   # Stars collected per level
 
         self.level_progress = []  # collection of level_id's for levels done
 
@@ -278,7 +280,8 @@ class Memory:
             
         """
 
-    def update_mem(self, level_id, death_count, jump_count, level_time):
+    def update_mem(self, level_id, death_count, jump_count, level_time,
+                   stars):
         """
         Called in kog_levels PlayLevel to update or create statistics for
         that level using the parameters below.
@@ -331,6 +334,15 @@ class Memory:
             # Update time for main menu
             self.level_times[level_id] = add_time(self.level_times[level_id],
                                                   current_time)
+
+        # Update stars_collected
+        if level_id not in self.stars_collected:
+            self.stars_collected[level_id] = stars
+            self.total_stars += stars
+        elif level_id in self.stars_collected and \
+                self.stars_collected[level_id] < stars:
+            self.stars_collected[level_id] = stars
+            self.total_stars += (stars - self.stars_collected[level_id])
 
     def load_all_levels(self):
         folder_path = "assets/levels/"
@@ -733,10 +745,13 @@ class Memory:
             open_file.write(str(self.total_jumps) + "\n")
             open_file.write(str(self.total_time +
                                 pygame.time.get_ticks()) + "\n")
+            open_file.write(str(self.total_stars) + "\n")
             open_file.write(str(self.level_deaths) + "\n")
             open_file.write(str(self.level_jumps) + "\n")
             open_file.write(str(self.level_times) + "\n")
             open_file.write(str(self.level_progress) + "\n")
+            open_file.write(str(self.stars_collected) + "\n")
+
 
             open_file.write(str(self.diff_value) + "\n")
             open_file.write(str(self.bg_slider) + "\n")
@@ -757,6 +772,7 @@ class Memory:
             self.total_deaths = int(get_save.readline())
             self.total_jumps = int(get_save.readline())
             self.total_time = int(get_save.readline())
+            self.total_stars = int(get_save.readline())
 
             get_death = get_save.readline()[1:-2].split(", ")
             if 1 < len(get_death):
@@ -783,6 +799,13 @@ class Memory:
             if 1 < len(get_prog):
                 for each_stat in get_prog:
                     self.level_progress += [int(each_stat)]
+
+            get_stars = get_save.readline()[1:-2].split(", ")
+            if 1 < len(get_stars):
+                for each_stat in get_jumps:
+                    split_stat = each_stat.split(": ")
+                    self.stars_collected[int(split_stat[0])] = \
+                        int(split_stat[1])
 
             self.diff_value = int(get_save.readline())
             self.bg_slider = int(get_save.readline())
@@ -885,31 +908,29 @@ class KOGElement:
 
 class Animate:
 
-    def __init__(self, in_files, xpos, ypos, width, height, frame_delay, memory):
+    def __init__(self, in_files, xpos, ypos, width, height, frame_delay):
         """
         :param in_files: List of file_paths to all of this objects frames
         :param xpos: x position relative to the 1080 scale
         :param ypos: y position relative to the 576 scale
         :param frame_delay: time inbetween each  (in seconds)
         """
-        if type(in_files) is list:
-            for file in in_files:
-                load_image = pygame.image.load(file)
-                scale_image = pygame.transform.scale(load_image,
-                                                     load_image.get_rect().width * memory.res_width * 0.2,
-                                                     load_image.get_rect().height * memory.res_height * 0.225)
-                self.file_frames += [scale_image]
-
-            self.img_rect = pygame.Rect(xpos, ypos, width, height)
-            self.frame_delay = frame_delay * 1000
-            self.memory = memory
-        else:
-            self.file_frames = None
-            self.img_rect = None
-            self.frame_delay = None
+        self.file_frames = []
+        self.img_rect = pygame.Rect(xpos, ypos, width, height)
+        self.frame_delay = frame_delay * 1000
+        # Frame delay is in seconds
 
         self.animate_index = 0
         self.animate_time = pygame.time.get_ticks()
+        pygame.display.set_mode([1080, 576])
+
+        for file in os.listdir(in_files):
+            if ".png" in file or ".jpg" in file:
+                load_image = pygame.image.load(in_files + file).convert_alpha()
+                scale_image = pygame.transform.scale(load_image,
+                                                     (self.img_rect.width,
+                                                      self.img_rect.height))
+                self.file_frames += [scale_image]
 
     def validate(self):
         if self.file_frames is None:
@@ -918,7 +939,7 @@ class Animate:
                 self.img_rect.x < 0 or 1080 < self.img_rect.x:
             return "Invalid x position out of bounds or not given"
         elif self.img_rect is None or \
-                self.img_rect.y < 0 or 576 < self.img_rect:
+                self.img_rect.y < 0 or 576 < self.img_rect.y:
             return "Invalid y position out of bounds or not given"
         elif self.frame_delay is None or type(self.frame_delay) is not int or \
             type(self.frame_delay) is not float:
@@ -937,8 +958,12 @@ class Animate:
         # Check if the animate_index is out of bounds and ready to loop
         if self.animate_index < 0:
             self.animate_index = len(self.file_frames)
-        elif len(self.file_frames) < self.animate_index:
+        elif len(self.file_frames) - 1 < self.animate_index:
             self.animate_index = 0
+
+    def update_pos(self, x, y):
+        self.img_rect.x = x
+        self.img_rect.y = y
 
     def render(self, screen):
         frame = self.file_frames[self.animate_index]
@@ -947,16 +972,33 @@ class Animate:
 
 class Collectable:
     """
-    Render, move, and give mechanics to colelctables
+    Render, move, and give mechanics to collectables
     This can otherwise be known as the star pets (starmets)
     """
 
     def __init__(self, object_id, collect_rect, detect_rect, roam_rect):
+        self.alive = True
+        self.freeze = False     # Determine if star should move
+
         self.id = object_id
         self.rect = collect_rect
         self.detect_rect = detect_rect
         self.roam_rect = roam_rect
-        self.animate = None
+        self.fldr_id = [
+            "stars/"
+        ]   # object id to which folder they should use
+        """
+        an id of 0 is unspecific and uses all files in the stars folder
+        """
+
+        self.animate_star = Animate("assets/images/" +
+                                    self.fldr_id[object_id],
+                               self.rect.x, self.rect.y,
+                               self.rect.width, self.rect.height, 2)
+
+        if not self.animate_star.validate():
+            raise "UNABLE TO LOAD STAR DATA"
+
         self.behaviour = 0  # 3 behaviours, max index of 2
 
         self.move_x = 0
@@ -982,7 +1024,8 @@ class Collectable:
         has passed in moving away from the border, resume usual movement.
         Usual movement is usually either avoiding the player or random
         movement"""
-        if 100 <= pygame.time.get_ticks() - self.move_delay:
+        if 500 <= pygame.time.get_ticks() - self.move_delay and \
+                not self.freeze:
             # If the player is within the star's vision zone
             if self.detect_rect.colliderect(player_rect):
                 # move accordingly away from the player
@@ -994,7 +1037,8 @@ class Collectable:
         self.detect_bounds()
 
         # every 0.025 seconds, apply the movement
-        if 25 <= pygame.time.get_ticks() - self.movement_time:
+        if not self.freeze and \
+                25 <= pygame.time.get_ticks() - self.movement_time:
             self.rect.x += self.move_x
             self.rect.y += self.move_y
 
@@ -1005,11 +1049,19 @@ class Collectable:
 
             self.movement_time = pygame.time.get_ticks()
 
+        self.animate_star.update_pos(self.rect.x, self.rect.y)
+
     def render(self, screen):
+        if not self.alive:
+            return None
         # Test render only renders the collision rects
-        self.render_test(screen)
+        # self.render_test(screen)
+        self.animate_star.animate(screen)
 
     def detect_player(self, player_rect):
+        if self.freeze:
+            return None
+
         # If the player is to the left of the star
         if player_rect.x < self.rect.x:
             self.move_x = 1     # move right
@@ -1023,6 +1075,10 @@ class Collectable:
         # If the player is below the star
         elif self.rect.y + self.rect.height < player_rect.y:
             self.move_y = -1    # move up
+
+        # Detect if player is touching, if so, get removed
+        if player_rect.colliderect(self.rect):
+            self.alive = False
 
     def detect_bounds(self):
         # If the star is out to the right of the barrier
