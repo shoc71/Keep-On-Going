@@ -1303,24 +1303,15 @@ class StatsPage(LevelScene):
             kogclass.Text("Level Time: " + str(get_time[0]) + ":" + str(
                 get_time[1]) + ":" + str(get_time[2]),
                           ((1080 / 4 * 2), (576 / 2) + 50), 25, "impact",
+                          YELLOW, None),
+            kogclass.Text("Total Stars Collected: " + \
+                          str(self.memory.total_stars),
+                          ((1080 / 4), 75), 25, "impact", YELLOW, None),
+            kogclass.Text("Stars: " + \
+                          str(self.memory.stars_collected[self.select_level]),
+                          ((1080 / 4 * 2), (576 / 2) + 75), 25, "impact",
                           YELLOW, None)
         ]
-        self.render_stats[0].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[1].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[2].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[3].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[4].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[5].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[6].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[7].scale(self.memory.res_width,
-                                   self.memory.res_height)
 
     def render(self, screen):
         LevelScene.render(self, screen)  # Background Colors or Back-most
