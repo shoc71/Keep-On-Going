@@ -1064,6 +1064,51 @@ self.win_zones =  [
         pygame.draw.rect(screen, (47, 237, 237), [530, 146, 10, 38])
 ]
 
+==============
+
+Drop_pyramid(55, 87, 1)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 50, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [1030, 0, 50, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [1, 0, 1076, 50]),
+        pygame.draw.rect(screen, (0, 0, 0), [1, 526, 1076, 50]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 105, 331, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 155, 433, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [647, 155, 433, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 205, 517, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [563, 205, 517, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [84, 255, 907, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 305, 197, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 355, 287, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [793, 355, 287, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 405, 401, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [679, 405, 401, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 455, 501, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [579, 455, 501, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 505, 529, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [551, 505, 529, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [749, 105, 331, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [475, 105, 130, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [510, 155, 60, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [883, 305, 197, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [360, 328, 350, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [447, 380, 185, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [515, 432, 50, 5])
+]
+
+self.draw =  [
+]
+
+self.death_zones =  [
+        pygame.draw.rect(screen, (255, 0, 0), [1019, 510, 11, 16])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [50, 510, 11, 16])
+]
+
+
 ========
 
 Choose_a_pill(25, 97, 1)
