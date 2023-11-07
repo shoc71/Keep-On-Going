@@ -706,6 +706,8 @@ self.win_zones =  [
 
 Candles(12, 282, 1)
 
+dsnclass.Text("candles", (150, 400), 75, "impact", WHITE, None)
+
 self.platforms =  [
         pygame.draw.rect(screen, (0, 0, 0), [0, 567, 1100, 10]),
         pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1100, 10]),
@@ -794,7 +796,75 @@ self.win_zones =  [
 
 =====
 
+Pillars_accelearated(960, 20, 1)
 
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 25, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [1055, 0, 25, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 17]),
+        pygame.draw.rect(screen, (0, 0, 0), [234, 98, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [748, 94, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [836, 58, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [953, 32, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [621, 127, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [135, 60, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [12, 35, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [25, 59, 76, 501]),
+        pygame.draw.rect(screen, (0, 0, 0), [980, 59, 76, 501]),
+        pygame.draw.rect(screen, (0, 0, 0), [376, 483, 329, 48]),
+        pygame.draw.rect(screen, (0, 0, 0), [407, 527, 264, 17]),
+        pygame.draw.rect(screen, (0, 0, 0), [455, 537, 174, 39]),
+        pygame.draw.rect(screen, (0, 0, 0), [487, 104, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [487, 282, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [101, 148, 121, 300]),
+        pygame.draw.rect(screen, (0, 0, 0), [859, 148, 121, 300]),
+        pygame.draw.rect(screen, (0, 0, 0), [357, 127, 103, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [253, 203, 248, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [570, 203, 253, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [705, 278, 275, 282]),
+        pygame.draw.rect(screen, (0, 0, 0), [101, 277, 275, 282]),
+        pygame.draw.rect(screen, (0, 0, 0), [534, 288, 8, 141]),
+        pygame.draw.rect(screen, (0, 0, 0), [851, 162, 8, 117]),
+        pygame.draw.rect(screen, (0, 0, 0), [222, 161, 8, 117])
+]
+
+self.draw =  [
+        pygame.draw.rect(screen, (255, 0, 0), [376, 531, 31, 34]),
+        pygame.draw.rect(screen, (255, 0, 0), [671, 531, 34, 34]),
+        pygame.draw.rect(screen, (194, 57, 33), [407, 544, 48, 15]),
+        pygame.draw.rect(screen, (194, 57, 33), [629, 544, 42, 15]),
+        pygame.draw.rect(screen, (255, 0, 0), [629, 559, 451, 17]),
+        pygame.draw.rect(screen, (255, 0, 0), [0, 36, 6, 527]),
+        pygame.draw.rect(screen, (255, 0, 0), [1074, 36, 6, 527]),
+        pygame.draw.rect(screen, (255, 0, 0), [0, 559, 455, 17]),
+        pygame.draw.rect(screen, (255, 255, 255), [714, 288, 346, 9]),
+        pygame.draw.rect(screen, (255, 255, 255), [23, 288, 346, 9]),
+        pygame.draw.rect(screen, (255, 255, 255), [23, 67, 9, 222]),
+        pygame.draw.rect(screen, (255, 255, 255), [1051, 67, 9, 222])
+]
+
+self.death_zones =  [
+        pygame.draw.rect(screen, (194, 57, 33), [376, 437, 329, 46]),
+        pygame.draw.rect(screen, (194, 57, 33), [407, 468, 7, 80]),
+        pygame.draw.rect(screen, (194, 57, 33), [664, 468, 7, 80]),
+        pygame.draw.rect(screen, (139, 0, 0), [415, 469, 249, 14]),
+        pygame.draw.rect(screen, (255, 0, 0), [542, 301, 10, 129]),
+        pygame.draw.rect(screen, (255, 0, 0), [524, 301, 10, 129]),
+        pygame.draw.rect(screen, (255, 0, 0), [376, 429, 329, 8]),
+        pygame.draw.rect(screen, (255, 0, 0), [487, 291, 37, 9]),
+        pygame.draw.rect(screen, (255, 0, 0), [552, 291, 38, 9])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [25, 17, 8, 18]),
+        pygame.draw.rect(screen, (47, 237, 237), [1047, 41, 8, 18]),
+        pygame.draw.rect(screen, (47, 237, 237), [851, 152, 8, 10]),
+        pygame.draw.rect(screen, (47, 237, 237), [222, 152, 8, 10]),
+        pygame.draw.rect(screen, (47, 237, 237), [524, 291, 10, 10]),
+        pygame.draw.rect(screen, (47, 237, 237), [542, 291, 10, 10])
+]
+
+==========
 Four_Keys_of_Light(25, 228, 1)
 
 dsnclass.Text("Four Keys", (320, 50), 55, "impact", WHITE, None)
