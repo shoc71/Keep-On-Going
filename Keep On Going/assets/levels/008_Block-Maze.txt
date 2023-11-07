@@ -542,3 +542,52 @@ self.respawn_zones =  [
 ]
 
 =====================
+
+Block_Maze_7(26, 280, 1)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [264, 266, 222, 7]),
+        pygame.draw.rect(screen, (0, 0, 0), [581, 266, 222, 7]),
+        pygame.draw.rect(screen, (0, 0, 0), [20, 300, 179, 7]),
+        pygame.draw.rect(screen, (0, 0, 0), [864, 297, 179, 7]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 1080, 11]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 18, 220]),
+        pygame.draw.rect(screen, (0, 0, 0), [1062, 0, 18, 220]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 323, 18, 253]),
+        pygame.draw.rect(screen, (0, 0, 0), [1062, 323, 18, 253]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 202, 7, 146]),
+        pygame.draw.rect(screen, (0, 0, 0), [1073, 202, 7, 146])
+]
+
+self.death_zones =  [
+        pygame.draw.rect(screen, (255, 0, 0), [215, 289, 7, 287]),
+        pygame.draw.rect(screen, (255, 0, 0), [215, 11, 7, 219]),
+        pygame.draw.rect(screen, (255, 0, 0), [229, 278, 7, 298]),
+        pygame.draw.rect(screen, (255, 0, 0), [245, 269, 7, 307]),
+        pygame.draw.rect(screen, (255, 0, 0), [528, 11, 7, 206]),
+        pygame.draw.rect(screen, (255, 0, 0), [528, 301, 7, 275]),
+        pygame.draw.rect(screen, (255, 0, 0), [244, 12, 7, 198]),
+        pygame.draw.rect(screen, (255, 0, 0), [229, 11, 7, 212]),
+        pygame.draw.rect(screen, (255, 0, 0), [815, 11, 7, 204]),
+        pygame.draw.rect(screen, (255, 0, 0), [830, 11, 7, 217]),
+        pygame.draw.rect(screen, (255, 0, 0), [845, 11, 7, 229]),
+        pygame.draw.rect(screen, (255, 0, 0), [830, 278, 7, 298]),
+        pygame.draw.rect(screen, (255, 0, 0), [815, 268, 7, 308]),
+        pygame.draw.rect(screen, (255, 0, 0), [845, 292, 7, 284])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [7, 220, 8, 103])
+]
+
+self.respawn_zones =  [
+        pygame.draw.rect(screen, (50, 205, 50), [1065, 220, 8, 103])
+]
+
+=================
+
+
+
+===================
+
+====================
