@@ -558,7 +558,7 @@ class MenuScene(LevelScene):
             if every_key in [pygame.K_SPACE]:
                 self.memory.music.switch_music()
                 self.memory.update_mem(self.level_id, self.deaths,
-                                       self.player.jumps, self.start_time)
+                                       self.player.jumps, self.start_time, 0)
                 if self.option_count == 1:
                     self.memory.options_status = 0
                 self.change_scene(self.options[self.option_count])
@@ -1303,24 +1303,15 @@ class StatsPage(LevelScene):
             kogclass.Text("Level Time: " + str(get_time[0]) + ":" + str(
                 get_time[1]) + ":" + str(get_time[2]),
                           ((1080 / 4 * 2), (576 / 2) + 50), 25, "impact",
+                          YELLOW, None),
+            kogclass.Text("Total Stars Collected: " + \
+                          str(self.memory.total_stars),
+                          ((1080 / 4), 75), 25, "impact", YELLOW, None),
+            kogclass.Text("Stars: " + \
+                          str(self.memory.stars_collected[self.select_level]),
+                          ((1080 / 4 * 2), (576 / 2) + 75), 25, "impact",
                           YELLOW, None)
         ]
-        self.render_stats[0].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[1].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[2].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[3].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[4].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[5].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[6].scale(self.memory.res_width,
-                                   self.memory.res_height)
-        self.render_stats[7].scale(self.memory.res_width,
-                                   self.memory.res_height)
 
     def render(self, screen):
         LevelScene.render(self, screen)  # Background Colors or Back-most
@@ -1796,6 +1787,12 @@ class PlayLevel(LevelSelect, OptionsPage):
         if self.options_page:
             OptionsPage.input(self, pressed, held)
 
+        for action in pressed:
+            if action == pygame.K_ESCAPE and not self.level_condition:
+                if self.level_id in self.memory.star_data:
+                    for star in self.memory.star_data[self.level_id]:
+                        star.freeze = not star.freeze
+
     def update(self):
         if not self.start_toggle:
             if 1000 < pygame.time.get_ticks() - self.count_change and \
@@ -1879,9 +1876,16 @@ class PlayLevel(LevelSelect, OptionsPage):
         if not self.memory.enable_replay:
             if 3 <= self.victory_counter and 500 <= pygame.time.get_ticks() - \
                     self.victory_time:
+                # Get stars collected
+                star_count = 0
+                if self.level_id in self.memory.star_data:
+                    for star in self.memory.star_data[self.level_id]:
+                        if not star.alive:
+                            star_count += 1
                 # Update statistics with this level's data
                 self.memory.update_mem(self.level_id, self.deaths,
-                                       self.player.jumps, self.start_time)
+                                       self.player.jumps, self.start_time,
+                                       star_count)
                 # Add this level's timed jumps/unfreezes
                 self.memory.update_temp(self.resp_jumps + self.hold_jumps)
                 self.memory.update_replays(
