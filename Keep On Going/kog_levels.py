@@ -429,7 +429,7 @@ class MenuScene(LevelScene):
         self.option_count = 0  # Index counter to choose level
         self.options = [LevelSelect(level_memory), OptionsPage(level_memory),
                         StatsPage(level_memory), ReplayIO(level_memory),
-                        LevelZero(level_memory), Filler(level_memory),
+                        LevelZero(level_memory), Hubzones(300, 50, level_memory),
                         Filler(level_memory), Filler(level_memory)]
         # Main menu options
 
@@ -467,7 +467,7 @@ class MenuScene(LevelScene):
                                            YELLOW, None)
         self.title_text_s5.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s6 = kogclass.Text("Filler", (432, 535), 30,
+        self.title_text_s6 = kogclass.Text("Hubzones", (432, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s6.scale(self.memory.res_width, self.memory.res_height)
@@ -641,6 +641,143 @@ class MenuScene(LevelScene):
         # Menu selector box highlight
         pygame.draw.rect(screen, DARK_RED,
                          self.option_select[self.option_count], 2)
+
+
+class HubzonePlayer(kogclass.SquareMe):
+    def __init__(self, x_spawn, y_spawn, width, height, rgb, diff,
+                 res_width, res_height, jump_vol):
+        kogclass.SquareMe.__init__(self, x_spawn, y_spawn, width, height, rgb, diff,
+                 res_width, res_height, jump_vol)
+        
+    def move(self):
+           
+        move_factor = (4 * self.direction) * self.diff_factor * self.res_width
+        
+        if self.left_x is not None and \
+                self.xpos + move_factor <= self.left_x:
+            self.xpos = self.left_x 
+        elif self.right_x is not None and \
+                self.right_x <= self.xpos + move_factor + self.width:
+            self.xpos = self.right_x - self.width
+        else:
+            self.xpos += move_factor
+          
+        self.gravity()
+        self.jump()
+        self.update_collision_detection()
+
+
+class Hubzones(LevelScene):
+    def __init__(self, x_spawn, y_spawn, level_memory):
+        LevelScene.__init__(self, x_spawn, y_spawn, level_memory)
+        self.player = HubzonePlayer(self.x_spawn, self.y_spawn, 25, 25, PURPLE,
+                                        level_memory.diff_lookup[
+                                            level_memory.diff_value],
+                                        level_memory.res_width,
+                                        level_memory.res_height,
+                                        level_memory.sound_vol)
+        # print(self.player)
+        file_path = "assets/images/background/"
+        self.npc = {
+            0 : pygame.image.load(file_path + "npc_0.png").convert_alpha() , # general background
+            1 : pygame.image.load(file_path + "npc_1.png").convert_alpha() , # hubzone 1 background
+            2 : pygame.image.load(file_path + "npc_2.png").convert_alpha() , # hubzone 2 background 
+        }
+        self.level_elements = level_memory.ls_elements
+        self.backgrounds = {
+            0 : pygame.image.load(file_path + "background_0.png").convert_alpha() , # general background
+            1 : pygame.image.load(file_path + "background_1.png").convert_alpha() , # hubzone 1 background
+            2 : pygame.image.load(file_path + "background_2.png").convert_alpha() , # hubzone 2 background
+        }
+
+        self.backgrounds[0] = \
+            pygame.transform.scale(self.backgrounds[0],
+                                   (self.backgrounds[0].get_rect().width *
+                                    self.memory.res_width,
+                                    self.backgrounds[0].get_rect().height *
+                                    self.memory.res_height))
+        self.text_bubbles = [
+            kogclass.Text("Text Bubbble", (310, 100), 25, "impact", GREY, None),
+            kogclass.Text("I am not an NPC", (310, 150), 25, "impact", GREY, None),
+        ]
+        
+        self.text_bubbles[0].scale(level_memory.res_width, level_memory.res_height)
+        self.text_bubbles[1].scale(level_memory.res_width, level_memory.res_height)
+        self.options_page = False
+        self.load_renders(-3)
+        
+        # self.special_objects = [pygame.Rect(1, 1, 1, 1), pygame.Rect(2, 2, 2, 2)]
+        # self.special_options = {0: MenuScene(24, 303, self.memory), 1: OptionsPage(self.memory)}
+        
+        self.player.alive = True
+        
+        
+    def input(self, pressed, held):
+        # Don't do LevelScene.input(self, pressed, held)
+        for every_key in pressed:
+            if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
+                self.player.enable_gravity and self.player.alive and not \
+                self.player.freeze and \
+                150 <= pygame.time.get_ticks() - self.jump_timer:
+                    self.player.jump_ability = True  # Allow player to jump
+                    self.player.jump_boost = self.player.max_jump  # Setup jump
+                    self.player.jump_sound_1.play()  # Play jump sound
+                    self.player.jumps += 1  # Add to a jump counter
+                    self.jump_timer = pygame.time.get_ticks()  # Reset jump timer
+
+            # Pressing the jump key to stop player freezing and start level
+            # This also updates the replay linked list
+            if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] \
+                    and not self.player.alive:
+                if 0 < len(self.resp_jumps):
+                    self.memory.update_temp(self.resp_jumps + self.hold_jumps)
+                self.player.alive = True
+                self.jump_timer = pygame.time.get_ticks()
+            if every_key in [pygame.K_a]:
+                pass
+            if every_key in [pygame.K_d]:
+                pass
+            if every_key in [pygame.K_s]:
+                if self.player.colliderect(self.special_objects):
+                    self.special_options[self.player.colliderect(self.special_objects)]
+            # Pressing R allows you to go back
+            if every_key == pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
+                                            0)
+                self.change_scene(MenuScene(24, 303, self.memory))
+            
+        if held[pygame.K_a]:
+            self.player.direction = -1
+        elif held[pygame.K_d]:
+            self.player.direction = 1
+        else:
+            self.player.direction = 0
+        
+        pass
+    
+    def update(self):
+        LevelScene.update(self)
+    
+    def render(self, screen):
+        LevelScene.render(self, screen) # <--
+        
+        screen.blit(self.backgrounds[0], (0,0))        
+        self.render_level(screen)
+        self.player.render(screen)
+
+        for element in self.render_objects:
+            if element.type == "rect":  # rect drawings
+                pygame.draw.rect(screen, element.color, element.shape)
+            else:  # line drawings
+                pygame.draw.line(screen, element.color,
+                                 [element.shape[0], element.shape[1]],
+                                 [element.shape[2], element.shape[3]],
+                                 element.shape[4])
+    
+    def render_levels(self, screen):
+        for each_rect in self.platforms:
+            pygame.draw.rect(screen, BLACK, each_rect)
+
 
 
 class Filler(kogclass.Scene):
@@ -2367,4 +2504,3 @@ class LevelZero(LevelScene):
     def render_level(self, screen):
         # No death zones in this level!
         pass
-
