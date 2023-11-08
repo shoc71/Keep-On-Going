@@ -706,8 +706,8 @@ class Hubzones(LevelScene):
         self.options_page = False
         self.load_renders(-3)
         
-        # self.special_objects = [pygame.Rect(1, 1, 1, 1), pygame.Rect(2, 2, 2, 2)]
-        # self.special_options = {0: MenuScene(24, 303, self.memory), 1: OptionsPage(self.memory)}
+        self.special_objects = [pygame.Rect(1, 1, 1, 1), pygame.Rect(2, 2, 2, 2)]
+        self.special_options = {0: self.return_to_menu}
         
         self.player.alive = True
         
@@ -739,7 +739,7 @@ class Hubzones(LevelScene):
                 pass
             if every_key in [pygame.K_s]:
                 if self.player.colliderect(self.special_objects):
-                    self.special_options[self.player.colliderect(self.special_objects)]
+                    self.special_options[self.player.colliderect(self.special_objects)]()
             # Pressing R allows you to go back
             if every_key == pygame.K_r:
                 self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
