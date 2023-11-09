@@ -767,3 +767,18 @@ self.win_zones = [
 
 self.respawn_zones = [
 ]
+
+HubZones(500, 300, 1)
+
+self.platforms = [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 566, 1080, 10])
+]
+
+self.death_zones = [
+]
+
+self.win_zones = [
+]
+
+self.respawn_zones = [
+]
