@@ -434,7 +434,7 @@ class MenuScene(LevelScene):
                         StatsPage(level_memory), ReplayIO(level_memory),
                         LevelZero(level_memory),
                         Hubzones(300, 50, level_memory),
-                        Filler(level_memory), Filler(level_memory)]
+                        HubSelect(level_memory), Filler(level_memory)]
         # Main menu options
 
         # Main menu text
@@ -476,7 +476,7 @@ class MenuScene(LevelScene):
                                            YELLOW, None)
         self.title_text_s6.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s7 = kogclass.Text("Filler", (648, 535), 30,
+        self.title_text_s7 = kogclass.Text("Hubzone Select", (648, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s7.scale(self.memory.res_width, self.memory.res_height)
@@ -1493,7 +1493,7 @@ class StatsPage(LevelScene):
         LevelScene.render_text(self, screen)
 
 
-class LevelSelect(LevelScene):
+class UniversalSelect(LevelScene):
     """
     Level select class made as a transition between menu and levels. It also
     allows the player to choose a specific level (based on completion -
@@ -1543,7 +1543,7 @@ class LevelSelect(LevelScene):
         self.blockmation_time = 0  # Time variable for moving level boxes
         self.text_x = 0  # Used to define the x position of level number text
         self.direction = 0  # Toggle determining direction level text moves
-        self.choose_id = 1  # Level ID chosen
+        self.choose_id = 0      # Rewrite in child class, int greater than 0
 
         self.memory = level_memory
 
@@ -1551,8 +1551,10 @@ class LevelSelect(LevelScene):
         self.speed_jump = 1  # Determines selection speed
         self.allow_select = True  # If levels can be freely chosen
 
-        self.level_set = self.memory.level_progress
+        self.level_set = []   # Rewrite in child class, should be list
         self.confirm_timer = pygame.time.get_ticks() - 3000
+
+        self.level_offset = 0   # Visually offset numbers
 
     def input(self, pressed, held):
         for every_key in pressed:
@@ -1566,10 +1568,8 @@ class LevelSelect(LevelScene):
             if self.allow_select and \
                     every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
                     405 < pygame.time.get_ticks() - self.blockmation_time:
-                self.change_scene(PlayLevel(self.level_data[self.choose_id][0],
-                                            self.level_data[self.choose_id][1],
-                                            self.memory, self.choose_id))
-                # Load a level using memory and that level id
+                # Alter in child class if it's a hub or level set
+                pass
             # Every 0.405 seconds, have the player jump
             if every_key in [pygame.K_a, pygame.K_d] and \
                     self.player.jump_ability and \
@@ -1580,13 +1580,14 @@ class LevelSelect(LevelScene):
                 self.player.jumps += 1  # Add to jump counter (useless)
 
                 # Move the blocks to the right (illusion of player going left)
-                if every_key == pygame.K_a and 1 < self.choose_id:
+                if every_key == pygame.K_a and \
+                        self.level_set[0] < self.choose_id:
                     self.blockmation_time = pygame.time.get_ticks()
                     # Reset timer for block animation
                     self.direction = 1  # Blocks going to the right
                 # Move the blocks to the left (illusion of player going right)
                 if every_key == pygame.K_d and \
-                        self.choose_id < self.level_set[-1] + 1:
+                        self.choose_id < self.level_set[-1]:
                     self.blockmation_time = pygame.time.get_ticks()
                     # Reset timer for block animation
                     self.direction = -1  # Blocks going to the left
@@ -1598,7 +1599,7 @@ class LevelSelect(LevelScene):
         Both actions have to occur after at least 0.405 seconds from 
         the last action. Both have checks for boundaries
         """
-        if held[pygame.K_a] and 1 < self.choose_id and \
+        if held[pygame.K_a] and self.level_set[0] < self.choose_id and \
                 self.player.jump_ability and \
                 not self.player.enable_gravity and \
                 (405 / self.speed_jump) < \
@@ -1611,7 +1612,7 @@ class LevelSelect(LevelScene):
             # Reset timer for block animation
             self.direction = 1  # Set block direction to the right
         elif held[pygame.K_d] and \
-                self.choose_id < self.level_set[-1] + 1 and \
+                self.choose_id < self.level_set[-1] and \
                 self.player.jump_ability and \
                 not self.player.enable_gravity and \
                 (405 / self.speed_jump) < \
@@ -1673,21 +1674,21 @@ class LevelSelect(LevelScene):
                     self.level_selector_text_3.text_rect)
 
         # Text seen to the left side (current selection, -1)
-        left_text = kogclass.Text(str(self.choose_id - 1),
+        left_text = kogclass.Text(str(self.choose_id - 1 - self.level_offset),
                                   [(1080 / 2) - 200 + self.text_x,
                                    (576 / 2) + 39], 40, "impact", YELLOW,
                                   None)
         left_text.scale(self.memory.res_width,
                         self.memory.res_height)
         # Text seen in the middle/what the player is standing on (current sel)
-        middle_text = kogclass.Text(str(self.choose_id),
+        middle_text = kogclass.Text(str(self.choose_id - self.level_offset),
                                     [(1080 / 2) + self.text_x,
                                      (576 / 2) + 39],
                                     40, "impact", YELLOW, None)
         middle_text.scale(self.memory.res_width,
                           self.memory.res_height)
         # Text seen to the right side (current selection, +1)
-        right_text = kogclass.Text(str(self.choose_id + 1),
+        right_text = kogclass.Text(str(self.choose_id + 1 - self.level_offset),
                                    [(1080 / 2) + 200 + self.text_x,
                                     (576 / 2) + 39], 40, "impact", YELLOW,
                                    None)
@@ -1768,6 +1769,54 @@ class LevelSelect(LevelScene):
                         self.confirm_text.text_rect)
 
 
+class LevelSelect(UniversalSelect):
+    def __init__(self, level_memory):
+        UniversalSelect.__init__(self, level_memory)
+        self.level_set = self.memory.id_range[self.memory.hub_index]
+        self.choose_id = self.level_set[0]      # Level ID chosen
+        self.level_offset = self.choose_id - 1
+
+    def input(self, pressed, held):
+        UniversalSelect.input(self, pressed, held)
+        for every_key in pressed:
+            if self.allow_select and \
+                    every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
+                    405 < pygame.time.get_ticks() - self.blockmation_time:
+                self.change_scene(PlayLevel(self.level_data[self.choose_id][0],
+                                            self.level_data[self.choose_id][1],
+                                            self.memory, self.choose_id))
+                # Load a level using memory and that level id
+
+    def update(self):
+        UniversalSelect.update(self)
+
+    def render(self, screen):
+        UniversalSelect.render(self, screen)
+
+
+class HubSelect(LevelSelect):
+    def __init__(self, level_memory):
+        UniversalSelect.__init__(self, level_memory)
+        self.level_set = [1, len(self.memory.id_range) - 1]
+        self.choose_id = self.memory.hub_index + 1
+
+    def input(self, pressed, held):
+        UniversalSelect.input(self, pressed, held)
+        for every_key in pressed:
+            if self.allow_select and \
+                    every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
+                    405 < pygame.time.get_ticks() - self.blockmation_time:
+                self.memory.hub_index = self.choose_id - 1
+                self.change_scene(Hubzones(0, 0, self.memory))
+                # Load a level using memory and that level id
+
+    def update(self):
+        UniversalSelect.update(self)
+
+    def render(self, screen):
+        UniversalSelect.render(self, screen)
+
+
 class ReplaySelect(LevelSelect):
     """Class that's similar to Level Select but has an extra filter
     for selecting levels with only valid replays"""
@@ -1784,6 +1833,7 @@ class ReplaySelect(LevelSelect):
                                           YELLOW, None)
         self.replay_title.scale(self.memory.res_width,
                                 self.memory.res_height)
+        self.level_set = self.memory.level_data
 
     def input(self, pressed, held):
         if self.choose_id in self.memory.replay_imp and \
