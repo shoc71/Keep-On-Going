@@ -650,6 +650,8 @@ self.win_zones =  [
 
 =========
 
+Testing_your_skill(30, 40, 1)
+
 self.platforms =  [
         pygame.draw.rect(screen, (0, 0, 0), [0, 0, 30, 576]),
         pygame.draw.rect(screen, (0, 0, 0), [60, 149, 30, 427]),
