@@ -1109,6 +1109,55 @@ self.win_zones =  [
 ]
 
 ==========
+
+Pillars_and_needles(41, 61, 1)
+
+
+self.platforms =  [
+	pygame.draw.rect(screen, (0, 0, 0), [0, 5, 34, 571]),
+	pygame.draw.rect(screen, (0, 0, 0), [34, 78, 130, 425]),
+	pygame.draw.rect(screen, (0, 0, 0), [916, 78, 130, 425]),
+	pygame.draw.rect(screen, (0, 0, 0), [164, 120, 130, 425]),
+	pygame.draw.rect(screen, (0, 0, 0), [786, 120, 130, 425]),
+	pygame.draw.rect(screen, (0, 0, 0), [294, 151, 130, 425]),
+	pygame.draw.rect(screen, (0, 0, 0), [656, 151, 130, 425]),
+	pygame.draw.rect(screen, (0, 0, 0), [479, 545, 130, 31]),
+	pygame.draw.rect(screen, (0, 0, 0), [1046, 5, 34, 27]),
+	pygame.draw.rect(screen, (0, 0, 0), [1046, 78, 34, 498]),
+	pygame.draw.rect(screen, (0, 0, 0), [1067, 14, 13, 86]),
+	pygame.draw.rect(screen, (0, 0, 0), [479, 171, 130, 353]),
+	pygame.draw.rect(screen, (0, 0, 0), [447, 223, 6, 353]),
+	pygame.draw.rect(screen, (0, 0, 0), [629, 223, 6, 353])
+
+]
+
+self.draw =  [
+	pygame.draw.rect(screen, (139, 0, 0), [217, 130, 6, 405]),
+	pygame.draw.rect(screen, (139, 0, 0), [853, 130, 6, 405]),
+	pygame.draw.rect(screen, (139, 0, 0), [80, 86, 6, 405]),
+	pygame.draw.rect(screen, (139, 0, 0), [991, 86, 6, 405]),
+	pygame.draw.rect(screen, (139, 0, 0), [352, 171, 6, 405]),
+	pygame.draw.rect(screen, (139, 0, 0), [720, 171, 6, 405]),
+	pygame.draw.rect(screen, (139, 0, 0), [540, 199, 6, 377])
+
+]
+
+self.death_zones =  [
+	pygame.draw.rect(screen, (139, 0, 0), [34, 503, 130, 73]),
+	pygame.draw.rect(screen, (139, 0, 0), [916, 503, 130, 73]),
+	pygame.draw.rect(screen, (139, 0, 0), [164, 545, 130, 31]),
+	pygame.draw.rect(screen, (139, 0, 0), [786, 545, 130, 31])
+
+]
+
+self.win_zones =  [
+	pygame.draw.rect(screen, (47, 237, 237), [505, 524, 79, 21]),
+	pygame.draw.rect(screen, (47, 237, 237), [1054, 32, 13, 46])
+
+]
+
+
+==========
 Four_Keys_of_Light(25, 228, 1)
 
 dsnclass.Text("Four Keys", (320, 50), 55, "impact", WHITE, None)
