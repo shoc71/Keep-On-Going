@@ -280,6 +280,8 @@ class Memory:
             
         """
 
+        self.hub_index = 1      # Keep track of current hub accessed
+
     def update_mem(self, level_id, death_count, jump_count, level_time,
                    stars):
         """
@@ -482,7 +484,12 @@ class Memory:
             start = self.level_id
 
         end = self.level_id     # Get the last level that was added in
-        self.id_range[self.range_index] = [start, end]  # Put the range into mem
+        if start + end < 0:
+            current_hub = -1
+        else:
+            current_hub = self.range_index
+
+        self.id_range[current_hub] = [start, end]  # Put the range into mem
         self.range_index += 1   # Increment for the next set of ranges
         # self.print_levels is mainly used for debugging purposes only
         # self.print_levels()
