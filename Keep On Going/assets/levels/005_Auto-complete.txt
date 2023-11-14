@@ -649,3 +649,46 @@ self.win_zones =  [
 ]
 
 =========
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 30, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [60, 149, 30, 427]),
+        pygame.draw.rect(screen, (0, 0, 0), [240, 145, 30, 431]),
+        pygame.draw.rect(screen, (0, 0, 0), [488, 163, 30, 413]),
+        pygame.draw.rect(screen, (0, 0, 0), [411, 145, 30, 431]),
+        pygame.draw.rect(screen, (0, 0, 0), [564, 145, 30, 431]),
+        pygame.draw.rect(screen, (0, 0, 0), [155, 124, 30, 452]),
+        pygame.draw.rect(screen, (0, 0, 0), [696, 124, 30, 452]),
+        pygame.draw.rect(screen, (0, 0, 0), [853, 124, 30, 452]),
+        pygame.draw.rect(screen, (0, 0, 0), [1050, 0, 30, 207]),
+        pygame.draw.rect(screen, (0, 0, 0), [1050, 331, 30, 245]),
+        pygame.draw.rect(screen, (0, 0, 0), [1068, 199, 12, 143]),
+        pygame.draw.rect(screen, (0, 0, 0), [89, 154, 69, 6]),
+        pygame.draw.rect(screen, (0, 0, 0), [17, 0, 1047, 9]),
+        pygame.draw.rect(screen, (0, 0, 0), [17, 10, 1047, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [17, 16, 1047, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [17, 22, 1047, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [17, 28, 1047, 5]),
+        pygame.draw.rect(screen, (0, 0, 0), [17, 34, 1047, 5])
+]
+
+self.draw =  [
+        pygame.draw.rect(screen, (235, 195, 65), [240, 151, 30, 6]),
+        pygame.draw.rect(screen, (235, 195, 65), [155, 129, 30, 6]),
+        pygame.draw.rect(screen, (235, 195, 65), [60, 154, 30, 6]),
+        pygame.draw.rect(screen, (30, 144, 255), [411, 151, 30, 6]),
+        pygame.draw.rect(screen, (30, 144, 255), [564, 151, 30, 6]),
+        pygame.draw.rect(screen, (30, 144, 255), [488, 170, 30, 6]),
+        pygame.draw.rect(screen, (255, 182, 193), [696, 130, 30, 7]),
+        pygame.draw.rect(screen, (255, 182, 193), [853, 130, 30, 7])
+]
+
+self.death_zones =  [
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [1057, 207, 11, 124])
+]
+
+================
+
