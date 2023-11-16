@@ -22,6 +22,10 @@ DARK_GREY = (52, 52, 52)
 DARK_PURPLE = (80, 35, 105)
 GOLDELLOW = (245, 180, 65)
 
+# global variable 
+LVL_ID = -99
+MENU_ID = -98
+OPTIONS_ID = -97
 
 class LevelScene(kogclass.Scene):
     """
@@ -221,7 +225,7 @@ class LevelScene(kogclass.Scene):
                         self.death_zones = []
                         self.respawn_zones = []
                         self.memory.options_status = self.level_id
-                        self.load_renders(-4)
+                        self.load_renders(OPTIONS_ID)
 
         # Held controls for jumping
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
@@ -552,7 +556,7 @@ class MenuScene(LevelScene):
         """self.title_guy = kogclass.SquareMe(xspawn, yspawn,
                                         10, 10, (181, 60, 177))"""
 
-        self.load_renders(-5)
+        self.load_renders(MENU_ID)
 
     def input(self, pressed, held):
         """Do not use LevelScene for input since we don't want to control
@@ -653,7 +657,7 @@ class HubzonePlayer(kogclass.SquareMe):
         kogclass.SquareMe.__init__(self, x_spawn, y_spawn, width, height, rgb,
                                    diff,
                                    res_width, res_height, jump_vol)
-
+        self.max_jump = 100
     def move(self):
 
         move_factor = (4 * self.direction) * self.diff_factor * self.res_width
@@ -691,6 +695,10 @@ class Hubzones(LevelScene):
             2: pygame.image.load(file_path + "npc_2.png").convert_alpha(),
             # hubzone 2 background
         }
+        self.pause_options = {
+            0: self.restart_death, 1: self.return_to_menu,
+            2: self.stop_level, 3: self.go_to_options
+        }
         self.level_elements = level_memory.ls_elements
         self.backgrounds = {
             0: pygame.image.load(
@@ -704,11 +712,11 @@ class Hubzones(LevelScene):
             # hubzone 2 background
         }
 
-        self.backgrounds[0] = \
-            pygame.transform.scale(self.backgrounds[0],
-                                   (self.backgrounds[0].get_rect().width *
+        self.backgrounds[self.memory.hub_index] = \
+            pygame.transform.scale(self.backgrounds[self.memory.hub_index],
+                                   (self.backgrounds[self.memory.hub_index].get_rect().width *
                                     self.memory.res_width,
-                                    self.backgrounds[0].get_rect().height *
+                                    self.backgrounds[self.memory.hub_index].get_rect().height *
                                     self.memory.res_height))
         self.text_bubbles = [
             kogclass.Text("Text Bubbble", (310, 100), 25, "impact", GREY, None),
@@ -721,7 +729,7 @@ class Hubzones(LevelScene):
         self.text_bubbles[1].scale(level_memory.res_width,
                                    level_memory.res_height)
         self.options_page = False
-        self.load_renders(-3)
+        self.load_renders(-96) # needs to be changed as well
 
         self.special_objects = [pygame.Rect(200, 500, 30, 30),
                                 pygame.Rect(800, 500, 30, 30)]
@@ -750,19 +758,42 @@ class Hubzones(LevelScene):
                     self.memory.update_temp(self.resp_jumps + self.hold_jumps)
                 self.player.alive = True
                 self.jump_timer = pygame.time.get_ticks()
-            if every_key in [pygame.K_a]:
-                pass
-            if every_key in [pygame.K_d]:
-                pass
+            if every_key in [pygame.K_ESCAPE]:
+                self.pause_index = 0
+                self.player.freeze = not self.player.freeze
+                print(f"{self.player.freeze} - freeze")
+            # Navigate pause menu
+            if every_key == pygame.K_w and not self.options_page and \
+                    self.player.freeze:
+                self.pause_index -= 1
+                self.pause_timer = pygame.time.get_ticks()
+            elif every_key == pygame.K_s and not self.options_page and \
+                    self.player.freeze:
+                self.pause_index += 1
+                self.pause_timer = pygame.time.get_ticks()
+
+            # Quick Restart counter (safe and default values)
+            if every_key is pygame.K_r:
+                self.memory.qr_counter += 1
+
+            # Choosing options from pause screen
+            if self.player.freeze and every_key == pygame.K_SPACE:
+                self.memory.options_status = -1
+                # self.options_page = False
+                # print(f"{self.options_page} - options page")
+                self.pause_options[self.pause_index]()
+                # Put this here to have it run only once
+                if self.options_page:
+                    self.platforms = []
+                    self.win_zones = []
+                    self.death_zones = []
+                    self.respawn_zones = []
+                    self.memory.options_status = self.level_id
+                    self.load_renders(OPTIONS_ID) # options page during the game
             if every_key in [pygame.K_s]:
                 if -1 < self.player.square_render.collidelist(self.special_objects):
                     self.special_options[
                         self.player.square_render.collidelist(self.special_objects)]()
-            # Pressing R allows you to go back
-            if every_key == pygame.K_r:
-                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
-                                            0)
-                self.change_scene(MenuScene(24, 303, self.memory))
 
         if held[pygame.K_a]:
             self.player.direction = -1
@@ -771,7 +802,17 @@ class Hubzones(LevelScene):
         else:
             self.player.direction = 0
 
-        pass
+        # Held controls for choosing options
+        if self.player.freeze and held[pygame.K_s] and \
+                not self.options_page and \
+                200 < pygame.time.get_ticks() - self.pause_timer:
+            self.pause_index += 1
+            self.pause_timer = pygame.time.get_ticks()
+        elif self.player.freeze and held[pygame.K_w] and \
+                not self.options_page and \
+                200 < pygame.time.get_ticks() - self.pause_timer:
+            self.pause_index -= 1
+            self.pause_timer = pygame.time.get_ticks()
 
     def update(self):
         LevelScene.update(self)
@@ -782,9 +823,39 @@ class Hubzones(LevelScene):
     def render(self, screen):
         LevelScene.render(self, screen)  # <--
 
-        screen.blit(self.backgrounds[0], (0, 0))
+        screen.blit(self.backgrounds[self.memory.hub_index], (0, 0))
         self.render_level(screen)
         self.player.render(screen)
+
+        if not self.options_page:
+            self.player.render(screen)
+
+            if self.player.freeze:
+                pygame.draw.rect(screen, DARK_PURPLE, [330, 150, 420, 340])
+                pygame.draw.rect(screen, GOLDELLOW, [340, 160, 400, 320])
+                screen.blit(self.pause_text.text_img,
+                            self.pause_text.text_rect)  # big bold for pausing
+                screen.blit(self.pause_text_2.text_img,
+                            self.pause_text_2.text_rect)  # instructions to unpause
+                screen.blit(self.pause_text_3.text_img,
+                            self.pause_text_3.text_rect)  # drawing quitting text
+                # adding quitting thing draw here as well
+                screen.blit(self.pause_text_4.text_img,
+                            self.pause_text_4.text_rect)
+                # added a way to formally return to the main menu
+                screen.blit(self.pause_text_5.text_img,
+                            self.pause_text_5.text_rect)
+                screen.blit(self.pause_text_6.text_img,
+                            self.pause_text_6.text_rect)
+
+                if 0 <= self.pause_index < len(self.pause_options):
+                    selected_option = self.pause_list[
+                        self.pause_index].text_rect
+                    pygame.draw.rect(screen, DARK_PURPLE,
+                                     [selected_option.x - 4,
+                                      selected_option.y - 2,
+                                      selected_option.width + 8,
+                                      selected_option.height + 4], 2)
 
         for element in self.render_objects:
             if element.type == "rect":  # rect drawings
@@ -896,7 +967,7 @@ class OptionsPage(LevelScene):
         self.menu_buffer = pygame.time.get_ticks()
         # Time to transition between scenes and not change settings
 
-        self.load_renders(-4)
+        self.load_renders(OPTIONS_ID)
 
         self.hold_res = False  # Used to only apply res changes once
 
@@ -926,6 +997,8 @@ class OptionsPage(LevelScene):
 
             # If press "R", return to main menu
             if action is pygame.K_r:
+                if self.memory.options_status == -1:
+                    self.change_scene(Hubzones(0, 0, self.memory))
                 if self.memory.options_status == 0:
                     self.memory.music.set_music(0, self.memory.music.max_vol,
                                                 -1, 0,
@@ -938,6 +1011,8 @@ class OptionsPage(LevelScene):
                     self.respawn_zones = []
                     self.access_options()
                     self.load_renders(self.memory.options_status)
+            
+
 
         if held[pygame.K_a] and (1000 / self.change_speed) < \
                 pygame.time.get_ticks() - self.change_time and \
