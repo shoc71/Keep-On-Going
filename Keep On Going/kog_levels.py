@@ -100,18 +100,18 @@ class LevelScene(kogclass.Scene):
                                           "impact", DARK_RED, None)
         self.pause_text_3.scale(level_memory.res_width,
                                 level_memory.res_height)
-        self.pause_text_4 = kogclass.Text("Return to Menu",
-                                          (540, 360), 30,
+        self.pause_text_5 = kogclass.Text("Return to Menu",
+                                          (540, 400), 30,
                                           "impact", DARK_RED, None)
-        self.pause_text_4.scale(level_memory.res_width,
-                                level_memory.res_height)
-        self.pause_text_5 = kogclass.Text("Quit", (540, 400),
-                                          30, "impact", DARK_RED, None)
         self.pause_text_5.scale(level_memory.res_width,
                                 level_memory.res_height)
-        self.pause_text_6 = kogclass.Text("Options", (540, 440),
+        self.pause_text_6 = kogclass.Text("Quit", (540, 440),
                                           30, "impact", DARK_RED, None)
         self.pause_text_6.scale(level_memory.res_width,
+                                level_memory.res_height)
+        self.pause_text_4 = kogclass.Text("Options", (540, 360),
+                                          30, "impact", DARK_RED, None)
+        self.pause_text_4.scale(level_memory.res_width,
                                 level_memory.res_height)
 
         # Text displayed when player pauses the game (ESC)
@@ -139,10 +139,12 @@ class LevelScene(kogclass.Scene):
         self.render_objects = []
         self.collision_objects = {}
 
+
         self.pause_options = {
-            0: self.restart_death, 1: self.return_to_menu,
-            2: self.stop_level, 3: self.access_options
+            0: self.restart_death, 1: self.access_options,
+            2: self.return_to_menu, 3: self.stop_level
         }
+
         """
         Here are the current pause options:
         - 0: Restart the level from pause menu, which counts as a death
@@ -158,9 +160,12 @@ class LevelScene(kogclass.Scene):
 
         # Useful to render an outline over these options
         # Should have the same length as pause_options
+        
         self.pause_list = [
-            self.pause_text_3, self.pause_text_4, self.pause_text_5,
-            self.pause_text_6
+            self.pause_text_3, 
+            self.pause_text_4,
+            self.pause_text_5, 
+            self.pause_text_6,
         ]
 
         self.options_page = False
@@ -564,11 +569,13 @@ class MenuScene(LevelScene):
         for every_key in pressed:
             # If player chooses option, update menu statistics and change scene
             if every_key in [pygame.K_SPACE]:
-                self.memory.music.switch_music()
+                self.memory.music.switch_music() # might need to change this
                 self.memory.update_mem(self.level_id, self.deaths,
                                        self.player.jumps, self.start_time, 0)
                 if self.option_count == 1:
                     self.memory.options_status = 0
+                elif self.option_count == 5:
+                    self.memory.music.set_music(self.memory.hub_index, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(self.options[self.option_count])
             # Press right/d to move right of the selection
             if every_key is pygame.K_d:
@@ -732,8 +739,11 @@ class Hubzones(LevelScene):
         self.load_renders(-96) # needs to be changed as well
 
         self.special_objects = [pygame.Rect(200, 500, 30, 30),
-                                pygame.Rect(800, 500, 30, 30)]
-        self.special_options = [self.return_to_menu, self.go_to_options]
+                                pygame.Rect(800, 500, 30, 30),
+                                pygame.Rect(800, 300, 180, 80)] # this for the sign
+        
+        self.special_options = [self.return_to_menu, self.go_to_options,
+                                self.go_to_hubselect]
 
         self.player.alive = True
 
@@ -761,7 +771,7 @@ class Hubzones(LevelScene):
             if every_key in [pygame.K_ESCAPE]:
                 self.pause_index = 0
                 self.player.freeze = not self.player.freeze
-                print(f"{self.player.freeze} - freeze")
+                # print(f"{self.player.freeze} - freeze")
             # Navigate pause menu
             if every_key == pygame.K_w and not self.options_page and \
                     self.player.freeze:
@@ -816,6 +826,9 @@ class Hubzones(LevelScene):
 
     def update(self):
         LevelScene.update(self)
+
+    def go_to_hubselect(self):
+        self.change_scene(HubSelect(self.memory))
 
     def go_to_options(self):
         self.change_scene(OptionsPage(self.memory))
@@ -1882,6 +1895,7 @@ class HubSelect(LevelSelect):
                     every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
                     405 < pygame.time.get_ticks() - self.blockmation_time:
                 self.memory.hub_index = self.choose_id - 1
+                self.memory.music.set_music(self.memory.hub_index, self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(Hubzones(0, 0, self.memory))
                 # Load a level using memory and that level id
 
