@@ -591,3 +591,33 @@ self.respawn_zones =  [
 ]
 
 ===========================
+
+Do_you_trust_me(50, 355, 1)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 5, 36, 571]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 5, 1063, 24]),
+        pygame.draw.rect(screen, (0, 0, 0), [10, 376, 329, 200]),
+        pygame.draw.rect(screen, (0, 0, 0), [440, 384, 221, 192]),
+        pygame.draw.rect(screen, (0, 0, 0), [751, 376, 329, 200]),
+        pygame.draw.rect(screen, (0, 0, 0), [1044, 5, 36, 571]),
+        pygame.draw.rect(screen, (0, 0, 0), [1019, 5, 25, 344])
+]
+
+self.draw =  [
+        pygame.draw.rect(screen, (0, 0, 0), [339, 28, 101, 548]),
+        pygame.draw.rect(screen, (0, 0, 0), [654, 28, 101, 548]),
+        pygame.draw.rect(screen, (0, 0, 0), [407, 28, 271, 180])
+]
+
+self.death_zones =  [
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [1032, 349, 12, 27])
+]
+
+self.respawn_zones =  [
+]
+
+=========================
