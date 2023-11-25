@@ -2110,3 +2110,78 @@ self.draw = [
         pygame.draw.rect(screen, (47, 237, 237), [462, 13, 161, 62]),
         pygame.draw.rect(screen, (47, 237, 237), [808, 13, 161, 62])
 ]
+
+========================
+
+The_road(40, 284, 1)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 5, 21, 571]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 5, 1080, 144]),
+        pygame.draw.rect(screen, (0, 0, 0), [946, 320, 133, 15]),
+        pygame.draw.rect(screen, (0, 0, 0), [1059, 5, 21, 571]),
+        pygame.draw.rect(screen, (0, 0, 0), [338, 320, 169, 15]),
+        pygame.draw.rect(screen, (0, 0, 0), [655, 320, 156, 15]),
+        pygame.draw.rect(screen, (0, 0, 0), [1042, 149, 18, 111]),
+        pygame.draw.rect(screen, (0, 0, 0), [1042, 395, 18, 111]),
+        pygame.draw.rect(screen, (0, 0, 0), [0, 506, 1080, 70]),
+        pygame.draw.rect(screen, (0, 0, 0), [40, 320, 165, 15])
+]
+
+self.draw =  [
+        pygame.draw.rect(screen, (52, 52, 52), [21, 477, 1021, 29]),
+        pygame.draw.rect(screen, (52, 52, 52), [21, 149, 1021, 29]),
+        pygame.draw.rect(screen, (125, 125, 125), [21, 335, 1021, 141]),
+        pygame.draw.rect(screen, (125, 125, 125), [21, 179, 1021, 141]),
+        pygame.draw.rect(screen, (125, 125, 125), [21, 314, 19, 29]),
+        pygame.draw.rect(screen, (125, 125, 125), [507, 314, 148, 29]),
+        pygame.draw.rect(screen, (125, 125, 125), [205, 314, 133, 29]),
+        pygame.draw.rect(screen, (255, 255, 255), [337, 320, 170, 15]),
+        pygame.draw.rect(screen, (255, 255, 255), [946, 320, 114, 15]),
+        pygame.draw.rect(screen, (125, 125, 125), [811, 314, 135, 29]),
+        pygame.draw.rect(screen, (125, 125, 125), [1032, 260, 16, 60]),
+        pygame.draw.rect(screen, (125, 125, 125), [1032, 335, 16, 60])
+]
+
+self.death_zones =  [
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [1048, 335, 11, 60]),
+        pygame.draw.rect(screen, (47, 237, 237), [1048, 260, 11, 60])
+]
+
+self.respawn_zones =  [
+]
+
+=========================
+
+use_the_walls_but_I_have_support(537, 359, 1)
+
+self.platforms =  [
+        pygame.draw.rect(screen, (0, 0, 0), [0, 0, 31, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [1049, 0, 31, 576]),
+        pygame.draw.rect(screen, (0, 0, 0), [4, 0, 1072, 27]),
+        pygame.draw.rect(screen, (0, 0, 0), [4, 549, 1072, 27]),
+        pygame.draw.rect(screen, (0, 0, 0), [33, 386, 37, 33]),
+        pygame.draw.rect(screen, (0, 0, 0), [1010, 386, 37, 33]),
+        pygame.draw.rect(screen, (0, 0, 0), [73, 371, 935, 16]),
+        pygame.draw.rect(screen, (0, 0, 0), [73, 343, 935, 8]),
+        pygame.draw.rect(screen, (0, 0, 0), [530, 0, 25, 311]),
+        pygame.draw.rect(screen, (0, 0, 0), [530, 382, 25, 194])
+]
+
+self.draw =  [
+]
+
+self.death_zones =  [
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, (47, 237, 237), [537, 311, 10, 32])
+]
+
+self.respawn_zones =  [
+]
+
+======================
