@@ -22,10 +22,11 @@ DARK_GREY = (52, 52, 52)
 DARK_PURPLE = (80, 35, 105)
 GOLDELLOW = (245, 180, 65)
 
-# global variable 
+# global variable
 LVL_ID = -99
 MENU_ID = -98
 OPTIONS_ID = -97
+
 
 class LevelScene(kogclass.Scene):
     """
@@ -139,7 +140,6 @@ class LevelScene(kogclass.Scene):
         self.render_objects = []
         self.collision_objects = {}
 
-
         self.pause_options = {
             0: self.restart_death, 1: self.access_options,
             2: self.return_to_menu, 3: self.stop_level
@@ -160,11 +160,11 @@ class LevelScene(kogclass.Scene):
 
         # Useful to render an outline over these options
         # Should have the same length as pause_options
-        
+
         self.pause_list = [
-            self.pause_text_3, 
+            self.pause_text_3,
             self.pause_text_4,
-            self.pause_text_5, 
+            self.pause_text_5,
             self.pause_text_6,
         ]
 
@@ -447,9 +447,6 @@ class MenuScene(LevelScene):
         # Main menu options
 
         # Main menu text
-        self.title_splash = kogclass.Text("DON'T STOP NOW", (540, 100), 100,
-                                          "impact", YELLOW, None)
-        self.title_splash.scale(self.memory.res_width, self.memory.res_height)
         self.title_text = kogclass.Text("Press Space or W To Start", (530, 200),
                                         50, "impact",
                                         YELLOW, None)
@@ -458,10 +455,19 @@ class MenuScene(LevelScene):
                                           "impact",
                                           YELLOW, None)
         self.title_text_2.scale(self.memory.res_width, self.memory.res_height)
-        self.title_text_s1 = kogclass.Text("Level Select", (216, 445), 30,
+
+        # Two types of text depending on game progress (new vs. continuing)
+        self.title_text_s1_new = kogclass.Text("New Game", (216, 445), 30,
                                            "impact",
                                            YELLOW, None)
-        self.title_text_s1.scale(self.memory.res_width, self.memory.res_height)
+        self.title_text_s1_new.scale(self.memory.res_width,
+                                 self.memory.res_height)
+        self.title_text_s1_cont = kogclass.Text("Continue", (216, 445), 30,
+                                           "impact",
+                                           YELLOW, None)
+        self.title_text_s1_cont.scale(self.memory.res_width,
+                                      self.memory.res_height)
+
         self.title_text_s2 = kogclass.Text("Options", (432, 445), 30,
                                            "impact",
                                            YELLOW, None)
@@ -522,44 +528,21 @@ class MenuScene(LevelScene):
                                     self.going_image_text.get_rect().height *
                                     self.memory.res_height * 0.225))
 
-        # Text for displaying title select options organized in a lists
-        self.option_select = [
-            [self.title_text_s1.text_rect.x - 5,
-             self.title_text_s1.text_rect.y - 5,
-             self.title_text_s1.text_rect.width + 10,
-             self.title_text_s1.text_rect.height + 10],
-            [self.title_text_s2.text_rect.x - 5,
-             self.title_text_s2.text_rect.y - 5,
-             self.title_text_s2.text_rect.width + 10,
-             self.title_text_s2.text_rect.height + 10],
-            [self.title_text_s3.text_rect.x - 5,
-             self.title_text_s3.text_rect.y - 5,
-             self.title_text_s3.text_rect.width + 10,
-             self.title_text_s3.text_rect.height + 10],
-            [self.title_text_s4.text_rect.x - 5,
-             self.title_text_s4.text_rect.y - 5,
-             self.title_text_s4.text_rect.width + 10,
-             self.title_text_s4.text_rect.height + 10],
-            [self.title_text_s5.text_rect.x - 5,
-             self.title_text_s5.text_rect.y - 5,
-             self.title_text_s5.text_rect.width + 10,
-             self.title_text_s5.text_rect.height + 10],
-            [self.title_text_s6.text_rect.x - 5,
-             self.title_text_s6.text_rect.y - 5,
-             self.title_text_s6.text_rect.width + 10,
-             self.title_text_s6.text_rect.height + 10],
-            [self.title_text_s7.text_rect.x - 5,
-             self.title_text_s7.text_rect.y - 5,
-             self.title_text_s7.text_rect.width + 10,
-             self.title_text_s7.text_rect.height + 10],
-            [self.title_text_s8.text_rect.x - 5,
-             self.title_text_s8.text_rect.y - 5,
-             self.title_text_s8.text_rect.width + 10,
-             self.title_text_s8.text_rect.height + 10]
-        ]
+        # Highlight specific rect
+        if len(self.memory.level_progress) < 2:
+            add_rect = self.title_text_s1_new.text_rect
+        else:
+            add_rect = self.title_text_s1_cont.text_rect
 
-        """self.title_guy = kogclass.SquareMe(xspawn, yspawn,
-                                        10, 10, (181, 60, 177))"""
+        self.option_select = [add_rect,
+                              self.title_text_s2.text_rect,
+                              self.title_text_s3.text_rect,
+                              self.title_text_s4.text_rect,
+                              self.title_text_s5.text_rect,
+                              self.title_text_s6.text_rect,
+                              self.title_text_s7.text_rect,
+                              self.title_text_s8.text_rect
+        ]
 
         self.load_renders(MENU_ID)
 
@@ -569,13 +552,15 @@ class MenuScene(LevelScene):
         for every_key in pressed:
             # If player chooses option, update menu statistics and change scene
             if every_key in [pygame.K_SPACE]:
-                self.memory.music.switch_music() # might need to change this
+                self.memory.music.switch_music()  # might need to change this
                 self.memory.update_mem(self.level_id, self.deaths,
                                        self.player.jumps, self.start_time, 0)
                 if self.option_count == 1:
                     self.memory.options_status = 0
                 elif self.option_count == 5:
-                    self.memory.music.set_music(self.memory.hub_index, self.memory.music.max_vol, -1, 0, 0)
+                    self.memory.music.set_music(self.memory.hub_index,
+                                                self.memory.music.max_vol, -1,
+                                                0, 0)
                 self.change_scene(self.options[self.option_count])
             # Press right/d to move right of the selection
             if every_key is pygame.K_d:
@@ -635,9 +620,14 @@ class MenuScene(LevelScene):
             410 * self.memory.res_width - 5, 10 * self.memory.res_height))
         screen.blit(self.going_image_text, (
             720 * self.memory.res_width - 95, 10 * self.memory.res_height))
-        """screen.blit(self.title_text.text_img, self.title_text.text_rect)
-        screen.blit(self.title_text_2.text_img, self.title_text_2.text_rect)"""
-        screen.blit(self.title_text_s1.text_img, self.title_text_s1.text_rect)
+
+        if len(self.memory.level_progress) < 2:
+            screen.blit(self.title_text_s1_new.text_img,
+                        self.title_text_s1_new.text_rect)
+        else:
+            screen.blit(self.title_text_s1_cont.text_img,
+                        self.title_text_s1_cont.text_rect)
+
         screen.blit(self.title_text_s2.text_img, self.title_text_s2.text_rect)
         screen.blit(self.title_text_s3.text_img, self.title_text_s3.text_rect)
         screen.blit(self.title_text_s4.text_img, self.title_text_s4.text_rect)
@@ -655,7 +645,10 @@ class MenuScene(LevelScene):
 
         # Menu selector box highlight
         pygame.draw.rect(screen, DARK_RED,
-                         self.option_select[self.option_count], 2)
+                         [self.option_select[self.option_count].x - 5,
+                          self.option_select[self.option_count].y - 5,
+                          self.option_select[self.option_count].width + 10,
+                          self.option_select[self.option_count].height + 10], 2)
 
 
 class HubzonePlayer(kogclass.SquareMe):
@@ -665,6 +658,7 @@ class HubzonePlayer(kogclass.SquareMe):
                                    diff,
                                    res_width, res_height, jump_vol)
         self.max_jump = 100
+
     def move(self):
 
         move_factor = (4 * self.direction) * self.diff_factor * self.res_width
@@ -703,8 +697,8 @@ class Hubzones(LevelScene):
             # hubzone 2 background
         }
         self.pause_options = {
-            0: self.restart_death, 1: self.return_to_menu,
-            2: self.stop_level, 3: self.go_to_options
+            0: self.restart_death, 1: self.go_to_options,
+            2: self.return_to_menu, 3: self.stop_level
         }
         self.level_elements = level_memory.ls_elements
         self.backgrounds = {
@@ -721,9 +715,11 @@ class Hubzones(LevelScene):
 
         self.backgrounds[self.memory.hub_index] = \
             pygame.transform.scale(self.backgrounds[self.memory.hub_index],
-                                   (self.backgrounds[self.memory.hub_index].get_rect().width *
+                                   (self.backgrounds[
+                                        self.memory.hub_index].get_rect().width *
                                     self.memory.res_width,
-                                    self.backgrounds[self.memory.hub_index].get_rect().height *
+                                    self.backgrounds[
+                                        self.memory.hub_index].get_rect().height *
                                     self.memory.res_height))
         self.text_bubbles = [
             kogclass.Text("Text Bubbble", (310, 100), 25, "impact", GREY, None),
@@ -736,12 +732,13 @@ class Hubzones(LevelScene):
         self.text_bubbles[1].scale(level_memory.res_width,
                                    level_memory.res_height)
         self.options_page = False
-        self.load_renders(-96) # needs to be changed as well
+        self.load_renders(-96)  # needs to be changed as well
 
         self.special_objects = [pygame.Rect(200, 500, 30, 30),
                                 pygame.Rect(800, 500, 30, 30),
-                                pygame.Rect(800, 300, 180, 80)] # this for the sign
-        
+                                pygame.Rect(800, 300, 180,
+                                            80)]  # this for the sign
+
         self.special_options = [self.return_to_menu, self.go_to_options,
                                 self.go_to_hubselect]
 
@@ -799,15 +796,27 @@ class Hubzones(LevelScene):
                     self.death_zones = []
                     self.respawn_zones = []
                     self.memory.options_status = self.level_id
-                    self.load_renders(OPTIONS_ID) # options page during the game
+                    self.load_renders(
+                        OPTIONS_ID)  # options page during the game
             if every_key in [pygame.K_s]:
-                if -1 < self.player.square_render.collidelist(self.special_objects):
+                if -1 < self.player.square_render.collidelist(
+                        self.special_objects):
                     self.special_options[
-                        self.player.square_render.collidelist(self.special_objects)]()
+                        self.player.square_render.collidelist(
+                            self.special_objects)]()
 
-        if held[pygame.K_a]:
+            if every_key == pygame.K_d and \
+                    1080 - self.player.width < self.player.xpos:
+                self.change_scene(LevelSelect(self.memory))
+            elif every_key == pygame.K_a and \
+                    self.player.xpos < 0:
+                self.change_scene(LevelSelect(self.memory))
+
+        if held[pygame.K_a] and \
+                0 <= self.player.xpos:
             self.player.direction = -1
-        elif held[pygame.K_d]:
+        elif held[pygame.K_d] and \
+                self.player.xpos + self.player.width <= 1080:
             self.player.direction = 1
         else:
             self.player.direction = 0
@@ -1024,8 +1033,6 @@ class OptionsPage(LevelScene):
                     self.respawn_zones = []
                     self.access_options()
                     self.load_renders(self.memory.options_status)
-            
-
 
         if held[pygame.K_a] and (1000 / self.change_speed) < \
                 pygame.time.get_ticks() - self.change_time and \
@@ -1593,11 +1600,6 @@ class UniversalSelect(LevelScene):
         """Initialize LevelScene with player parameters to the middle
         of the screen.
         """
-        self.filler_text = kogclass.Text("Choose A Level",
-                                         (540, 153), 50, "impact", YELLOW, None)
-        self.filler_text.scale(self.memory.res_width,
-                               self.memory.res_height)
-
         self.level_selector_text_0 = kogclass.Text("Choose a Level", (535, 100),
                                                    65,
                                                    "impact", YELLOW, None)
@@ -1631,7 +1633,7 @@ class UniversalSelect(LevelScene):
         self.blockmation_time = 0  # Time variable for moving level boxes
         self.text_x = 0  # Used to define the x position of level number text
         self.direction = 0  # Toggle determining direction level text moves
-        self.choose_id = 0      # Rewrite in child class, int greater than 0
+        self.choose_id = 0  # Rewrite in child class, int greater than 0
 
         self.memory = level_memory
 
@@ -1639,18 +1641,18 @@ class UniversalSelect(LevelScene):
         self.speed_jump = 1  # Determines selection speed
         self.allow_select = True  # If levels can be freely chosen
 
-        self.level_set = []   # Rewrite in child class, should be list
+        self.level_set = []  # Rewrite in child class, should be list
         self.confirm_timer = pygame.time.get_ticks() - 3000
 
-        self.level_offset = 0   # Visually offset numbers
+        self.level_offset = 0  # Visually offset numbers
 
     def input(self, pressed, held):
         for every_key in pressed:
             # Return player to menu if pressing "R"
             if every_key == pygame.K_r:
-                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
-                                            0)
-                self.change_scene(MenuScene(24, 303, self.memory))
+                self.memory.music.set_music(self.memory.hub_index,
+                                            self.memory.music.max_vol, -1, 0, 0)
+                self.change_scene(Hubzones(0, 0, self.memory))
 
             # Allow player to choose a level (based on ID) after 0.405 seconds
             if self.allow_select and \
@@ -1861,7 +1863,7 @@ class LevelSelect(UniversalSelect):
     def __init__(self, level_memory):
         UniversalSelect.__init__(self, level_memory)
         self.level_set = self.memory.id_range[self.memory.hub_index]
-        self.choose_id = self.level_set[0]      # Level ID chosen
+        self.choose_id = self.level_set[0]  # Level ID chosen
         self.level_offset = self.choose_id - 1
 
     def input(self, pressed, held):
@@ -1887,6 +1889,12 @@ class HubSelect(LevelSelect):
         UniversalSelect.__init__(self, level_memory)
         self.level_set = [1, len(self.memory.id_range) - 1]
         self.choose_id = self.memory.hub_index + 1
+        self.level_selector_text_0 = kogclass.Text("Choose a Hubzone",
+                                                   (535, 100),
+                                                   65,
+                                                   "impact", YELLOW, None)
+        self.level_selector_text_0.scale(self.memory.res_width,
+                                         self.memory.res_height)
 
     def input(self, pressed, held):
         UniversalSelect.input(self, pressed, held)
@@ -1895,7 +1903,8 @@ class HubSelect(LevelSelect):
                     every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
                     405 < pygame.time.get_ticks() - self.blockmation_time:
                 self.memory.hub_index = self.choose_id - 1
-                self.memory.music.set_music(self.memory.hub_index, self.memory.music.max_vol, -1, 0, 0)
+                self.memory.music.set_music(self.memory.hub_index,
+                                            self.memory.music.max_vol, -1, 0, 0)
                 self.change_scene(Hubzones(0, 0, self.memory))
                 # Load a level using memory and that level id
 
@@ -2198,12 +2207,20 @@ class PlayLevel(LevelSelect, OptionsPage):
                 self.level_id += 1
 
                 if self.level_id in self.level_data:
-                    self.change_scene(
-                        PlayLevel(self.level_data[self.level_id][0],
-                                  self.level_data[self.level_id][1],
-                                  self.memory,
-                                  self.level_id))
+                    if self.memory.id_range[self.memory.hub_index][0] \
+                            <= self.level_id <= \
+                            self.memory.id_range[self.memory.hub_index][1]:
+                        self.change_scene(
+                            PlayLevel(self.level_data[self.level_id][0],
+                                      self.level_data[self.level_id][1],
+                                      self.memory,
+                                      self.level_id))
+                    else:
+                        self.memory.hub_index += 1
+                        self.change_scene(Hubzones(0, 0, self.memory))
                 else:
+                    # The very last level
+                    # todo: Change this in the future for endings etc
                     self.change_scene(MenuScene(24, 303, self.memory))
         # Replay Mode
         else:

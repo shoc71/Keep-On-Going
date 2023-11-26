@@ -98,24 +98,24 @@ class Music:
             'waves_idea_2.mp3',
             "credits.wav",
         ]
-        self.end = pygame.USEREVENT + 0    # Unique event, for when music ends
+        self.end = pygame.USEREVENT + 0  # Unique event, for when music ends
         pygame.mixer.music.set_endevent(pygame.USEREVENT + 0)
         # Everytime music ends, return the event
 
-        self.file_path = "assets/audio/"    # File path for audio
+        self.file_path = "assets/audio/"  # File path for audio
 
-        self.current_track_index = 0    # Everything but the main menu theme
+        self.current_track_index = 0  # Everything but the main menu theme
 
-        self.perc_vol = perc_vol   # Volume set by the player as a percentage
-        self.music_vol = 0              # Adjustable music volume
-        self.vol_time = pygame.time.get_ticks()     # Increment music with time
-        self.max_vol = 0.7 * self.perc_vol / 100   # Max volume possible for music
+        self.perc_vol = perc_vol  # Volume set by the player as a percentage
+        self.music_vol = 0  # Adjustable music volume
+        self.vol_time = pygame.time.get_ticks()  # Increment music with time
+        self.max_vol = 0.7 * self.perc_vol / 100  # Max volume possible for music
 
         pygame.mixer.music.load(self.file_path + self.music_tracks[0])
         # Load the menu music
 
-        pygame.mixer.music.set_volume(self.max_vol)     # Set to max for now
-        pygame.mixer.music.play(-1)     # Start with main menu, play forever
+        pygame.mixer.music.set_volume(self.max_vol)  # Set to max for now
+        pygame.mixer.music.play(-1)  # Start with main menu, play forever
 
         self.music_text = Text("PLAYING: " +
                                str(self.music_tracks[self.current_track_index]),
@@ -180,8 +180,8 @@ class Music:
         while self.music_vol < self.max_vol and \
                 75 < pygame.time.get_ticks() - self.vol_time:
             self.music_vol += 0.01  # Increase volume
-            pygame.mixer.music.set_volume(self.music_vol)   # Update volume
-            self.vol_time = pygame.time.get_ticks()     # Reset timer
+            pygame.mixer.music.set_volume(self.music_vol)  # Update volume
+            self.vol_time = pygame.time.get_ticks()  # Reset timer
 
 
 class Memory:
@@ -194,12 +194,12 @@ class Memory:
         self.total_deaths = 0  # Total deaths in one session
         self.total_jumps = 0  # Total jumps in one session
         self.total_time = 0  # Total time passed in one session
-        self.total_stars = 0    # Total stars collected
+        self.total_stars = 0  # Total stars collected
 
         self.level_deaths = {}  # Deaths per level in one session
         self.level_jumps = {}  # Jumps per level in one session
         self.level_times = {}  # Times per level in one session
-        self.stars_collected = {}   # Stars collected per level
+        self.stars_collected = {}  # Stars collected per level
 
         self.level_progress = []  # collection of level_id's for levels done
 
@@ -210,7 +210,7 @@ class Memory:
         """Loaded in level data containing text, rects and lines for 
         platforms
         """
-        self.level_id = 0   # Initialize level_id
+        self.level_id = 0  # Initialize level_id
 
         self.id_range = {}  # Ranges for different sets of levels
         self.range_index = 0
@@ -234,11 +234,11 @@ class Memory:
 
         """Variables related to write and read replay class functions
         """
-        self.replay_imp = {}    # Imported replays from an external source
+        self.replay_imp = {}  # Imported replays from an external source
         self.imp_diff = {}  # Imported difficulties
-        self.replay_exp = {}    # Replays from the player ready to export
+        self.replay_exp = {}  # Replays from the player ready to export
 
-        self.hold_replay = ReplayChain()   # Altered Queue for holding jump/unfreeze timings
+        self.hold_replay = ReplayChain()  # Altered Queue for holding jump/unfreeze timings
         # hr_indexes is used to keep indexes for respawns/the latest 5 deaths
 
         # Toggle if replay mode is on or not (only accessed in Replays)
@@ -259,7 +259,7 @@ class Memory:
 
         # Initialize Width and Height of Screen, useful for changing resolutions
         self.res_width = width  # Ratio for width resolution, easily multiply
-        self.res_height = height    # Ratio for height res, easily multiply
+        self.res_height = height  # Ratio for height res, easily multiply
 
         self.res_index = 1
 
@@ -277,10 +277,10 @@ class Memory:
         we denote:
             - 0 for coming from the menu
             - greater than 0 for coming from a level
-            
+
         """
 
-        self.hub_index = 1      # Keep track of current hub accessed
+        self.hub_index = 1  # Keep track of current hub accessed
 
     def update_mem(self, level_id, death_count, jump_count, level_time,
                    stars):
@@ -381,7 +381,7 @@ class Memory:
                 self.load_levels(folder_path + each_file)
 
         # Load non-level pygame objects, start at -6 + 1 for 4 instances
-        self.level_id = -6
+        self.level_id = -99
         # Decrease the level_id for more than 4 instances!
         self.load_levels("assets/levels/non_levels.txt")
 
@@ -477,20 +477,21 @@ class Memory:
                         self.ls_elements[self.level_id][identifier] = [add_text]
                     else:
                         # If there are objects, add onto it
-                        self.ls_elements[self.level_id][identifier] += [add_text]
+                        self.ls_elements[self.level_id][identifier] += [
+                            add_text]
 
         # Extra if statement for the case where there's only 1 thing in the file
         if start is None:
             start = self.level_id
 
-        end = self.level_id     # Get the last level that was added in
+        end = self.level_id  # Get the last level that was added in
         if start + end < 0:
             current_hub = -1
         else:
             current_hub = self.range_index
 
         self.id_range[current_hub] = [start, end]  # Put the range into mem
-        self.range_index += 1   # Increment for the next set of ranges
+        self.range_index += 1  # Increment for the next set of ranges
         # self.print_levels is mainly used for debugging purposes only
         # self.print_levels()
 
@@ -556,11 +557,12 @@ class Memory:
                                      int(math.floor(int(
                                          rect_properties[0]) * self.res_width)),
                                      int(math.floor(int(
-                                         rect_properties[1]) * self.res_height)),
+                                         rect_properties[
+                                             1]) * self.res_height)),
                                      int(math.ceil(int(
                                          rect_properties[2]) * self.res_width)),
                                      int(math.floor(int(rect_properties[
-                                                        3]) * self.res_height))),
+                                                            3]) * self.res_height))),
                                  "rect")
         else:
             """Otherwise the color is defined in words:
@@ -577,15 +579,15 @@ class Memory:
                                  pygame.Rect(
                                      int(math.floor(int(
                                          rect_properties[0]) *
-                                                self.res_width)),
+                                                    self.res_width)),
                                      int(math.floor(int(
                                          rect_properties[1]) *
-                                                self.res_height)),
+                                                    self.res_height)),
                                      int(math.ceil(int(
                                          rect_properties[2]) *
-                                               self.res_width)),
+                                                   self.res_width)),
                                      int(math.floor(int(rect_properties[3]) *
-                                                self.res_height))),
+                                                    self.res_height))),
                                  "rect")
 
         return in_rect
@@ -607,12 +609,12 @@ class Memory:
         in_line = KOGElement(line_info[1], [int(line_info[2][1:]),
                                             int(line_info[3][:-1]),
                                             int(int(line_info[4][1:]) * \
-                                            self.res_width * self.res_height),
+                                                self.res_width * self.res_height),
                                             int(int(line_info[5][:-1]) * \
-                                            self.res_width * self.res_height),
+                                                self.res_width * self.res_height),
                                             int(int(line_info[6][:-1]) * \
-                                            max(self.res_width,
-                                                self.res_height))],
+                                                max(self.res_width,
+                                                    self.res_height))],
                              "line")
         return in_line
 
@@ -678,7 +680,8 @@ class Memory:
                     detect_rect = pygame.Rect((int(get_data[1]) +
                                                (int(get_data[3]) / 2)) -
                                               (int(get_data[5]) / 2),
-                                              (int(get_data[2]) + (int(get_data[4]) / 2)) -
+                                              (int(get_data[2]) + (int(
+                                                  get_data[4]) / 2)) -
                                               (int(get_data[6]) / 2),
                                               int(get_data[5]),
                                               int(get_data[6])
@@ -722,8 +725,10 @@ class Memory:
                     level_counter += 1
                 elif 0 < len(each_line) and each_line != "===\n" and \
                         each_line != "[]\n":
-                    self.replay_imp[level_counter] = each_line[1:-2].split(", ")[2:]
-                    self.imp_diff[level_counter] = int(each_line[1:-1].split(", ")[1])
+                    self.replay_imp[level_counter] = each_line[1:-2].split(
+                        ", ")[2:]
+                    self.imp_diff[level_counter] = int(
+                        each_line[1:-1].split(", ")[1])
 
     def init_replays(self):
         level_counter = 1
@@ -737,7 +742,7 @@ class Memory:
         self.replay_exp[level_id] = replay_info
 
     def update_temp(self, replay_info):
-        self.hold_replay.append(replay_info)    # replay_info must be a list
+        self.hold_replay.append(replay_info)  # replay_info must be a list
 
     def replays_on(self):
         self.enable_replay = True
@@ -759,7 +764,6 @@ class Memory:
             open_file.write(str(self.level_progress) + "\n")
             open_file.write(str(self.stars_collected) + "\n")
 
-
             open_file.write(str(self.diff_value) + "\n")
             open_file.write(str(self.bg_slider) + "\n")
             open_file.write(str(self.quick_restart) + "\n")
@@ -769,12 +773,14 @@ class Memory:
     # load_save will load miscellaneous data from file
 
     def load_save(self):
+        # todo: change this value to the desired file length
+        check_len = 14
         file_path = "assets/saves/save_file1.txt"
         if os.path.isfile(file_path):
             with open(file_path, "r") as test_file:
                 file_len = len(test_file.readlines())
 
-        if os.path.isfile(file_path) and file_len == 12:
+        if os.path.isfile(file_path) and file_len == check_len:
             get_save = open(file_path, "r")
             self.total_deaths = int(get_save.readline())
             self.total_jumps = int(get_save.readline())
@@ -825,7 +831,7 @@ class Memory:
             self.total_music_per = int(get_save.readline())
             pygame.mixer.music.set_volume(self.total_music_per)
             self.sound_vol = float(get_save.readline())
-        elif os.path.isfile(file_path) and file_len != 12:
+        elif os.path.isfile(file_path) and file_len == check_len:
             get_save = open(file_path, "w")
         else:
             # No previous save made
@@ -838,13 +844,15 @@ class Memory:
 
 class ReplayBlock:
     """A more convenient way to hold replay info, the info in each node"""
+
     def __init__(self, times, in_type):
-        self.times = times        # Time for that action
-        self.type = in_type     # Type of action
+        self.times = times  # Time for that action
+        self.type = in_type  # Type of action
 
 
 class ReplayNode:
     """Acts as a node for the chain, only to be used with ReplayChain"""
+
     def __init__(self, item):
         self.item = item
         self.next = None
@@ -907,10 +915,11 @@ class ReplayChain:
 
 class KOGElement:
     """A more convenient way to hold level element info"""
+
     def __init__(self, color, shape, in_type):
         self.color = color  # Block color
         self.shape = shape  # Block shape
-        self.type = in_type     # Distinguish line vs rect types
+        self.type = in_type  # Distinguish line vs rect types
 
 
 class Animate:
@@ -949,7 +958,7 @@ class Animate:
                 self.img_rect.y < 0 or 576 < self.img_rect.y:
             return "Invalid y position out of bounds or not given"
         elif self.frame_delay is None or type(self.frame_delay) is not int or \
-            type(self.frame_delay) is not float:
+                type(self.frame_delay) is not float:
             return "Frame delay is invalid (not int or float)"
 
     def animate(self, screen):
@@ -985,7 +994,7 @@ class Collectable:
 
     def __init__(self, object_id, collect_rect, detect_rect, roam_rect):
         self.alive = True
-        self.freeze = False     # Determine if star should move
+        self.freeze = False  # Determine if star should move
 
         self.id = object_id
         self.rect = collect_rect
@@ -993,15 +1002,15 @@ class Collectable:
         self.roam_rect = roam_rect
         self.fldr_id = [
             "stars/"
-        ]   # object id to which folder they should use
+        ]  # object id to which folder they should use
         """
         an id of 0 is unspecific and uses all files in the stars folder
         """
 
         self.animate_star = Animate("assets/images/" +
                                     self.fldr_id[object_id],
-                               self.rect.x, self.rect.y,
-                               self.rect.width, self.rect.height, 2)
+                                    self.rect.x, self.rect.y,
+                                    self.rect.width, self.rect.height, 2)
 
         if not self.animate_star.validate():
             raise "UNABLE TO LOAD STAR DATA"
@@ -1022,9 +1031,9 @@ class Collectable:
 
     def render_test(self, screen):
         # Render unrendered rects for debugging
-        pygame.draw.rect(screen, RED, self.roam_rect)       # Roam rect
-        pygame.draw.rect(screen, BLUE, self.detect_rect)    # Detection rect
-        pygame.draw.rect(screen, YELLOW, self.rect)         # Image rect
+        pygame.draw.rect(screen, RED, self.roam_rect)  # Roam rect
+        pygame.draw.rect(screen, BLUE, self.detect_rect)  # Detection rect
+        pygame.draw.rect(screen, YELLOW, self.rect)  # Image rect
 
     def update(self, player_rect):
         """Move delay used in self.detect_bounds(): if enough time
@@ -1071,17 +1080,17 @@ class Collectable:
 
         # If the player is to the left of the star
         if player_rect.x < self.rect.x:
-            self.move_x = 1     # move right
+            self.move_x = 1  # move right
         # If the player is to the right of the star
         elif self.rect.x + self.rect.width < player_rect.x:
-            self.move_x = -1    # move left
+            self.move_x = -1  # move left
 
         # If the player is above the star
         if player_rect.y < self.rect.y:
-            self.move_y = 1     # move down
+            self.move_y = 1  # move down
         # If the player is below the star
         elif self.rect.y + self.rect.height < player_rect.y:
-            self.move_y = -1    # move up
+            self.move_y = -1  # move up
 
         # Detect if player is touching, if so, get removed
         if player_rect.colliderect(self.rect):
@@ -1091,22 +1100,22 @@ class Collectable:
         # If the star is out to the right of the barrier
         if self.roam_rect.x + self.roam_rect.width <= \
                 self.rect.x + self.rect.width:
-            self.move_x = -1    # move back to the left
-            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+            self.move_x = -1  # move back to the left
+            self.move_delay = pygame.time.get_ticks()  # move for x seconds
         # If the star is out to the left of the barrier
         elif self.rect.x <= self.roam_rect.x:
-            self.move_x = 1     # move back to the right
-            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+            self.move_x = 1  # move back to the right
+            self.move_delay = pygame.time.get_ticks()  # move for x seconds
 
         # If the star is below the barrier
         if self.roam_rect.y + self.roam_rect.height <= \
                 self.rect.y + self.rect.height:
-            self.move_y = -1    # move back up into the barrier
-            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+            self.move_y = -1  # move back up into the barrier
+            self.move_delay = pygame.time.get_ticks()  # move for x seconds
         # If the star is above the barrier
         elif self.rect.y <= self.roam_rect.y:
-            self.move_y = 1     # move back down into the barrier
-            self.move_delay = pygame.time.get_ticks()   # move for x seconds
+            self.move_y = 1  # move back down into the barrier
+            self.move_delay = pygame.time.get_ticks()  # move for x seconds
 
     def random_movement(self):
         # randomly set the direction of x and y from -1, 0, then 1
@@ -1131,7 +1140,7 @@ class SquareMe:  # lil purple dude
         ]
         """
         self.xpos = x_spawn  # Current x_position, initialized as spawn
-        self.ypos = y_spawn # Current y_position, initialized as spawn
+        self.ypos = y_spawn  # Current y_position, initialized as spawn
         self.width = math.ceil(width * res_width)  # Current width, always 10
         self.height = math.ceil(height * res_height)
         # Current height, always 10
@@ -1167,10 +1176,14 @@ class SquareMe:  # lil purple dude
                                     self.ypos + (res_height * 1),
                                     self.width + (res_width * 10),
                                     8 * res_height)
-        self.right_col = pygame.Rect(self.xpos + self.width, self.ypos + (res_height * 1),
-                                    self.width + (10 * res_width), 8 * res_height)
-        self.top_col = pygame.Rect(self.xpos, self.ypos - self.height - (10 * res_height),
-                                    10 * res_width, self.height + (10 * res_height))
+        self.right_col = pygame.Rect(self.xpos + self.width,
+                                     self.ypos + (res_height * 1),
+                                     self.width + (10 * res_width),
+                                     8 * res_height)
+        self.top_col = pygame.Rect(self.xpos,
+                                   self.ypos - self.height - (10 * res_height),
+                                   10 * res_width,
+                                   self.height + (10 * res_height))
         self.bot_col = pygame.Rect(self.xpos, self.ypos + self.height,
                                    10 * res_width, self.height * 4)
 
@@ -1534,6 +1547,7 @@ class KOGLog:
 
     def __init__(self):
         pass
+
 
 """
 !! NOTICE !!
