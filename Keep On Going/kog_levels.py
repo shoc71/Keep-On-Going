@@ -439,11 +439,12 @@ class MenuScene(LevelScene):
         LevelScene.__init__(self, xspawn, yspawn, level_memory)
         self.level_id = 0  # Has a level id of 0 (defined to record jumps)
         self.option_count = 0  # Index counter to choose level
-        self.options = [LevelSelect(level_memory), OptionsPage(level_memory),
+        self.options = [Hubzones(300, 50, level_memory),
+                        OptionsPage(level_memory),
                         StatsPage(level_memory), ReplayIO(level_memory),
                         LevelZero(level_memory),
-                        Hubzones(300, 50, level_memory),
-                        HubSelect(level_memory), Filler(level_memory)]
+                        Filler(level_memory),
+                        Filler(level_memory), Filler(level_memory)]
         # Main menu options
 
         # Main menu text
@@ -557,7 +558,7 @@ class MenuScene(LevelScene):
                                        self.player.jumps, self.start_time, 0)
                 if self.option_count == 1:
                     self.memory.options_status = 0
-                elif self.option_count == 5:
+                elif self.option_count == 0:
                     self.memory.music.set_music(self.memory.hub_index,
                                                 self.memory.music.max_vol, -1,
                                                 0, 0)
@@ -680,7 +681,7 @@ class HubzonePlayer(kogclass.SquareMe):
 class Hubzones(LevelScene):
     def __init__(self, x_spawn, y_spawn, level_memory):
         LevelScene.__init__(self, x_spawn, y_spawn, level_memory)
-        self.player = HubzonePlayer(self.x_spawn, self.y_spawn, 25, 25, PURPLE,
+        self.player = HubzonePlayer(self.x_spawn, self.y_spawn, 20, 20, PURPLE,
                                     level_memory.diff_lookup[
                                         level_memory.diff_value],
                                     level_memory.res_width,
@@ -710,7 +711,9 @@ class Hubzones(LevelScene):
             # hubzone 1 background
             2: pygame.image.load(
                 file_path + "background_2.png").convert_alpha(),
-            # hubzone 2 background
+            # hubzone 2 background,
+            3: pygame.image.load(
+                file_path + "background_3.png").convert_alpha()
         }
 
         self.backgrounds[self.memory.hub_index] = \
@@ -1597,6 +1600,8 @@ class UniversalSelect(LevelScene):
 
     def __init__(self, level_memory):
         LevelScene.__init__(self, (1080 / 2) - (10 / 2), 576 / 2, level_memory)
+        self.player.width = 20
+        self.player.height = 20
         """Initialize LevelScene with player parameters to the middle
         of the screen.
         """
@@ -2045,6 +2050,14 @@ class PlayLevel(LevelSelect, OptionsPage):
                         # Add rect objects for collision (collision, no render)
                     self.render_objects += [element]
                     # Load up render objects (only rendering, no collision)
+        self.display_stats = kogclass.Text("Deaths: " + str(self.deaths) +
+                                           ", Jumps: " + str(self.player.jumps)
+                                           + ", Time: " +
+                                           str(kogclass.convert_time(
+                                               pygame.time.get_ticks() -
+                                               self.start_time)),
+                                           [1080 / 2, 20], 20, "impact", YELLOW,
+                                           None)
 
         # Replay Option if enabled
         if self.memory.enable_replay:
@@ -2126,6 +2139,18 @@ class PlayLevel(LevelSelect, OptionsPage):
         # Use the default update features (collision, pausing, victory, etc.)
         if self.level_id in self.level_data:
             LevelScene.update(self)
+
+            self.display_stats = kogclass.Text("Deaths: " +
+                                               str(self.deaths) +
+                                               ", Jumps: " +
+                                               str(self.player.jumps)
+                                               + ", Time: " +
+                                               str(kogclass.convert_time(
+                                                   pygame.time.get_ticks() -
+                                                   self.start_time)),
+                                               [1080 / 2, 20], 20, "impact",
+                                               YELLOW,
+                                               None)
 
         # Update star position and player detection
         if self.level_id in self.memory.star_data and not self.player.freeze:
@@ -2330,6 +2355,9 @@ class PlayLevel(LevelSelect, OptionsPage):
                 if not self.start_toggle and self.memory.enable_replay:
                     screen.blit(self.count_text.text_img,
                                 self.count_text.text_rect)
+
+                screen.blit(self.display_stats.text_img,
+                            self.display_stats.text_rect)
             else:
                 OptionsPage.render(self, screen)
 
