@@ -768,13 +768,14 @@ class Memory:
             open_file.write(str(self.bg_slider) + "\n")
             open_file.write(str(self.quick_restart) + "\n")
             open_file.write(str(self.music.perc_vol) + "\n")
-            open_file.write(str(self.sound_vol))
+            open_file.write(str(self.sound_vol) + "\n")
+            open_file.write(str(self.hub_index))
 
     # load_save will load miscellaneous data from file
 
     def load_save(self):
         # todo: change this value to the desired file length
-        check_len = 14
+        check_len = 15
         file_path = "assets/saves/save_file1.txt"
         if os.path.isfile(file_path):
             with open(file_path, "r") as test_file:
@@ -831,6 +832,7 @@ class Memory:
             self.total_music_per = int(get_save.readline())
             pygame.mixer.music.set_volume(self.total_music_per)
             self.sound_vol = float(get_save.readline())
+            self.hub_index = int(get_save.readline())
         elif os.path.isfile(file_path) and file_len == check_len:
             get_save = open(file_path, "w")
         else:
