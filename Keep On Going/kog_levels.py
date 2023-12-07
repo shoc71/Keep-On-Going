@@ -1,3 +1,4 @@
+import os
 import random
 import pygame
 import kog_class as kogclass
@@ -459,13 +460,13 @@ class MenuScene(LevelScene):
 
         # Two types of text depending on game progress (new vs. continuing)
         self.title_text_s1_new = kogclass.Text("New Game", (216, 445), 30,
-                                           "impact",
-                                           YELLOW, None)
+                                               "impact",
+                                               YELLOW, None)
         self.title_text_s1_new.scale(self.memory.res_width,
-                                 self.memory.res_height)
+                                     self.memory.res_height)
         self.title_text_s1_cont = kogclass.Text("Continue", (216, 445), 30,
-                                           "impact",
-                                           YELLOW, None)
+                                                "impact",
+                                                YELLOW, None)
         self.title_text_s1_cont.scale(self.memory.res_width,
                                       self.memory.res_height)
 
@@ -543,7 +544,7 @@ class MenuScene(LevelScene):
                               self.title_text_s6.text_rect,
                               self.title_text_s7.text_rect,
                               self.title_text_s8.text_rect
-        ]
+                              ]
 
         self.load_renders(MENU_ID)
 
@@ -691,39 +692,30 @@ class Hubzones(LevelScene):
         file_path = "assets/images/background/"
         self.npc = {
             0: pygame.image.load(file_path + "npc_0.png").convert_alpha(),
-            # general background
+            # npc 1
             1: pygame.image.load(file_path + "npc_1.png").convert_alpha(),
-            # hubzone 1 background
+            # npc 2
             2: pygame.image.load(file_path + "npc_2.png").convert_alpha(),
-            # hubzone 2 background
+            # npc 3
         }
         self.pause_options = {
             0: self.restart_death, 1: self.go_to_options,
             2: self.return_to_menu, 3: self.stop_level
         }
         self.level_elements = level_memory.ls_elements
-        self.backgrounds = {
-            0: pygame.image.load(
-                file_path + "background_0.png").convert_alpha(),
-            # general background
-            1: pygame.image.load(
-                file_path + "background_1.png").convert_alpha(),
-            # hubzone 1 background
-            2: pygame.image.load(
-                file_path + "background_2.png").convert_alpha(),
-            # hubzone 2 background,
-            3: pygame.image.load(
-                file_path + "background_3.png").convert_alpha()
-        }
+        self.backgrounds = {}
+        background_index = 0
+        try:
+            file_path = "assets/images/background/"
+            for file in os.listdir(file_path):
+                if "background" in file:
+                    self.backgrounds[background_index] = \
+                        pygame.image.load(file_path + str(file)).convert_alpha()
+                    background_index += 1
+        except:
+            # todo: Put log error here
+            raise "No Backgrounds Found in Folrder"
 
-        self.backgrounds[self.memory.hub_index] = \
-            pygame.transform.scale(self.backgrounds[self.memory.hub_index],
-                                   (self.backgrounds[
-                                        self.memory.hub_index].get_rect().width *
-                                    self.memory.res_width,
-                                    self.backgrounds[
-                                        self.memory.hub_index].get_rect().height *
-                                    self.memory.res_height))
         self.text_bubbles = [
             kogclass.Text("Text Bubbble", (310, 100), 25, "impact", GREY, None),
             kogclass.Text("I am not an NPC", (310, 150), 25, "impact", GREY,
@@ -735,7 +727,9 @@ class Hubzones(LevelScene):
         self.text_bubbles[1].scale(level_memory.res_width,
                                    level_memory.res_height)
         self.options_page = False
-        self.load_renders(-96)  # needs to be changed as well
+        self.load_renders(-96)
+        """ Hub non-level elements, add + self.memory.hub_index once all are
+        added in non-levels.txt"""
 
         self.special_objects = [pygame.Rect(200, 500, 30, 30),
                                 pygame.Rect(800, 500, 30, 30),
@@ -847,10 +841,18 @@ class Hubzones(LevelScene):
 
     def render(self, screen):
         LevelScene.render(self, screen)  # <--
-
-        screen.blit(self.backgrounds[self.memory.hub_index], (0, 0))
+        if self.memory.hub_index in self.backgrounds:
+            screen.blit(self.backgrounds[self.memory.hub_index], (0, 0))
         self.render_level(screen)
-        self.player.render(screen)
+
+        for element in self.render_objects:
+            if element.type == "rect":  # rect drawings
+                pygame.draw.rect(screen, element.color, element.shape)
+            else:  # line drawings
+                pygame.draw.line(screen, element.color,
+                                 [element.shape[0], element.shape[1]],
+                                 [element.shape[2], element.shape[3]],
+                                 element.shape[4])
 
         if not self.options_page:
             self.player.render(screen)
@@ -882,14 +884,7 @@ class Hubzones(LevelScene):
                                       selected_option.width + 8,
                                       selected_option.height + 4], 2)
 
-        for element in self.render_objects:
-            if element.type == "rect":  # rect drawings
-                pygame.draw.rect(screen, element.color, element.shape)
-            else:  # line drawings
-                pygame.draw.line(screen, element.color,
-                                 [element.shape[0], element.shape[1]],
-                                 [element.shape[2], element.shape[3]],
-                                 element.shape[4])
+        self.player.render(screen)
 
     def render_level(self, screen):
         for each_rect in self.platforms:
