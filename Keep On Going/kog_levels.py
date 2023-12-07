@@ -233,6 +233,12 @@ class LevelScene(kogclass.Scene):
                         self.memory.options_status = self.level_id
                         self.load_renders(OPTIONS_ID)
 
+                # Change music tracks
+                if every_key == pygame.K_n:
+                    self.memory.music.next_track()
+                elif every_key == pygame.K_b:
+                    self.memory.music.previous_track()
+
         # Held controls for jumping
         if (held[pygame.K_SPACE] or held[pygame.K_w] or held[pygame.K_UP]) \
                 and not self.player.enable_gravity and self.player.alive and \
