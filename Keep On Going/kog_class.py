@@ -86,23 +86,22 @@ class Music:
     """
 
     def __init__(self, perc_vol):
-        self.music_tracks = [
-            "main_menu.wav",
-            "level_loop1.wav",
-            "work_around_lead_edited.wav",
-            "good_vibes_4.mp3",
-            "maybe_sad_broken_ideas.mp3",
-            "song_1.mp3",
-            "tension_idea_4.mp3",
-            'tension_idea_5.mp3',
-            'waves_idea_2.mp3',
-            "credits.wav",
-        ]
+        self.music_tracks = []
+        self.file_path = "assets/audio/soundtracks/"    # File path for audio
+        try:
+            for music in os.listdir(self.file_path):
+                if "mp3" in music or "wav" in music:
+                    self.music_tracks += [str(music)]
+        except:
+            # todo: ERROR LOG
+            raise "Problem with Loading Music"
+
+        self.hub_tracks = {}    # Hub number: [n,m] - song range for that hub
+        self.level_tracks = {}  # Level number: [o,p] - song range for levels
+
         self.end = pygame.USEREVENT + 0  # Unique event, for when music ends
         pygame.mixer.music.set_endevent(pygame.USEREVENT + 0)
         # Everytime music ends, return the event
-
-        self.file_path = "assets/audio/"  # File path for audio
 
         self.current_track_index = 0  # Everything but the main menu theme
 
@@ -146,6 +145,20 @@ class Music:
         pygame.mixer.music.set_volume(self.music_vol)
 
         pygame.mixer.music.play(0, 0, 0)  # Play the music once
+
+    def next_track(self):
+        if len(self.music_tracks) - 1 < self.current_track_index + 1:
+            self.current_track_index = 0
+        else:
+            self.current_track_index += 1
+        self.set_music(self.current_track_index, self.max_vol, -1, 0, 0)
+
+    def previous_track(self):
+        if self.current_track_index - 1 < 0:
+            self.current_track_index = len(self.music_tracks) - 1
+        else:
+            self.current_track_index -= 1
+        self.set_music(self.current_track_index, self.max_vol, -1, 0, 0)
 
     def set_music(self, track_num, vol, loops, start, fade_in):
         # Set the max volume
