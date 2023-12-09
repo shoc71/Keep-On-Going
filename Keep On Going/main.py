@@ -2,7 +2,7 @@ import pygame
 import kog_levels as koglevels
 import kog_class as kogclass
 
-#small comment change on github
+
 class Program:
     """
     Class responsible for how the game runs
@@ -11,7 +11,6 @@ class Program:
         self.running = True     # Determines if the game is running
         self.memory = kogclass.Memory(width / 1080, height / 576)     # Initialize game memory
         self.memory.load_all_levels()   # Load all levels from different files
-
         self.memory.init_replays()
         self.memory.load_save()
         self.memory.music = kogclass.Music(self.memory.total_music_per)
@@ -104,11 +103,21 @@ if __name__ == "__main__":
     pygame.display.set_caption("Keep On Going") # game window caption
     icon = pygame.image.load(file_path + "rect10.png") # loading image
     default_icon_image_size = (32, 32) # reducing size of image
-    icon = pygame.transform.scale(icon, default_icon_image_size) # scaling image correctly
+    icon = pygame.transform.scale(icon, default_icon_image_size)
+    # scaling image correctly
     pygame.display.set_icon(icon) # game window icon
 
-    start_game = Program(game_width, game_height)      # Initialize running the game with Program
-    start_scene = koglevels.MenuScene(24, 303, start_game.memory)
+    start_game = Program(game_width, game_height)
+    # Initialize running the game with Program
+
+    # Start game in Menu if continuing, else go to first tutorial level
+    if 0 < len(start_game.memory.level_progress):
+        start_scene = koglevels.MenuScene(24, 303, start_game.memory)
+    else:
+        start_game.memory.hub_index = 0
+        start_scene = koglevels.PlayLevel(start_game.memory.level_set[1][0],
+                                          start_game.memory.level_set[1][1],
+                                          start_game.memory, 1)
     # Initialize the first scene/starting scene shown to the player
     start_game.run(game_width, game_height, start_scene)  # Run the game loop
     """The game loop will be stuck at this line (start_game.run) until the
@@ -116,5 +125,3 @@ if __name__ == "__main__":
     False, the program will move onto the next line to quit"""
 
     pygame.quit()   # Quit the game/pygame instance
-
-
