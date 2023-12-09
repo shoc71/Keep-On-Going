@@ -1001,6 +1001,48 @@ class Animate:
         screen.blit(frame, self.img_rect)
 
 
+class AnimateRect:
+    def __init__(self, in_rect, color, transparency, frame_delay):
+        self.rect = in_rect
+        self.frame_delay = frame_delay * 1000
+        # Amount of time before this Rect does an action (in seconds)
+
+        self.animate_time = pygame.time.get_ticks()
+
+        self.rect_surface = pygame.Surface((in_rect.width, in_rect.height))
+
+        self.rect_surface.set_alpha(transparency)
+        self.transparency = transparency
+
+        self.color = color
+
+    def more_clear(self):
+        if 0 < self.transparency:
+            self.transparency -= 5
+
+        if self.transparency < 0:
+            self.rect_surface.set_alpha(0)
+        else:
+            self.rect_surface.set_alpha(self.transparency)
+
+    def more_opaque(self):
+        if self.transparency < 255:
+            self.transparency += 5
+
+        if 255 <= self.transparency:
+            self.rect_surface.set_alpha(255)
+        else:
+            self.rect_surface.set_alpha(self.transparency)
+
+    def update_pos(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
+    def render(self, screen):
+        self.rect_surface.fill(self.color)
+        screen.blit(self.rect_surface, [self.rect.x, self.rect.y])
+
+
 class Collectable:
     """
     Render, move, and give mechanics to collectables
@@ -1212,6 +1254,11 @@ class SquareMe:  # lil purple dude
         self.left_x = None
         self.right_x = None
 
+        # Decor rects/player visuals
+        self.afterimages = []
+        # Amount of time before the next after image is made
+        self.afterimg_delay = pygame.time.get_ticks()
+
     def move(self):
         """
         Move the player by 4 units in the specific direction, multiplied
@@ -1235,6 +1282,40 @@ class SquareMe:  # lil purple dude
         self.jump()
 
         self.update_collision_detection()
+
+    def update_afterimages(self):
+        # How frequently after_img is animated according to player speed
+        # INT's: 40, 60, 80 - 80 is default
+        effect_factor = 40 / self.diff_factor
+
+        # Change transparency if it's too solid/opaque initially, default is 125
+        transp = 100
+
+        # Have 3 afterimages at most
+        # After 0.5 seconds, make the after_image
+        if len(self.afterimages) < 3 and \
+                effect_factor < pygame.time.get_ticks() - self.afterimg_delay:
+            # Transparency goes from 0 (transparent) to 255 (opaque)
+            self.afterimages += [AnimateRect(pygame.Rect(self.xpos,
+                                                         self.ypos,
+                                                         self.width,
+                                                         self.height),
+                                             self.color,
+                                             transp, effect_factor / 10000)]
+            self.afterimg_delay = pygame.time.get_ticks()
+
+        # Loop through afterimages and update their transparency
+        for rect in self.afterimages:
+            # Check if their transparency is at 0, if so reset
+            if rect.transparency <= 0 and \
+                    effect_factor < pygame.time.get_ticks() - self.afterimg_delay:
+                rect.update_pos(self.xpos, self.ypos)
+                rect.transparency = 125
+                self.afterimg_delay = pygame.time.get_ticks()
+            elif rect.frame_delay < pygame.time.get_ticks() - rect.animate_time:
+                # Else change transparency
+                rect.more_clear()
+                rect.animate_time = pygame.time.get_ticks()
 
     def update_collision_detection(self):
         # Update collision logic position in real time with the player position
@@ -1279,11 +1360,23 @@ class SquareMe:  # lil purple dude
         pygame.draw.rect(screen, BLUE, self.top_col)  # top
         pygame.draw.rect(screen, BLUE, self.bot_col)  # bottom"""
 
+        # Update the square render/rect with the position (x and y)
         self.square_render = pygame.draw.rect(screen, self.color, [self.xpos,
                                                                    self.ypos,
                                                                    self.width,
                                                                    self.height])
-        # Update the square render/rect with the position (x and y)
+
+        # TODO: Test player outline:
+        """ pygame.draw.rect(screen, YELLOW, [self.xpos, self.ypos,
+                                          self.width, self.height], 1)"""
+
+        # Update player afterimages
+        self.update_afterimages()
+        # I put this update here since it's only updating the renders
+
+        # Render afterimages
+        for rect in self.afterimages:
+            rect.render(screen)
 
     def collision_plat(self, object_list: [pygame.Rect]):
         # Get all the colliding rects with the bottom rect
@@ -1576,10 +1669,10 @@ def convert_time(in_time):
     if in_time > 1000:
         seconds = round(in_time / 1000)
     if seconds >= 60:
-        minutes = round(seconds / 60)
+        minutes = seconds // 60
         seconds = seconds % 60
     if minutes >= 60:
-        hours = round(minutes / 60)
+        hours = minutes // 60
         minutes = minutes % 60
 
     return [hours, minutes, seconds]
@@ -1599,4 +1692,17 @@ def add_time(old_times, new_times):
     # print(seconds, minutes_to_s, hours_to_s)
 
     return convert_time((seconds + minutes_to_s + hours_to_s) * 1000)
+
+
+def format_time(time_list):
+    """ Convert list of times into a formatted string of 00:00:00"""
+    out_time = ""
+    for time in time_list:
+        if len(str(time)) < 2:   # Time of 1 char, single digit
+            out_time += "0" + str(time)
+        else:   # Double digits
+            out_time += str(time)
+        out_time += ":"
+
+    return out_time[:-1]
 

@@ -2051,14 +2051,17 @@ class PlayLevel(LevelSelect, OptionsPage):
                         # Add rect objects for collision (collision, no render)
                     self.render_objects += [element]
                     # Load up render objects (only rendering, no collision)
-        self.display_stats = kogclass.Text("Deaths: " + str(self.deaths) +
-                                           ", Jumps: " + str(self.player.jumps)
-                                           + ", Time: " +
-                                           str(kogclass.convert_time(
-                                               pygame.time.get_ticks() -
-                                               self.start_time)),
-                                           [1080 / 2, 20], 20, "impact", YELLOW,
+        self.display_left = kogclass.Text("Deaths: " + str(self.deaths) +
+                                           ", Jumps: " + str(self.player.jumps),
+                                           [90, 10], 20, "impact", YELLOW,
                                            None)
+
+        time = kogclass.convert_time(pygame.time.get_ticks() - self.start_time)
+        self.display_right = kogclass.Text(kogclass.format_time(time),
+                                           [1080 - (6 * 8), 10], 20, "impact", YELLOW,
+                                           None)
+        """For time's x, I do 1080 - 8 times 8 since the length of the 
+        time string is 8, and each char is about 8 pixels"""
 
         # Replay Option if enabled
         if self.memory.enable_replay:
@@ -2140,18 +2143,18 @@ class PlayLevel(LevelSelect, OptionsPage):
         # Use the default update features (collision, pausing, victory, etc.)
         if self.level_id in self.level_data:
             LevelScene.update(self)
-
-            self.display_stats = kogclass.Text("Deaths: " +
-                                               str(self.deaths) +
-                                               ", Jumps: " +
+            # Optimized Text updating
+            self.display_left.text = "Deaths: " + \
+                                               str(self.deaths) + \
+                                               ", Jumps: " + \
                                                str(self.player.jumps)
-                                               + ", Time: " +
-                                               str(kogclass.convert_time(
-                                                   pygame.time.get_ticks() -
-                                                   self.start_time)),
-                                               [1080 / 2, 20], 20, "impact",
-                                               YELLOW,
-                                               None)
+            self.display_left.setup()
+            self.display_left.render()
+            time = kogclass.convert_time(pygame.time.get_ticks() -
+                                         self.start_time)
+            self.display_right.text = kogclass.format_time(time)
+            self.display_right.setup()
+            self.display_right.render()
 
         # Update star position and player detection
         if self.level_id in self.memory.star_data and not self.player.freeze:
@@ -2357,8 +2360,10 @@ class PlayLevel(LevelSelect, OptionsPage):
                     screen.blit(self.count_text.text_img,
                                 self.count_text.text_rect)
 
-                screen.blit(self.display_stats.text_img,
-                            self.display_stats.text_rect)
+                screen.blit(self.display_left.text_img,
+                            self.display_left.text_rect)
+                screen.blit(self.display_right.text_img,
+                            self.display_right.text_rect)
             else:
                 OptionsPage.render(self, screen)
 
