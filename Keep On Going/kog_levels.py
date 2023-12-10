@@ -350,6 +350,9 @@ class LevelScene(kogclass.Scene):
     def access_options(self):
         self.options_page = not self.options_page
 
+    def go_to_options(self):
+        self.change_scene(OptionsPage(self.memory))
+
     def victory(self, screen):
         # Victory function played when win condition
         if 500 <= pygame.time.get_ticks() - self.victory_time and \
@@ -446,12 +449,11 @@ class MenuScene(LevelScene):
         LevelScene.__init__(self, xspawn, yspawn, level_memory)
         self.level_id = 0  # Has a level id of 0 (defined to record jumps)
         self.option_count = 0  # Index counter to choose level
-        self.options = [Hubzones(300, 50, level_memory),
-                        OptionsPage(level_memory),
-                        StatsPage(level_memory), ReplayIO(level_memory),
-                        LevelZero(level_memory),
-                        Filler(level_memory),
-                        Filler(level_memory), Filler(level_memory)]
+        self.options = [self.go_to_hub,
+                        self.go_to_options,
+                        self.go_to_stats, self.go_to_replay,
+                        self.go_to_levelzero] + \
+                       ([self.go_to_filler] * 3)    # filler options 3 times
         # Main menu options
 
         # Main menu text
@@ -494,12 +496,12 @@ class MenuScene(LevelScene):
                                            YELLOW, None)
         self.title_text_s5.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s6 = kogclass.Text("Hubzones", (432, 535), 30,
+        self.title_text_s6 = kogclass.Text("Filler", (432, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s6.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s7 = kogclass.Text("Hubzone Select", (648, 535), 30,
+        self.title_text_s7 = kogclass.Text("Filler", (648, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s7.scale(self.memory.res_width, self.memory.res_height)
@@ -569,7 +571,7 @@ class MenuScene(LevelScene):
                     self.memory.music.set_music(self.memory.hub_index,
                                                 self.memory.music.max_vol, -1,
                                                 0, 0)
-                self.change_scene(self.options[self.option_count])
+                self.options[self.option_count]()
             # Press right/d to move right of the selection
             if every_key is pygame.K_d:
                 self.option_count += 1
@@ -657,6 +659,21 @@ class MenuScene(LevelScene):
                           self.option_select[self.option_count].y - 5,
                           self.option_select[self.option_count].width + 10,
                           self.option_select[self.option_count].height + 10], 2)
+
+    def go_to_hub(self):
+        self.change_scene(Hubzones(300, 50, self.memory))
+
+    def go_to_stats(self):
+        self.change_scene((StatsPage(self.memory)))
+
+    def go_to_replay(self):
+        self.change_scene(ReplayIO(self.memory))
+
+    def go_to_levelzero(self):
+        self.change_scene(LevelZero(self.memory))
+
+    def go_to_filler(self):
+        self.change_scene(Filler(self.memory))
 
 
 class HubzonePlayer(kogclass.SquareMe):
@@ -841,9 +858,6 @@ class Hubzones(LevelScene):
 
     def go_to_hubselect(self):
         self.change_scene(HubSelect(self.memory))
-
-    def go_to_options(self):
-        self.change_scene(OptionsPage(self.memory))
 
     def render(self, screen):
         LevelScene.render(self, screen)  # <--
