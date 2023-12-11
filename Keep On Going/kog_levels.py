@@ -119,6 +119,7 @@ class LevelScene(kogclass.Scene):
         # Text displayed when player pauses the game (ESC)
 
         self.memory = level_memory
+        self.pause = False
 
         # If condition to avoid loading memory if it's empty (failsafe)
         if level_memory is not None:
@@ -206,14 +207,15 @@ class LevelScene(kogclass.Scene):
                 if every_key == pygame.K_ESCAPE and not self.level_condition:
                     self.pause_index = 0
                     self.player.freeze = not self.player.freeze
+                    self.pause = not self.pause
 
                 # Navigate pause menu
                 if every_key == pygame.K_w and not self.options_page and \
-                        self.player.freeze:
+                        self.player.freeze and self.pause:
                     self.pause_index -= 1
                     self.pause_timer = pygame.time.get_ticks()
                 elif every_key == pygame.K_s and not self.options_page and \
-                        self.player.freeze:
+                        self.player.freeze and self.pause:
                     self.pause_index += 1
                     self.pause_timer = pygame.time.get_ticks()
 
@@ -222,7 +224,8 @@ class LevelScene(kogclass.Scene):
                     self.memory.qr_counter += 1
 
                 # Choosing options from pause screen
-                if self.player.freeze and every_key == pygame.K_SPACE:
+                if self.player.freeze and self.pause and \
+                        every_key == pygame.K_SPACE:
                     self.pause_options[self.pause_index]()
                     # Put this here to have it run only once
                     if self.options_page:
@@ -253,12 +256,12 @@ class LevelScene(kogclass.Scene):
             self.hold_jumps += ["J" + str(self.loop_counter)]
 
         # Held controls for choosing options
-        if self.player.freeze and held[pygame.K_s] and \
+        if self.player.freeze and self.pause and held[pygame.K_s] and \
                 not self.options_page and \
                 200 < pygame.time.get_ticks() - self.pause_timer:
             self.pause_index += 1
             self.pause_timer = pygame.time.get_ticks()
-        elif self.player.freeze and held[pygame.K_w] and \
+        elif self.player.freeze and self.pause and held[pygame.K_w] and \
                 not self.options_page and \
                 200 < pygame.time.get_ticks() - self.pause_timer:
             self.pause_index -= 1
@@ -272,7 +275,7 @@ class LevelScene(kogclass.Scene):
 
         # Player is alive, not paused and haven't run, then check collision
         if self.player.alive and not self.player.freeze and \
-                not self.level_condition:
+                not self.level_condition and not self.pause:
             # Check if player collided with death zones (returns 1 or 0)
             self.deaths += self.player.death(self.death_zones)
             self.player.collision_plat(self.platforms)  # Top and bottom coll
@@ -282,7 +285,7 @@ class LevelScene(kogclass.Scene):
         """Respawn for square players, reset spawn position, set direction
         to right by default, reset gravity"""
         if not self.player.alive and not self.player.freeze and \
-                not self.level_condition:
+                not self.level_condition and not self.pause:
             self.jump_timer = pygame.time.get_ticks()  # Reset jump timer
             self.player.jump_boost = -1 * (self.player.max_jump - 1)
             self.player.jump_ability = False
@@ -377,7 +380,7 @@ class LevelScene(kogclass.Scene):
         if not self.options_page:
             self.player.render(screen)
 
-            if self.player.freeze:
+            if self.player.freeze and self.pause:
                 pygame.draw.rect(screen, DARK_PURPLE, [330, 150, 420, 340])
                 pygame.draw.rect(screen, GOLDELLOW, [340, 160, 400, 320])
                 screen.blit(self.pause_text.text_img,
@@ -769,7 +772,7 @@ class Hubzones(LevelScene):
         for every_key in pressed:
             if every_key in [pygame.K_w, pygame.K_UP, pygame.K_SPACE] and not \
                     self.player.enable_gravity and self.player.alive and not \
-                    self.player.freeze and \
+                    self.player.freeze and not self.pause and \
                     150 <= pygame.time.get_ticks() - self.jump_timer:
                 self.player.jump_ability = True  # Allow player to jump
                 self.player.jump_boost = self.player.max_jump  # Setup jump
@@ -788,14 +791,14 @@ class Hubzones(LevelScene):
             if every_key in [pygame.K_ESCAPE]:
                 self.pause_index = 0
                 self.player.freeze = not self.player.freeze
-                # print(f"{self.player.freeze} - freeze")
+                self.pause = not self.pause
             # Navigate pause menu
             if every_key == pygame.K_w and not self.options_page and \
-                    self.player.freeze:
+                    self.player.freeze and self.pause:
                 self.pause_index -= 1
                 self.pause_timer = pygame.time.get_ticks()
             elif every_key == pygame.K_s and not self.options_page and \
-                    self.player.freeze:
+                    self.player.freeze and self.pause:
                 self.pause_index += 1
                 self.pause_timer = pygame.time.get_ticks()
 
@@ -804,7 +807,8 @@ class Hubzones(LevelScene):
                 self.memory.qr_counter += 1
 
             # Choosing options from pause screen
-            if self.player.freeze and every_key == pygame.K_SPACE:
+            if self.player.freeze and self.pause and \
+                    every_key == pygame.K_SPACE:
                 self.memory.options_status = -1
                 # self.options_page = False
                 # print(f"{self.options_page} - options page")
@@ -842,12 +846,12 @@ class Hubzones(LevelScene):
             self.player.direction = 0
 
         # Held controls for choosing options
-        if self.player.freeze and held[pygame.K_s] and \
+        if self.player.freeze and self.pause and held[pygame.K_s] and \
                 not self.options_page and \
                 200 < pygame.time.get_ticks() - self.pause_timer:
             self.pause_index += 1
             self.pause_timer = pygame.time.get_ticks()
-        elif self.player.freeze and held[pygame.K_w] and \
+        elif self.player.freeze and self.pause and held[pygame.K_w] and \
                 not self.options_page and \
                 200 < pygame.time.get_ticks() - self.pause_timer:
             self.pause_index -= 1
@@ -877,7 +881,7 @@ class Hubzones(LevelScene):
         if not self.options_page:
             self.player.render(screen)
 
-            if self.player.freeze:
+            if self.player.freeze and self.pause:
                 pygame.draw.rect(screen, DARK_PURPLE, [330, 150, 420, 340])
                 pygame.draw.rect(screen, GOLDELLOW, [340, 160, 400, 320])
                 screen.blit(self.pause_text.text_img,
@@ -2205,7 +2209,8 @@ class PlayLevel(LevelSelect, OptionsPage):
             self.display_right.render()
 
         # Update star position and player detection
-        if self.level_id in self.memory.star_data and not self.player.freeze:
+        if self.level_id in self.memory.star_data and not self.pause and \
+                not self.player.freeze:
             for star in self.memory.star_data[self.level_id]:
                 star.update(pygame.Rect(self.player.xpos,
                                         self.player.ypos,
@@ -2425,6 +2430,11 @@ class PlayLevel(LevelSelect, OptionsPage):
                                  [element.shape[0], element.shape[1]],
                                  [element.shape[2], element.shape[3]],
                                  element.shape[4])
+
+
+class Tutorial(PlayLevel):
+    def __init__(self, x_spawn, y_spawn, level_memory, play_id):
+        PlayLevel.__init__(self, x_spawn, y_spawn, level_memory, play_id)
 
 
 class LevelZero(LevelScene):
