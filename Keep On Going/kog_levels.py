@@ -1668,12 +1668,6 @@ class UniversalSelect(LevelScene):
 
     def input(self, pressed, held):
         for every_key in pressed:
-            # Return player to menu if pressing "R"
-            if every_key == pygame.K_r:
-                self.memory.music.set_music(self.memory.hub_index,
-                                            self.memory.music.max_vol, -1, 0, 0)
-                self.change_scene(Hubzones(0, 0, self.memory))
-
             # Allow player to choose a level (based on ID) after 0.405 seconds
             if self.allow_select and \
                     every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
@@ -1889,6 +1883,12 @@ class LevelSelect(UniversalSelect):
     def input(self, pressed, held):
         UniversalSelect.input(self, pressed, held)
         for every_key in pressed:
+            # Return player to menu if pressing "R"
+            if every_key == pygame.K_r:
+                self.memory.music.set_music(self.memory.hub_index,
+                                            self.memory.music.max_vol, -1, 0, 0)
+                self.change_scene(Hubzones(0, 0, self.memory))
+
             if self.allow_select and \
                     every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
                     405 < pygame.time.get_ticks() - self.blockmation_time:
@@ -1919,6 +1919,12 @@ class HubSelect(LevelSelect):
     def input(self, pressed, held):
         UniversalSelect.input(self, pressed, held)
         for every_key in pressed:
+            # Return player to menu if pressing "R"
+            if every_key == pygame.K_r:
+                self.memory.music.set_music(self.memory.hub_index,
+                                            self.memory.music.max_vol, -1, 0, 0)
+                self.change_scene(Hubzones(0, 0, self.memory))
+
             if self.allow_select and \
                     every_key in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
                     405 < pygame.time.get_ticks() - self.blockmation_time:
@@ -1935,12 +1941,13 @@ class HubSelect(LevelSelect):
         UniversalSelect.render(self, screen)
 
 
-class ReplaySelect(LevelSelect):
+class ReplaySelect(UniversalSelect):
     """Class that's similar to Level Select but has an extra filter
     for selecting levels with only valid replays"""
 
     def __init__(self, level_memory):
-        LevelSelect.__init__(self, level_memory)
+        UniversalSelect.__init__(self, level_memory)
+        self.choose_id = 1
         self.allow_select = False  # Toggle off, cannot freely choose
         self.no_data = kogclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
                                      "impact", RED, None)
@@ -1951,7 +1958,7 @@ class ReplaySelect(LevelSelect):
                                           YELLOW, None)
         self.replay_title.scale(self.memory.res_width,
                                 self.memory.res_height)
-        self.level_set = self.memory.level_data
+        self.level_set = [1, (len(self.memory.level_set) - 1)]
 
     def input(self, pressed, held):
         if self.choose_id in self.memory.replay_imp and \
@@ -1960,13 +1967,27 @@ class ReplaySelect(LevelSelect):
         else:
             self.allow_select = False
 
-        LevelSelect.input(self, pressed, held)
+        UniversalSelect.input(self, pressed, held)
+
+        for action in pressed:
+            # Return player to menu if pressing "R"
+            if action == pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
+                                            0)
+                self.change_scene(MenuScene(24, 303, self.memory))
+
+            if self.allow_select and \
+                    action in [pygame.K_UP, pygame.K_SPACE, pygame.K_w] and \
+                    405 < pygame.time.get_ticks() - self.blockmation_time:
+                self.change_scene(PlayLevel(self.level_data[self.choose_id][0],
+                                            self.level_data[self.choose_id][1],
+                                            self.memory, self.choose_id))
 
     def update(self):
-        LevelSelect.update(self)
+        UniversalSelect.update(self)
 
     def render(self, screen):
-        LevelSelect.render(self, screen)
+        UniversalSelect.render(self, screen)
         if self.choose_id in self.memory.replay_imp and \
                 0 == len(self.memory.replay_imp[self.choose_id]):
             screen.blit(self.no_data.text_img, self.no_data.text_rect)
@@ -1975,9 +1996,11 @@ class ReplaySelect(LevelSelect):
                     self.replay_title.text_rect)
 
 
-class ReplayOut(ReplaySelect):
+class ReplayOut(UniversalSelect):
     def __init__(self, level_memory):
-        ReplaySelect.__init__(self, level_memory)
+        UniversalSelect.__init__(self, level_memory)
+        self.level_set = [1, (len(self.memory.level_set) - 1)]
+        self.choose_id = 1
         self.allow_select = False
         self.copy_text = kogclass.Text("Copied Level " + str(self.choose_id),
                                        (1080 / 2, 3 * 576 / 4),
@@ -1991,9 +2014,20 @@ class ReplayOut(ReplaySelect):
         self.replayo_title.scale(self.memory.res_width,
                                  self.memory.res_height)
 
+        self.no_data = kogclass.Text("NO DATA", [1080 / 2, 576 / 2], 100,
+                                     "impact", RED, None)
+        self.no_data.scale(self.memory.res_width,
+                           self.memory.res_height)
+
     def input(self, pressed, held):
-        LevelSelect.input(self, pressed, held)
+        UniversalSelect.input(self, pressed, held)
         for action in pressed:
+            # Return player to menu if pressing "R"
+            if action == pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
+                                            0)
+                self.change_scene(MenuScene(24, 303, self.memory))
+
             if self.choose_id in self.memory.replay_exp and \
                     self.memory.replay_exp[self.choose_id] != [] and \
                     action == pygame.K_SPACE:
@@ -2010,11 +2044,11 @@ class ReplayOut(ReplaySelect):
                                      "utf-8"))
 
     def update(self):
-        LevelSelect.update(self)
+        UniversalSelect.update(self)
         self.allow_select = False
 
     def render(self, screen):
-        LevelSelect.render(self, screen)
+        UniversalSelect.render(self, screen)
         if self.choose_id in self.memory.replay_exp and \
                 0 == len(self.memory.replay_exp[self.choose_id]):
             screen.blit(self.no_data.text_img, self.no_data.text_rect)
