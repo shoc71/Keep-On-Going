@@ -2409,14 +2409,22 @@ class PlayLevel(LevelSelect, OptionsPage):
                         screen.blit(self.lose_text.text_img,
                                     self.lose_text.text_rect)
 
+                # Countdown for replays
                 if not self.start_toggle and self.memory.enable_replay:
                     screen.blit(self.count_text.text_img,
                                 self.count_text.text_rect)
 
+                # Render special images/animations
+                if self.level_id in self.memory.images:
+                    for image in self.memory.images[self.level_id]:
+                        image.render(screen)
+
+                # Display statistics
                 screen.blit(self.display_left.text_img,
                             self.display_left.text_rect)
                 screen.blit(self.display_right.text_img,
                             self.display_right.text_rect)
+
             else:
                 OptionsPage.render(self, screen)
 

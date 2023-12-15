@@ -283,6 +283,8 @@ class Memory:
 
         self.star_data = {}
 
+        self.images = {}
+
         self.screen = None
 
         self.options_status = 0
@@ -395,10 +397,14 @@ class Memory:
 
         # Load non-level pygame objects, start at -6 + 1 for 4 instances
         self.level_id = -99
-        # Decrease the level_id for more than 4 instances!
-        self.load_levels("assets/levels/non_levels.txt")
+        self.load_levels(folder_path + "non_levels.txt")
 
+        # Load stars
         self.load_stars(folder_path + "stars.txt")
+
+        # Load images
+        self.load_images(folder_path + "images.txt")
+
 
         """
         MenuScene ID = -5
@@ -709,7 +715,33 @@ class Memory:
                                           roam_rect)
                     self.star_data[level_id] += [in_star]
 
-    # print_levels is used for debug purposes for load_levels/load_stars
+    def load_images(self, in_file):
+        # Defining a list of methods to make image classes
+        # todo: In the future if these have special functions, use ani_type
+        ani_type = []
+
+        with open(in_file, "r") as img_file:
+            all_lines = img_file.readlines()
+            level_id = 0
+            for line in all_lines:
+                filter_line = line[0:-1]     # Remove "\n
+                # Identified a level ID
+                if filter_line.isnumeric():
+                    level_id = int(filter_line)
+                    if level_id not in self.images:
+                        self.images[level_id] = []
+                elif len(filter_line.split(", ")) == 6:
+                    get = filter_line.split(", ")
+                    self.images[level_id] += [Image(get[0],
+                                                    int(get[1]),
+                                                    int(get[2]),
+                                                    int(get[3]),
+                                                    int(get[4]),
+                                                    int(get[5]))]
+                else:
+                    print("images.txt had a problem, quitting")
+
+    # print_levels is used for debug purposes
 
     def print_levels(self):
         print("LEVEL TITLES:")
@@ -720,6 +752,12 @@ class Memory:
         print("===============")
         print("LEVEL ID RANGES:")
         print(self.id_range)
+        print("===============")
+        print("STARS:")
+        print(self.star_data)
+        print("===============")
+        print("IMAGES:")
+        print(self.images)
 
     # The following methods are used for manipulating Replay class files/data
 
@@ -935,6 +973,52 @@ class KOGElement:
         self.color = color  # Block color
         self.shape = shape  # Block shape
         self.type = in_type  # Distinguish line vs rect types
+
+
+class Image:
+    def __init__(self, in_file, xpos, ypos, width, height, frame_delay):
+        """
+        :param in_file: A single image file
+        :param xpos: x position relative to the 1080 scale
+        :param ypos: y position relative to the 576 scale
+        :param frame_delay: time inbetween each  (in seconds)
+        """
+        self.img_rect = pygame.Rect(xpos, ypos, width, height)
+        self.frame_delay = frame_delay * 1000
+        # Frame delay is in seconds
+
+        self.animate_index = 0
+        self.animate_time = pygame.time.get_ticks()
+        pygame.display.set_mode([1080, 576])
+
+        if ".png" in in_file or ".jpg" in in_file:
+            load_image = pygame.image.load(in_file).convert_alpha()
+            scale_image = pygame.transform.scale(load_image,
+                                                 (self.img_rect.width,
+                                                  self.img_rect.height))
+            self.image = scale_image
+        else:
+            self.image = None
+
+    def validate(self):
+        if self.image is None:
+            return "File's Provided Not Put In A List"
+        elif self.img_rect is None or \
+                self.img_rect.x < 0 or 1080 < self.img_rect.x:
+            return "Invalid x position out of bounds or not given"
+        elif self.img_rect is None or \
+                self.img_rect.y < 0 or 576 < self.img_rect.y:
+            return "Invalid y position out of bounds or not given"
+        elif self.frame_delay is None or type(self.frame_delay) is not int or \
+                type(self.frame_delay) is not float:
+            return "Frame delay is invalid (not int or float)"
+
+    def update_pos(self, x, y):
+        self.img_rect.x = x
+        self.img_rect.y = y
+
+    def render(self, screen):
+        screen.blit(self.image, self.img_rect)
 
 
 class Animate:
@@ -1217,7 +1301,7 @@ class SquareMe:  # lil purple dude
         self.diff_factor = diff * res_width
         # Movement multiplier based on difficulty and resolution sclaing
 
-        file_path = "assets/audio/"
+        file_path = "assets/audio/sfx/"
         self.jump_sound_1 = pygame.mixer.Sound(file_path + "jump_sfx.wav")
         # Jump sound for player
         self.jump_sound_1.set_volume(0.1 * (jump_vol / 100))  # out of 1 or 100%
