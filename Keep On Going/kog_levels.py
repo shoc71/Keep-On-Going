@@ -455,8 +455,8 @@ class MenuScene(LevelScene):
         self.options = [self.go_to_hub,
                         self.go_to_options,
                         self.go_to_stats, self.go_to_replay,
-                        self.go_to_levelzero] + \
-                       ([self.go_to_filler] * 3)    # filler options 3 times
+                        self.go_to_levelzero, self.go_to_instructions] + \
+                       ([self.go_to_filler] * 2)    # filler options 2 times
         # Main menu options
 
         # Main menu text
@@ -499,7 +499,7 @@ class MenuScene(LevelScene):
                                            YELLOW, None)
         self.title_text_s5.scale(self.memory.res_width, self.memory.res_height)
 
-        self.title_text_s6 = kogclass.Text("Filler", (432, 535), 30,
+        self.title_text_s6 = kogclass.Text("Instructions", (432, 535), 30,
                                            "impact",
                                            YELLOW, None)
         self.title_text_s6.scale(self.memory.res_width, self.memory.res_height)
@@ -677,6 +677,9 @@ class MenuScene(LevelScene):
 
     def go_to_filler(self):
         self.change_scene(Filler(self.memory))
+
+    def go_to_instructions(self):
+        self.change_scene(Instructions(self.memory))
 
 
 class HubzonePlayer(kogclass.SquareMe):
@@ -943,6 +946,42 @@ class Filler(kogclass.Scene):
         # Render default white and the go back message
         screen.fill(WHITE)
         screen.blit(self.filler_text.text_img, self.filler_text.text_rect)
+
+
+class Instructions(kogclass.Scene):
+    """Render an image of the instructions"""
+
+    def __init__(self, level_memory):
+        kogclass.Scene.__init__(self)
+        self.level_id = -1  # Invalid level id, don't record statistics
+        self.memory = level_memory
+
+        file_path = "assets/images/instructions/"
+        file_img = "InstructionsClass.png"
+
+        if not os.path.isdir(file_path):
+            print("No folder for instructions exists")
+            self.close_game()
+        if not os.path.isfile(file_path + file_img):
+            print("Missing image for instructions")
+            self.close_game()
+        load_img = pygame.image.load(file_path +
+                                     file_img).convert_alpha()
+        self.instructions = pygame.transform.scale(load_img, (1080,
+                                                   576))
+
+    def input(self, pressed, held):
+        for every_key in pressed:
+            # Pressing R allows you to go back
+            if every_key == pygame.K_r:
+                self.memory.music.set_music(0, self.memory.music.max_vol, -1, 0,
+                                            0)
+                self.change_scene(MenuScene(24, 303, self.memory))
+
+    def render(self, screen):
+        # Render default white and the go back message
+        screen.fill(WHITE)
+        screen.blit(self.instructions, (0, 0))
 
 
 class OptionsPage(LevelScene):
