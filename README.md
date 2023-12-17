@@ -1,12 +1,12 @@
-## Keep-On-Going
+# Keep On Going
+## A challenging platformer where you must time your jumps to beat all the bizarre levels without ever stopping. Not even for a second.
+![image](https://github.com/shoc71/Keep-On-Going/assets/47337807/3daa8adf-aa7a-4193-ac13-eb5ce8c3d7f0)
 
-# Complete all the bizarre levels in this game without ever stopping. Not even for a second.
+### Quick Peak at the Instructions:
+![alt text](https://github.com/shoc71/Keep-On-Going/blob/main/Keep%20On%20Going/assets/images/instructions/InstructionsClass.png)
 
-(Unique Python game made by 2 indie developers)
-- gameplay instructions are here - [https://github.com/shoc71/dont-stop-now/blob/main/dont%20stop%20now/readme.md](https://github.com/shoc71/Keep-On-Going/tree/main/Keep%20On%20Going#how-to-play)
+### Keep-On-Going Trailer
+COMING SOON
 
-Credits;
-- main coder - @slysnivy
-- bug testing - @slysnivy
-- level designer - @shoc71
-- music - @shoc71
+### Credits:
+A game made by @slysnivy and @shoc71
