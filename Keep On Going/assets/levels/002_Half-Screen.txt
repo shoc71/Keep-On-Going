@@ -1313,6 +1313,54 @@ self.win_zones =  [
 	pygame.draw.rect(screen, (47, 237, 237), [1054, 32, 13, 46])
 
 ]
+===============
+
+Praise_the_EYE(525, 289, 1)
+
+dsnclass.Text("icu", (540, 392), 60, "impact", GREY, None)
+
+self.platforms =  [
+        pygame.draw.rect(screen, BLACK, [0, 248, 30, 328]),       
+        pygame.draw.rect(screen, BLACK, [0, 5, 30, 203]),
+        pygame.draw.rect(screen, BLACK, [1050, 5, 30, 203]),      
+        pygame.draw.rect(screen, BLACK, [15, 5, 1053, 59]),       
+        pygame.draw.rect(screen, BLACK, [12, 333, 1056, 243]),    
+        pygame.draw.rect(screen, BLACK, [1050, 248, 30, 328]),    
+        pygame.draw.rect(screen, BLACK, [29, 296, 90, 11]),       
+        pygame.draw.rect(screen, BLACK, [985, 306, 64, 28]),      
+        pygame.draw.rect(screen, BLACK, [31, 306, 64, 28]),       
+        pygame.draw.rect(screen, BLACK, [960, 296, 90, 11]),      
+        pygame.draw.rect(screen, BLACK, [908, 264, 90, 11]),      
+        pygame.draw.rect(screen, BLACK, [751, 244, 112, 11]),
+        pygame.draw.rect(screen, BLACK, [214, 244, 112, 11]),
+        pygame.draw.rect(screen, BLACK, [356, 222, 112, 11]),
+        pygame.draw.rect(screen, BLACK, [595, 222, 112, 11]),
+        pygame.draw.rect(screen, BLACK, [520, 310, 6, 35]),
+        pygame.draw.rect(screen, BLACK, [514, 316, 6, 35]),
+        pygame.draw.rect(screen, BLACK, [534, 310, 6, 35]),
+        pygame.draw.rect(screen, BLACK, [540, 316, 6, 35]),
+        pygame.draw.rect(screen, BLACK, [57, 63, 6, 50]),
+        pygame.draw.rect(screen, BLACK, [481, 63, 6, 99]),
+        pygame.draw.rect(screen, BLACK, [481, 221, 6, 99]),
+        pygame.draw.rect(screen, BLACK, [580, 221, 6, 99]),
+        pygame.draw.rect(screen, BLACK, [580, 63, 6, 99]),
+        pygame.draw.rect(screen, BLACK, [389, 63, 6, 81]),
+        pygame.draw.rect(screen, BLACK, [670, 63, 6, 81]),
+        pygame.draw.rect(screen, BLACK, [82, 264, 90, 11]),
+        pygame.draw.rect(screen, BLACK, [675, 111, 336, 8]),
+        pygame.draw.rect(screen, BLACK, [1005, 63, 6, 50]),
+        pygame.draw.rect(screen, BLACK, [57, 111, 336, 8]),
+        pygame.draw.rect(screen, BLACK, [388, 136, 98, 8]),
+        pygame.draw.rect(screen, BLACK, [580, 136, 97, 8]),
+        pygame.draw.rect(screen, BLACK, [501, 71, 64, 44]),
+        pygame.draw.rect(screen, BLACK, [524, 301, 12, 35])
+]
+
+self.win_zones =  [
+        pygame.draw.rect(screen, CYAN, [1066, 208, 14, 40]),
+        pygame.draw.rect(screen, CYAN, [0, 208, 14, 40])
+]
+
 ==================
 
 Living_room(465, 511, 1)
