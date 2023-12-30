@@ -99,7 +99,7 @@ if __name__ == "__main__":
     game_width = 1080
     game_height = 576
 
-    file_path = "assets/images/"
+    file_path = "assets/images/window_icon"
     pygame.display.set_caption("Keep On Going") # game window caption
     icon = pygame.image.load(file_path + "rect10.png") # loading image
     default_icon_image_size = (32, 32) # reducing size of image
