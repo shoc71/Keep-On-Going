@@ -514,7 +514,7 @@ class MenuScene(LevelScene):
                                            YELLOW, None)
         self.title_text_s8.scale(self.memory.res_width, self.memory.res_height)
 
-        file_path = "assets/images/"
+        file_path = "assets/images/title"
         self.keep_image_text = pygame.image.load(
             file_path + "Keep.png").convert_alpha()  # ratio is 15:8
         self.on_image_text = pygame.image.load(file_path +
